@@ -1,0 +1,31 @@
+version: '3'
+
+services:
+    db:
+        image: postgres:9.6
+        volumes:
+            - ./postgres-data:/var/lib/postgresql/data
+    server:
+        build: .
+        env_file:
+            - .env
+        command: ['/code/scripts/wait-for-it.sh', 'db:5432', '--', '/code/scripts/run_develop.sh', 'server']
+        volumes:
+            - .:/code
+            - ./media:/media
+        ports:
+            - '8000:8000'
+        depends_on:
+            - db
+    client:
+        build: .
+        env_file:
+            - .env
+        command: ['/code/scripts/run_develop.sh', 'client']
+        volumes:
+            - .:/code
+            - ./media:/media
+        ports:
+            - '3000:3000'
+        depends_on:
+            - server
