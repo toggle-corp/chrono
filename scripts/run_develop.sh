@@ -20,6 +20,7 @@ fi
 
 if [ "${PROG_TYPE}" == "client" ]; then
     cd client
+    yarn install
     yarn add --force node-sass
     yarn start
 fi
