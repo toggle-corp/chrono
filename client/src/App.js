@@ -1,16 +1,20 @@
 import React from 'react';
-import CSSModules from 'react-css-modules';
+import { BrowserRouter } from 'react-router-dom';
 
-import styles from './app.scss';
+import Multiplexer from './Multiplexer';
 
-
-@CSSModules(styles, { allowMultiple: true })
 export default class App extends React.PureComponent {
+    constructor(props) {
+        super(props);
+
+        console.log(props);
+    }
+
     render() {
         return (
-            <div styleName="app">
-                Avada Kedabra !
-            </div>
+            <BrowserRouter>
+                <Multiplexer />
+            </BrowserRouter>
         );
     }
 }
