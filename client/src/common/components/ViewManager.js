@@ -4,11 +4,11 @@ import Bundle from '../../public/components/General/Bundle';
 
 export default class ViewManager extends React.PureComponent {
     componentWillMount() {
-        console.log('Mounting ProjectRouteSynchronizer');
+        console.log('Mounting ViewManager');
     }
 
     componentWillUnmount() {
-        console.log('Unmounting ProjectRouteSynchronizer');
+        console.log('Unmounting ViewManager');
     }
     render() {
         const {
