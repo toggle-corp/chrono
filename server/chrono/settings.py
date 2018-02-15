@@ -30,6 +30,12 @@ INSTALLED_APPS = [
     'djangorestframework_camel_case',
     'drf_dynamic_fields',
     'rest_framework',
+    'jwt_auth',
+    'user',
+    'user_group',
+    'user_resource',
+    'project',
+    'task',
 ]
 
 MIDDLEWARE = [
@@ -146,3 +152,7 @@ STATIC_ROOT = '/static'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = '/media'
+
+HTTP_PROTOCOL = os.environ.get('HTTP_PROTOCOL', 'http')
+CHRONO_FRONTEND_HOST = os.environ.get('CHRONO_FRONTEND_HOST', 'localhost:3000')
+CHRONO_SITE_NAME = os.environ.get('CHRONO_SITE_NAME', 'Chrono')
