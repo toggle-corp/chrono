@@ -1,7 +1,9 @@
 from django.contrib.postgres.fields import JSONField
 from django.db import models
+
 from project.models import Phase
 from user_resource.models import UserResource
+from user.models import User
 
 
 class Task(UserResource):
@@ -39,7 +41,7 @@ class Task(UserResource):
         return self.phase.can_get(user)
 
 
-class TimeSlot(UserResource):
+class TimeSlot(models.Model):
     """
     Phase model
     """
@@ -51,10 +53,13 @@ class TimeSlot(UserResource):
     end_date = models.DateTimeField(default=None, null=True, blank=True)
 
     task = models.ForeignKey(
-            Task,
-            on_delete=models.CASCADE,
-            # blank=True,
-        )
+        Task,
+        on_delete=models.CASCADE,
+    )
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE
+    )
     data = JSONField(default=None, blank=True, null=True)
 
     def __str__(self):
