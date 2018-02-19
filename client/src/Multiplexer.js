@@ -1,14 +1,19 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 import {
     Switch,
     Route,
+    withRouter,
 } from 'react-router-dom';
+import { connect } from 'react-redux';
 
-import PrivateRoute, {
-    ExclusivelyPublicRoute,
-} from './public/components/General/PrivateRoute';
+import PrivateRoute from './vendor/react-store/components/General/PrivateRoute';
+import ExclusivelyPublicRoute from './vendor/react-store/components/General/ExclusivelyPublicRoute';
 
 import pathNames from './common/constants/pathNames';
+import {
+    authenticatedSelector,
+} from './redux';
 import views from './views';
 
 const ROUTE = {
@@ -19,7 +24,7 @@ const ROUTE = {
 
 const routesOrder = [
     // 'landing',
-    // 'login',
+    'login',
     // 'register',
 
     // 'team',
@@ -41,12 +46,26 @@ const routes = {
     team: { type: ROUTE.private },
 };
 
+const propTypes = {
+    authenticated: PropTypes.bool.isRequired,
+};
+
+const mapStateToProps = state => ({
+    authenticated: authenticatedSelector(state),
+});
+
+// NOTE: withRouter is required here so that link change are updated
+
+@withRouter
+@connect(mapStateToProps, undefined)
 export default class Multiplexer extends React.PureComponent {
+    static propTypes = propTypes;
+
     getRoutes = () => (
         routesOrder.map((routeId) => {
             const view = views[routeId];
             const path = pathNames[routeId];
-            const authenticated = true;
+            const { authenticated } = this.props;
 
             if (!view) {
                 console.error(`Cannot find view associated with routeID: ${routeId}`);
@@ -95,7 +114,7 @@ export default class Multiplexer extends React.PureComponent {
 
     render() {
         return (
-            <div className="main-content">
+            <div className="chrono-main-content">
                 <Switch>
                     { this.getRoutes() }
                 </Switch>
