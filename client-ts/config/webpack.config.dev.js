@@ -164,18 +164,17 @@ module.exports = {
             use: [
               require.resolve('style-loader'),
               {
-                loader: require.resolve('css-loader'),
+                loader: require.resolve('typings-for-css-modules-loader'),
                 options: {
+                  sourceMap: true,
                   importLoaders: 1,
-                  modules: true,
                   localIdentName: '[local]-[hash:base64:5]',
+                  modules: true,
+                  namedExport: true,
+                  camelCase: true,
                 },
               },
-              {
-                test: /\.sass$/,
-                include: paths.appSrc,
-                loaders: ["style", "css", "sass"]
-              },
+              require.resolve('sass-loader'),
               {
                 loader: require.resolve('postcss-loader'),
                 options: {
@@ -253,6 +252,10 @@ module.exports = {
     // https://github.com/jmblog/how-to-optimize-momentjs-with-webpack
     // You can remove this if you don't use Moment.js:
     new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
+    // Ignore generated css.d.ts
+    new webpack.WatchIgnorePlugin([
+      /css\.d\.ts$/
+    ]),
     // Perform type checking and linting in a separate process to speed up compilation
     new ForkTsCheckerWebpackPlugin({
       async: false,
