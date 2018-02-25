@@ -156,3 +156,29 @@ MEDIA_ROOT = '/media'
 HTTP_PROTOCOL = os.environ.get('HTTP_PROTOCOL', 'http')
 CHRONO_FRONTEND_HOST = os.environ.get('CHRONO_FRONTEND_HOST', 'localhost:3000')
 CHRONO_SITE_NAME = os.environ.get('CHRONO_SITE_NAME', 'Chrono')
+
+# CORS CONFIGS
+CORS_ORIGIN_ALLOW_ALL = True
+
+CORS_URLS_REGEX = r'^/api/.*$'
+
+CORS_ALLOW_METHODS = (
+    'DELETE',
+    'GET',
+    'OPTIONS',
+    'PATCH',
+    'POST',
+    'PUT',
+)
+
+CORS_ALLOW_HEADERS = (
+    'accept',
+    'accept-encoding',
+    'authorization',
+    'content-type',
+    'dnt',
+    'origin',
+    'user-agent',
+    'x-csrftoken',
+    'x-requested-with',
+)
