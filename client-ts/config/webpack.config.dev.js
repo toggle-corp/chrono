@@ -142,7 +142,7 @@ module.exports = {
           },
           // Compile .tsx?
           {
-            test: /\.(ts|tsx)$/,
+            test: /\.(ts|tsx|js|jsx)$/,
             include: paths.appSrc,
             use: [
               {

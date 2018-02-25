@@ -1,21 +1,14 @@
 import * as React from 'react';
-import * as styles from './styles.scss';
+import { BrowserRouter } from 'react-router-dom';
 
-class App extends React.Component {
+import Multiplexer from './Multiplexer';
+
+export default class App extends React.PureComponent<object, object> {
     render() {
         return (
-            <div className={styles.app}>
-            <header className={styles.appHeader}>
-            <h1 className={styles.appTitle}>
-                Welcome to React
-            </h1>
-            </header>
-            <p className={styles.appIntro}>
-                To get started, edit <code>src/App.tsx</code> and save to reload.
-            </p>
-            </div>
+            <BrowserRouter>
+                <Multiplexer />
+            </BrowserRouter>
         );
     }
 }
-
-export default App;

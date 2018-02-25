@@ -22,3 +22,4 @@ yarn-error.log*
 
 # Ignore css.d.ts
 *css.d.ts
+vendor/
