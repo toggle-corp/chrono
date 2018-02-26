@@ -1,9 +1,9 @@
-import PropTypes from 'prop-types';
 import React from 'react';
 import {
     Switch,
     Route,
     withRouter,
+    RouteComponentProps,
 } from 'react-router-dom';
 import { connect } from 'react-redux';
 
@@ -11,18 +11,39 @@ import PrivateRoute from './vendor/react-store/components/General/PrivateRoute';
 import ExclusivelyPublicRoute from './vendor/react-store/components/General/ExclusivelyPublicRoute';
 
 import pathNames from './common/constants/pathNames';
-import {
-    authenticatedSelector,
-} from './redux';
+
+import { authenticatedSelector } from './redux';
 import views from './views';
 
-const ROUTE = {
+interface RootState {
+    domainData: object;
+    auth: object;
+}
+
+interface RouteInfo {
+    type: string;
+    redirectTo?: string;
+}
+
+interface RoutesInfo {
+    [key: string]: RouteInfo;
+}
+
+interface Enum {
+    [key: string]: string;
+}
+
+interface Props extends RouteComponentProps<{}>, React.Props<{}> {
+    authenticated: boolean;
+}
+
+const ROUTE: Enum = {
     exclusivelyPublic: 'exclusively-public',
     public: 'public',
     private: 'private',
 };
 
-const routesOrder = [
+const routesOrder: string[] = [
     // 'landing',
     'login',
     // 'register',
@@ -31,7 +52,7 @@ const routesOrder = [
     'workspace',
 ];
 
-const routes = {
+const routes: RoutesInfo = {
     login: {
         type: ROUTE.exclusivelyPublic,
         redirectTo: '/',
@@ -46,67 +67,59 @@ const routes = {
     team: { type: ROUTE.private },
 };
 
-const propTypes = {
-    authenticated: PropTypes.bool.isRequired,
-};
-
-const mapStateToProps = state => ({
+const mapStateToProps = (state: RootState) => ({
     authenticated: authenticatedSelector(state),
 });
 
-// NOTE: withRouter is required here so that link change are updated
+class Multiplexer extends React.PureComponent<Props, {}> {
 
-@withRouter
-@connect(mapStateToProps, undefined)
-export default class Multiplexer extends React.PureComponent {
-    static propTypes = propTypes;
-
-    getRoutes = () => (
+    getRoutes = (): (JSX.Element|null)[] => (
         routesOrder.map((routeId) => {
-            const view = views[routeId];
-            const path = pathNames[routeId];
-            const { authenticated } = this.props;
+            const viewComponent = views[routeId];
+            const path: string = pathNames[routeId];
+            const { authenticated }: { authenticated: boolean } = this.props;
 
-            if (!view) {
-                console.error(`Cannot find view associated with routeID: ${routeId}`);
+            if (!viewComponent) {
+                // console.error(`Cannot find view associated with routeID: ${routeId}`);
                 return null;
             }
-            const redirectTo = routes[routeId].redirectTo;
+            const redirectTo: string | undefined = routes[routeId].redirectTo;
+            const routeType: string | undefined = routes[routeId].type;
 
-            switch (routes[routeId].type) {
+            switch (routeType) {
                 case ROUTE.exclusivelyPublic:
                     return (
                         <ExclusivelyPublicRoute
-                            component={view}
+                            component={viewComponent}
                             key={routeId}
                             path={path}
                             authenticated={authenticated}
                             redirectLink={redirectTo}
-                            exact
+                            exact={true}
                         />
                     );
                 case ROUTE.private:
                     return (
                         <PrivateRoute
-                            component={view}
+                            component={viewComponent}
                             key={routeId}
                             path={path}
                             authenticated={authenticated}
                             redirectLink={redirectTo}
-                            exact
+                            exact={true}
                         />
                     );
                 case ROUTE.public:
                     return (
                         <Route
-                            component={view}
+                            component={viewComponent}
                             key={routeId}
                             path={path}
-                            exact
+                            exact={true}
                         />
                     );
                 default:
-                    console.error(`Invalid route type ${routes[routeId].type}`);
+                    // console.error(`Invalid route type ${routes[routeId].type}`);
                     return null;
             }
         })
@@ -114,11 +127,12 @@ export default class Multiplexer extends React.PureComponent {
 
     render() {
         return (
-            <div className="chrono-main-content">
+            <div>
                 <Switch>
-                    { this.getRoutes() }
+                    {this.getRoutes()}
                 </Switch>
             </div>
         );
     }
 }
+export default withRouter(connect(mapStateToProps)(Multiplexer));
