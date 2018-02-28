@@ -15,43 +15,23 @@ import pathNames from './constants/pathNames';
 import { authenticatedSelector } from './redux';
 import views from './views';
 
+// TODO: move to some file
 interface RootState {
     domainData: object;
     auth: object;
 }
 
-interface RouteInfo {
-    type: string;
-    redirectTo?: string;
+enum ROUTE {
+    exclusivelyPublic = 'exclusively-public',
+    public = 'public',
+    private = 'private',
 }
-
 interface RoutesInfo {
-    [key: string]: RouteInfo;
+    [key: string]: {
+        type: string;
+        redirectTo?: string;
+    };
 }
-
-interface Enum {
-    [key: string]: string;
-}
-
-interface Props extends RouteComponentProps<{}>, React.Props<{}> {
-    authenticated: boolean;
-}
-
-const ROUTE: Enum = {
-    exclusivelyPublic: 'exclusively-public',
-    public: 'public',
-    private: 'private',
-};
-
-const routesOrder: string[] = [
-    // 'landing',
-    'login',
-    // 'register',
-
-    // 'team',
-    'workspace',
-];
-
 const routes: RoutesInfo = {
     login: {
         type: ROUTE.exclusivelyPublic,
@@ -61,19 +41,28 @@ const routes: RoutesInfo = {
         type: ROUTE.exclusivelyPublic,
         redirectTo: '/',
     },
-
     landing: { type: ROUTE.exclusivelyPublic },
     workspace: { type: ROUTE.private },
     team: { type: ROUTE.private },
 };
+const routesOrder: string[] = [
+    'login',
+    'workspace',
+];
+
+interface OwnProps extends RouteComponentProps<{}> {}
+interface PropsFromDispatch {}
+interface PropsFromState {
+    authenticated: boolean;
+}
+type Props = OwnProps & PropsFromState & PropsFromDispatch;
 
 const mapStateToProps = (state: RootState) => ({
     authenticated: authenticatedSelector(state),
 });
 
 class Multiplexer extends React.PureComponent<Props, {}> {
-
-    getRoutes = (): (JSX.Element|null)[] => (
+    renderRoutes = (): (JSX.Element|null)[] => (
         routesOrder.map((routeId) => {
             const viewComponent = views[routeId];
             const path: string = pathNames[routeId];
@@ -129,10 +118,10 @@ class Multiplexer extends React.PureComponent<Props, {}> {
         return (
             <div className="chrono-main-content">
                 <Switch>
-                    {this.getRoutes()}
+                    {this.renderRoutes()}
                 </Switch>
             </div>
         );
     }
 }
-export default withRouter(connect(mapStateToProps)(Multiplexer));
+export default withRouter(connect<PropsFromState, PropsFromDispatch, OwnProps>(mapStateToProps)(Multiplexer));
