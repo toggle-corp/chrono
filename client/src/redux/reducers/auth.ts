@@ -5,7 +5,7 @@ import update from '../../vendor/react-store/utils/immutable-update';
 import createReducerWithMap from '../../utils/createReducerWithMap';
 import schema from '../../schema';
 import initialAuthState from '../initial-state/auth';
-
+import { Auth, Token, ActiveUser } from '../interface';
 
 // TYPE
 
@@ -16,7 +16,7 @@ export const SET_ACCESS_TOKEN_ACTION = 'auth/SET_ACCESS_TOKEN';
 
 // ACTION-CREATOR
 
-export const loginAction = ({ access, refresh }) => ({
+export const loginAction = ({ access, refresh }: Token) => ({
     type: LOGIN_ACTION,
     access,
     refresh,
@@ -30,15 +30,14 @@ export const logoutAction = () => ({
     type: LOGOUT_ACTION,
 });
 
-export const setAccessTokenAction = access => ({
+export const setAccessTokenAction = (access: string) => ({
     type: SET_ACCESS_TOKEN_ACTION,
     access,
 });
 
 // HELPER
-
-const decodeAccessToken = (access) => {
-    const decodedToken = jwtDecode(access);
+const decodeAccessToken = (access: string) => {
+    const decodedToken: ActiveUser = jwtDecode(access);
     try {
         schema.validate(decodedToken, 'accessToken');
         return {
@@ -56,7 +55,7 @@ const decodeAccessToken = (access) => {
 
 // REDUCER
 
-const login = (state, action) => {
+const login = (state: Auth, action: { type: string, access: string, refresh: string}) => {
     const { access, refresh } = action;
     const decodedToken = decodeAccessToken(access);
     const settings = {
@@ -69,7 +68,7 @@ const login = (state, action) => {
     return update(state, settings);
 };
 
-const authenticate = (state) => {
+const authenticate = (state: Auth) => {
     const settings = {
         authenticated: { $set: true },
     };
@@ -78,7 +77,7 @@ const authenticate = (state) => {
 
 const logout = () => initialAuthState;
 
-const setAccessToken = (state, action) => {
+const setAccessToken = (state: Auth, action: { type: string, access: string }) => {
     const { access } = action;
     const decodedToken = decodeAccessToken(access);
     const settings = {
@@ -90,7 +89,11 @@ const setAccessToken = (state, action) => {
     return update(state, settings);
 };
 
-export const authReducers = {
+interface Reducers {
+    [key: string]: ((state: Auth, action: object) => Auth);
+}
+
+export const authReducers: Reducers = {
     [LOGIN_ACTION]: login,
     [AUTHENTICATE_ACTION]: authenticate,
     [LOGOUT_ACTION]: logout,

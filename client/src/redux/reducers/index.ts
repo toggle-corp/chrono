@@ -1,12 +1,12 @@
 import { persistCombineReducers } from 'redux-persist';
 
-import domainDataReducer from './domainData';
+// import domainDataReducer from './domainData';
 import authReducer from './auth';
 
 import storeConfig from '../../config/store';
 
 const reducers = {
-    domainData: domainDataReducer,
+    // domainData: domainDataReducer,
     auth: authReducer,
 };
 

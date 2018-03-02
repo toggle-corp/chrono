@@ -13,13 +13,8 @@ import ExclusivelyPublicRoute from './vendor/react-store/components/General/Excl
 import pathNames from './constants/pathNames';
 
 import { authenticatedSelector } from './redux';
+import { RootState } from './redux/interface';
 import views from './views';
-
-// TODO: move to some file
-interface RootState {
-    domainData: object;
-    auth: object;
-}
 
 enum ROUTE {
     exclusivelyPublic = 'exclusively-public',

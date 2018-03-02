@@ -1,4 +1,21 @@
-const tokenSchema = [];
+// TODO: get types for ravl later
+interface Schema {
+    doc?: {
+        name: string,
+        description?: string,
+        example?: object[],
+        note?: string,
+    };
+    fields?: object;
+    extends?: string;
+    validator?(obj: object, context: string): void;
+}
+interface MySchema {
+    name: string;
+    schema: Schema;
+}
+
+const tokenSchema: MySchema[] = [];
 
 {
     const name = 'accessToken';

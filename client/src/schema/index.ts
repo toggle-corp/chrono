@@ -3,12 +3,25 @@ import attachValidator from '../vendor/ravl/attachValidator';
 
 import token from './token';
 
+// TODO: get types for ravl later
+interface Schema {
+    doc: {
+        name: string,
+        description?: string,
+    };
+    fields: object;
+}
+interface MySchema {
+    name: string;
+    schema: Schema;
+}
+
 // ATTACHING BEHAVIORS
 attachValidator(dict);
 
 // ATTACHING USER DEFINED SCHEMAS
 
-const userDefinedSchemas = [];
+const userDefinedSchemas: MySchema[] = [];
 
 // TODO: add errorResponse and successResponse in RestRequest
 
