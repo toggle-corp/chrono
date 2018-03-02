@@ -1,6 +1,6 @@
 import React from 'react';
 
-import ViewManager from '../common/components/ViewManager';
+import ViewManager from '../components/ViewManager';
 
 const importers = {
     landing: () => import('./Landing'),

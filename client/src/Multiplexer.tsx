@@ -10,7 +10,7 @@ import { connect } from 'react-redux';
 import PrivateRoute from './vendor/react-store/components/General/PrivateRoute';
 import ExclusivelyPublicRoute from './vendor/react-store/components/General/ExclusivelyPublicRoute';
 
-import pathNames from './common/constants/pathNames';
+import pathNames from './constants/pathNames';
 
 import { authenticatedSelector } from './redux';
 import views from './views';
@@ -127,7 +127,7 @@ class Multiplexer extends React.PureComponent<Props, {}> {
 
     render() {
         return (
-            <div>
+            <div className="chrono-main-content">
                 <Switch>
                     {this.getRoutes()}
                 </Switch>
