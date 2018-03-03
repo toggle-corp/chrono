@@ -1,4 +1,6 @@
-const initialAuthState = {
+import { Auth } from '../interface';
+
+const initialAuthState: Auth = {
     authenticated: false,
 
     token: {

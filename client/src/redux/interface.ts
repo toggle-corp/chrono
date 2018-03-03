@@ -14,8 +14,11 @@ export interface Auth {
     activeUser: ActiveUser;
     authenticated: boolean;
 }
-
 export interface RootState {
     domainData: object;
     auth: Auth;
+}
+
+export interface ReducerGroup<T> {
+    [key: string]: ((state: T, action: object) => T);
 }

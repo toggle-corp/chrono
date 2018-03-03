@@ -1,15 +1,6 @@
-export * from './token';
+import { ErrorsFromServer, ErrorsFromForm } from './interface';
 
-export interface ErrorsIp {
-    [key: string]: string[];
-    nonFieldErrors: string[];
-}
-export interface ErrorsOp {
-    formFieldErrors: { [key: string]: string };
-    formErrors: string[];
-}
-
-export const transformResponseErrorToFormError = (errors: ErrorsIp): ErrorsOp => {
+export const transformResponseErrorToFormError = (errors: ErrorsFromServer): ErrorsFromForm => {
     const { nonFieldErrors: formErrors = [], ...formFieldErrorList } = errors;
     const formFieldErrors = Object.keys(formFieldErrorList).reduce(
         (acc, key) => {
@@ -20,3 +11,4 @@ export const transformResponseErrorToFormError = (errors: ErrorsIp): ErrorsOp =>
     );
     return { formFieldErrors, formErrors };
 };
+export * from './token';

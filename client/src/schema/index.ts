@@ -2,29 +2,13 @@ import dict from '../vendor/ravl/schema';
 import attachValidator from '../vendor/ravl/attachValidator';
 
 import token from './token';
+import { SchemaGroup } from './interface';
 
-// TODO: get types for ravl later
-interface Schema {
-    doc: {
-        name: string,
-        description?: string,
-    };
-    fields: object;
-}
-interface MySchema {
-    name: string;
-    schema: Schema;
-}
-
-// ATTACHING BEHAVIORS
+// Validator mixin
 attachValidator(dict);
 
 // ATTACHING USER DEFINED SCHEMAS
-
-const userDefinedSchemas: MySchema[] = [];
-
-// TODO: add errorResponse and successResponse in RestRequest
-
+const userDefinedSchemas: SchemaGroup  = [];
 {
     const name = 'dbentity';
     const schema = {
@@ -77,6 +61,8 @@ const userDefinedSchemas: MySchema[] = [];
 [
     ...userDefinedSchemas,
     ...token,
-].forEach(({ name, schema }) => dict.put(name, schema));
+].forEach(
+    ({ name, schema }) => dict.put(name, schema)
+);
 
 export default dict;

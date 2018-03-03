@@ -1,5 +1,5 @@
-// NOTE: Use these to make sure reference don't change
 import { RootState, Token, ActiveUser } from '../interface';
+
 const emptyObject = {};
 
 export const tokenSelector = ({ auth }: RootState): Token => (

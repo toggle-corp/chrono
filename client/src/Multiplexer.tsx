@@ -12,8 +12,8 @@ import ExclusivelyPublicRoute from './vendor/react-store/components/General/Excl
 
 import pathNames from './constants/pathNames';
 
-import { authenticatedSelector } from './redux';
 import { RootState } from './redux/interface';
+import { authenticatedSelector } from './redux';
 import views from './views';
 
 enum ROUTE {
@@ -21,13 +21,13 @@ enum ROUTE {
     public = 'public',
     private = 'private',
 }
-interface RoutesInfo {
+
+const routes: {
     [key: string]: {
         type: string;
         redirectTo?: string;
     };
-}
-const routes: RoutesInfo = {
+} = {
     login: {
         type: ROUTE.exclusivelyPublic,
         redirectTo: '/',
@@ -51,10 +51,6 @@ interface PropsFromState {
     authenticated: boolean;
 }
 type Props = OwnProps & PropsFromState & PropsFromDispatch;
-
-const mapStateToProps = (state: RootState) => ({
-    authenticated: authenticatedSelector(state),
-});
 
 class Multiplexer extends React.PureComponent<Props, {}> {
     renderRoutes = (): (JSX.Element|null)[] => (
@@ -119,4 +115,11 @@ class Multiplexer extends React.PureComponent<Props, {}> {
         );
     }
 }
-export default withRouter(connect<PropsFromState, PropsFromDispatch, OwnProps>(mapStateToProps)(Multiplexer));
+
+const mapStateToProps = (state: RootState) => ({
+    authenticated: authenticatedSelector(state),
+});
+
+export default withRouter(
+    connect<PropsFromState, PropsFromDispatch, OwnProps>(mapStateToProps)(Multiplexer)
+);

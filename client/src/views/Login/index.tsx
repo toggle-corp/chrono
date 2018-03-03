@@ -1,113 +1,63 @@
-/**
- * @author frozenhelium <fren.ankit@gmail.com>
- */
-
 import React from 'react';
 import Redux from 'redux';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 
-import {
-    FgRestBuilder,
-    RestRequest,
-} from '../../vendor/react-store/utils/rest';
 import { reverseRoute } from '../../vendor/react-store/utils/common';
 import LoadingAnimation from '../../vendor/react-store/components/View/LoadingAnimation';
 import NonFieldErrors from '../../vendor/react-store/components/Input/NonFieldErrors';
 import TextInput from '../../vendor/react-store/components/Input/TextInput';
 import PrimaryButton from '../../vendor/react-store/components/Action/Button/PrimaryButton';
+import { RestRequest } from '../../vendor/react-store/utils/rest';
 import Form, {
-    requiredCondition,
     emailCondition,
     lengthGreaterThanCondition,
+    requiredCondition,
 } from '../../vendor/react-store/components/Input/Form';
 
 import {
-    transformResponseErrorToFormError,
-    createParamsForTokenCreate,
-    urlForTokenCreate,
-    ErrorsIp,
-} from '../../rest';
+    ErrorsFromForm,
+    FormErrors,
+    FormFieldErrors,
+    FormValidationRules,
+    ValuesFromForm,
+} from '../../rest/interface';
 import {
-    loginAction,
     authenticateAction,
+    loginAction,
 } from '../../redux';
-import { startRefreshAction } from '../../redux/middlewares/refresher';
+import { RootState, Token } from '../../redux/interface';
 import { pathNames } from '../../constants';
-import schema from '../../schema';
-import { RootState } from '../..//redux/interface';
 
+import CreateTokenRequest from './requests/CreateTokenRequest';
 import styles from './styles.scss';
-
-interface LoginParams {
-    refresh: string;
-    access: string;
-}
-
-type formValue= any; // tslint:disable-line no-any
-type formError= any; // tslint:disable-line no-any
-type formFieldError= any; // tslint:disable-line no-any
-
-interface FormValue {
-    [key: string]: formValue;
-}
-
-interface FormFieldErrors {
-    [key: string]: formFieldError;
-}
-
-interface ValidationRule {
-    message: string;
-    truth(value: formValue): boolean;
-}
-
-interface Validations {
-    [key: string]: ValidationRule[];
-}
-
-interface RequestParams {
-    email: string;
-    password: string;
-}
-
-interface RequestResponse {
-    errors: ErrorsIp;
-    refresh: string;
-    access: string;
-}
 
 interface OwnProps {}
 interface PropsFromDispatch {
     authenticate(): void;
-    login(params: LoginParams): void;
-    startRefresh(): void;
+    login(params: Token): void;
 }
 interface PropsFromState {
 }
 type Props = OwnProps & PropsFromState & PropsFromDispatch;
 
 interface States {
-    pristine: boolean;
-    pending: boolean;
-    formValues: FormValue;
-    formErrors: formError[];
+    formErrors: FormErrors;
     formFieldErrors: FormFieldErrors;
+    formValues: ValuesFromForm;
+    pending: boolean;
+    pristine: boolean;
 }
 
-const defaultProps = {};
-
-const mapDispatchToProps = (dispatch: Redux.Dispatch<RootState>) => ({
-    authenticate: () => dispatch(authenticateAction()),
-    login: (params: LoginParams) => dispatch(loginAction(params)),
-    startRefresh: () => dispatch(startRefreshAction()),
-});
+interface AuthParams {
+    email: string;
+    password: string;
+}
 
 class Login extends React.PureComponent<Props, States> {
-    static defaultProps = defaultProps;
-
     elements: string[];
-    validations: Validations;
     userLoginRequest: RestRequest;
+    validations: FormValidationRules;
 
     constructor(props: Props) {
         super(props);
@@ -143,82 +93,43 @@ class Login extends React.PureComponent<Props, States> {
 
     // FORM RELATED
     changeCallback = (
-        values: FormValue,
-        { formErrors, formFieldErrors }: { formErrors: formError[], formFieldErrors: FormFieldErrors}
+        values: ValuesFromForm,
+        { formErrors, formFieldErrors }: ErrorsFromForm
     ) => {
         this.setState({
-            formValues: { ...this.state.formValues, ...values },
-            formFieldErrors: { ...this.state.formFieldErrors, ...formFieldErrors },
             formErrors,
+            formFieldErrors: { ...this.state.formFieldErrors, ...formFieldErrors },
+            formValues: { ...this.state.formValues, ...values },
             pristine: true,
         });
     }
 
     failureCallback = (
-        { formErrors, formFieldErrors }: { formErrors: formError[], formFieldErrors: FormFieldErrors }
+        { formErrors, formFieldErrors }: ErrorsFromForm
     ) => {
         this.setState({
-            formFieldErrors: { ...this.state.formFieldErrors, ...formFieldErrors },
             formErrors,
+            formFieldErrors: { ...this.state.formFieldErrors, ...formFieldErrors },
         });
     }
 
     // LOGIN ACTION on successCallback
-    successCallback = ({ email, password }: RequestParams) => {
+    successCallback = (
+        value: AuthParams
+    ) => {
         // Stop any retry action
         if (this.userLoginRequest) {
             this.userLoginRequest.stop();
         }
-        this.userLoginRequest = this.createRequestLogin({ email, password });
+        const request = new CreateTokenRequest(
+            this,
+            {
+                login: this.props.login,
+                authenticate: this.props.authenticate,
+            }
+        );
+        this.userLoginRequest = request.create(value);
         this.userLoginRequest.start();
-    }
-
-    // LOGIN REST API
-    createRequestLogin = ({ email, password }: RequestParams) => {
-        const userLoginRequest = new FgRestBuilder()
-            .url(urlForTokenCreate)
-            .params(createParamsForTokenCreate({
-                username: email,
-                password,
-            }))
-            .preLoad(() => {
-                this.setState({ pending: true, pristine: false });
-            })
-            .success((response: RequestResponse) => {
-                try {
-                    schema.validate(response, 'tokenGetResponse');
-                    const { refresh, access } = response;
-                    this.props.login({ refresh, access });
-
-                    // after setAccessToken, current user is verified
-                    this.props.startRefresh();
-                    this.props.authenticate();
-                    this.setState({ pending: false });
-                } catch (err) {
-                    console.error(err);
-                }
-            })
-            .failure((response: RequestResponse) => {
-                console.info('FAILURE:', response);
-                const {
-                    formFieldErrors,
-                    formErrors,
-                } = transformResponseErrorToFormError(response.errors);
-                this.setState({
-                    formFieldErrors,
-                    formErrors,
-                    pending: false,
-                });
-            })
-            .fatal((response: object) => {
-                console.info('FATAL:', response);
-                this.setState({
-                    formErrors: ['Error while trying to log in.'],
-                    pending: false,
-                });
-            })
-            .build();
-        return userLoginRequest;
     }
 
     render() {
@@ -233,31 +144,33 @@ class Login extends React.PureComponent<Props, States> {
             <div className={styles.login}>
                 <div className={styles.chronoContainer}>
                     <h2 className={styles.heading}>
-                        <small>Welcome To Chrono</small><br />
+                        <small>
+                            Welcome To Chrono
+                        </small>
+                        <br />
                     </h2>
                 </div>
                 <div className={styles.loginFormContainer}>
                     <Form
                         className={styles.loginForm}
-                        changeCallback={this.changeCallback}
                         elements={this.elements}
-                        failureCallback={this.failureCallback}
-                        successCallback={this.successCallback}
                         validations={this.validations}
                         value={formValues}
                         error={formFieldErrors}
+                        changeCallback={this.changeCallback}
+                        successCallback={this.successCallback}
+                        failureCallback={this.failureCallback}
+                        disabled={pending}
                     >
                         {pending && <LoadingAnimation />}
                         <NonFieldErrors errors={formErrors} />
                         <TextInput
-                            disabled={pending}
                             formname="email"
                             label="Email"
                             placeholder="john.doe@mail.com"
                             autoFocus
                         />
                         <TextInput
-                            disabled={pending}
                             formname="password"
                             label="Password"
                             placeholder="**********"
@@ -265,13 +178,15 @@ class Login extends React.PureComponent<Props, States> {
                             type="password"
                         />
                         <div className={styles.actionButtons}>
-                            <PrimaryButton disabled={pending}>
+                            <PrimaryButton>
                                 Login
                             </PrimaryButton>
                         </div>
                     </Form>
                     <div className={styles.registerLinkContainer}>
-                        <p>No Account Yet ?</p>
+                        <p>
+                            No Account Yet ?
+                        </p>
                         <Link
                             className={styles.registerLink}
                             to={reverseRoute(pathNames.register, {})}
@@ -284,5 +199,10 @@ class Login extends React.PureComponent<Props, States> {
         );
     }
 }
+
+const mapDispatchToProps = (dispatch: Redux.Dispatch<RootState>) => ({
+    authenticate: () => dispatch(authenticateAction()),
+    login: (params: Token) => dispatch(loginAction(params)),
+});
 
 export default connect<PropsFromState, PropsFromDispatch, OwnProps>(undefined, mapDispatchToProps)(Login);

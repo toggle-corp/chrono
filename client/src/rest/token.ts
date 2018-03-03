@@ -3,13 +3,7 @@ import {
     Rest,
     commonHeaderForPost,
 } from '../config/rest';
-
-// TODO: move somewhere
-interface RestBody {
-    method: string;
-    headers: object;
-    body: string;
-}
+import { RestBody } from './interface';
 
 export const urlForTokenCreate: string = `${wsEndpoint}/token/`;
 export const createParamsForTokenCreate = (

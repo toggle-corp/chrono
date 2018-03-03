@@ -1,41 +1,44 @@
 import jwtDecode from 'jwt-decode';
 
 import update from '../../vendor/react-store/utils/immutable-update';
-
 import createReducerWithMap from '../../utils/createReducerWithMap';
-import schema from '../../schema';
+
+import { Auth, Token, ActiveUser, ReducerGroup } from '../interface';
 import initialAuthState from '../initial-state/auth';
-import { Auth, Token, ActiveUser } from '../interface';
+import schema from '../../schema';
 
-// TYPE
+// ACTION-TYPE
 
-export const LOGIN_ACTION = 'auth/LOGIN';
-export const LOGOUT_ACTION = 'auth/LOGOUT';
-export const AUTHENTICATE_ACTION = 'auth/AUTHENTICATE_ACTION';
-export const SET_ACCESS_TOKEN_ACTION = 'auth/SET_ACCESS_TOKEN';
+export const enum AUTH_ACTION {
+    login = 'AUTH/login',
+    logout = 'AUTH/logout',
+    authenticate = 'AUTH/logout',
+    setAccessToken = 'AUTH/setAccessToken',
+}
 
 // ACTION-CREATOR
 
 export const loginAction = ({ access, refresh }: Token) => ({
-    type: LOGIN_ACTION,
+    type: AUTH_ACTION.login,
     access,
     refresh,
 });
 
 export const authenticateAction = () => ({
-    type: AUTHENTICATE_ACTION,
+    type: AUTH_ACTION.authenticate,
 });
 
 export const logoutAction = () => ({
-    type: LOGOUT_ACTION,
+    type: AUTH_ACTION.logout,
 });
 
 export const setAccessTokenAction = (access: string) => ({
-    type: SET_ACCESS_TOKEN_ACTION,
+    type: AUTH_ACTION.setAccessToken,
     access,
 });
 
 // HELPER
+
 const decodeAccessToken = (access: string) => {
     const decodedToken: ActiveUser = jwtDecode(access);
     try {
@@ -89,16 +92,10 @@ const setAccessToken = (state: Auth, action: { type: string, access: string }) =
     return update(state, settings);
 };
 
-interface Reducers {
-    [key: string]: ((state: Auth, action: object) => Auth);
-}
-
-export const authReducers: Reducers = {
-    [LOGIN_ACTION]: login,
-    [AUTHENTICATE_ACTION]: authenticate,
-    [LOGOUT_ACTION]: logout,
-    [SET_ACCESS_TOKEN_ACTION]: setAccessToken,
+export const authReducers: ReducerGroup<Auth> = {
+    [AUTH_ACTION.login]: login,
+    [AUTH_ACTION.authenticate]: authenticate,
+    [AUTH_ACTION.logout]: logout,
+    [AUTH_ACTION.setAccessToken]: setAccessToken,
 };
-
-const authReducer = createReducerWithMap(authReducers, initialAuthState);
-export default authReducer;
+export default createReducerWithMap(authReducers, initialAuthState);

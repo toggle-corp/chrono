@@ -1,12 +1,12 @@
 import { RestRequest } from '../vendor/react-store/utils/rest';
+import { RestHeader, RestAuthorizationHeader } from '../rest/interface';
 
-// Alias for prepareQueryParams
-interface Fn {
+// Just an alias for prepareQueryParams
+export const p: {
     (value: {[key: string]: (string | number | (string | number)[])}): string;
-}
-export const p: Fn = RestRequest.prepareUrlParams;
+} = RestRequest.prepareUrlParams;
 
-// FIXME: write comments
+// FIXME: write comment for this statement
 const reactAppApiHttps: (string | undefined) = location.protocol === 'https:'
     ? 'https'
     : process.env.REACT_APP_API_HTTPS;
@@ -19,37 +19,23 @@ export const adminEndpoint: string = !process.env.REACT_APP_ADMIN_END
     ? 'http://localhost:8000/admin/'
     : `${reactAppApiHttps}://${process.env.REACT_APP_ADMIN_END}/admin/`;
 
+// Available rest methods
 export enum Rest {
     POST = 'POST',
     GET = 'GET',
     PUT = 'PUT',
     PATCH = 'PATCH',
+    DELETE = 'DELETE',
 }
 
-/*
-export const POST = 'POST';
-export const GET = 'GET';
-export const PUT = 'PUT';
-export const DELETE = 'DELETE';
-export const PATCH = 'PATCH';
-*/
-
-interface Headers {
-    Accept: string;
-    'Content-Type': string;
-    Authorization?: string;
-}
-interface AuthorizationHeaders {
-    Authorization?: string;
-}
-
-export const commonHeaderForPostExternal: Headers = {
+// NOTE: These are modified in runtime
+export const commonHeaderForPostExternal: RestHeader = {
     Accept: 'application/json',
     'Content-Type': 'application/json',
 };
-export const commonHeaderForPost: Headers = {
+export const commonHeaderForPost: RestHeader = {
     Accept: 'application/json',
     'Content-Type': 'application/json',
 };
-export const authorizationHeaderForPost: AuthorizationHeaders = {
+export const authorizationHeaderForPost: RestAuthorizationHeader = {
 };

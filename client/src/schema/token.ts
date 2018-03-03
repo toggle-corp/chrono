@@ -1,21 +1,6 @@
-// TODO: get types for ravl later
-interface Schema {
-    doc?: {
-        name: string,
-        description?: string,
-        example?: object[],
-        note?: string,
-    };
-    fields?: object;
-    extends?: string;
-    validator?(obj: object, context: string): void;
-}
-interface MySchema {
-    name: string;
-    schema: Schema;
-}
+import { SchemaGroup } from './interface';
 
-const tokenSchema: MySchema[] = [];
+const tokenSchema: SchemaGroup = [];
 
 {
     const name = 'accessToken';
