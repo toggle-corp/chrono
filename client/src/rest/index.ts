@@ -1,10 +1,10 @@
 export * from './token';
 
-interface ErrorsIp {
+export interface ErrorsIp {
     [key: string]: string[];
     nonFieldErrors: string[];
 }
-interface ErrorsOp {
+export interface ErrorsOp {
     formFieldErrors: { [key: string]: string };
     formErrors: string[];
 }

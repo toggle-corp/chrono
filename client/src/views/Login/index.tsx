@@ -26,6 +26,7 @@ import {
     transformResponseErrorToFormError,
     createParamsForTokenCreate,
     urlForTokenCreate,
+    ErrorsIp,
 } from '../../rest';
 import {
     loginAction,
@@ -34,6 +35,7 @@ import {
 import { startRefreshAction } from '../../redux/middlewares/refresher';
 import { pathNames } from '../../constants';
 import schema from '../../schema';
+import { RootState } from '../..//redux/interface';
 
 import styles from './styles.scss';
 
@@ -45,11 +47,6 @@ interface LoginParams {
 type formValue= any; // tslint:disable-line no-any
 type formError= any; // tslint:disable-line no-any
 type formFieldError= any; // tslint:disable-line no-any
-
-interface RootState {
-    domainData: object;
-    auth: object;
-}
 
 interface FormValue {
     [key: string]: formValue;
@@ -74,16 +71,20 @@ interface RequestParams {
 }
 
 interface RequestResponse {
-    errors: string[];
+    errors: ErrorsIp;
     refresh: string;
     access: string;
 }
 
-interface Props extends React.Props<{}> {
+interface OwnProps {}
+interface PropsFromDispatch {
     authenticate(): void;
     login(params: LoginParams): void;
     startRefresh(): void;
 }
+interface PropsFromState {
+}
+type Props = OwnProps & PropsFromState & PropsFromDispatch;
 
 interface States {
     pristine: boolean;
@@ -284,4 +285,4 @@ class Login extends React.PureComponent<Props, States> {
     }
 }
 
-export default connect<Props>(undefined, mapDispatchToProps)(Login);
+export default connect<PropsFromState, PropsFromDispatch, OwnProps>(undefined, mapDispatchToProps)(Login);
