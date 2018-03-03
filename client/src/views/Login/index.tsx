@@ -2,14 +2,14 @@
  * @author frozenhelium <fren.ankit@gmail.com>
  */
 
-import CSSModules from 'react-css-modules';
-import PropTypes from 'prop-types';
 import React from 'react';
+import Redux from 'redux';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 
 import {
     FgRestBuilder,
+    RestRequest,
 } from '../../vendor/react-store/utils/rest';
 import { reverseRoute } from '../../vendor/react-store/utils/common';
 import LoadingAnimation from '../../vendor/react-store/components/View/LoadingAnimation';
@@ -32,33 +32,83 @@ import {
     authenticateAction,
 } from '../../redux';
 import { startRefreshAction } from '../../redux/middlewares/refresher';
-import pathNames from '../../common/constants/pathNames';
+import { pathNames } from '../../constants';
 import schema from '../../schema';
 
 import styles from './styles.scss';
 
-const propTypes = {
-    authenticate: PropTypes.func.isRequired,
-    login: PropTypes.func.isRequired,
-    startRefresh: PropTypes.func.isRequired,
-};
+interface LoginParams {
+    refresh: string;
+    access: string;
+}
 
-const defaultProps = {
-};
+type formValue= any; // tslint:disable-line no-any
+type formError= any; // tslint:disable-line no-any
+type formFieldError= any; // tslint:disable-line no-any
 
-const mapDispatchToProps = dispatch => ({
+interface RootState {
+    domainData: object;
+    auth: object;
+}
+
+interface FormValue {
+    [key: string]: formValue;
+}
+
+interface FormFieldErrors {
+    [key: string]: formFieldError;
+}
+
+interface ValidationRule {
+    message: string;
+    truth(value: formValue): boolean;
+}
+
+interface Validations {
+    [key: string]: ValidationRule[];
+}
+
+interface RequestParams {
+    email: string;
+    password: string;
+}
+
+interface RequestResponse {
+    errors: string[];
+    refresh: string;
+    access: string;
+}
+
+interface Props extends React.Props<{}> {
+    authenticate(): void;
+    login(params: LoginParams): void;
+    startRefresh(): void;
+}
+
+interface States {
+    pristine: boolean;
+    pending: boolean;
+    formValues: FormValue;
+    formErrors: formError[];
+    formFieldErrors: FormFieldErrors;
+}
+
+const defaultProps = {};
+
+const mapDispatchToProps = (dispatch: Redux.Dispatch<RootState>) => ({
     authenticate: () => dispatch(authenticateAction()),
-    login: params => dispatch(loginAction(params)),
-    startRefresh: params => dispatch(startRefreshAction(params)),
+    login: (params: LoginParams) => dispatch(loginAction(params)),
+    startRefresh: () => dispatch(startRefreshAction()),
 });
 
-@connect(undefined, mapDispatchToProps)
-@CSSModules(styles, { allowMultiple: true })
-export default class Login extends React.PureComponent {
-    static propTypes = propTypes;
+class Login extends React.PureComponent<Props, States> {
     static defaultProps = defaultProps;
 
-    constructor(props) {
+    elements: string[];
+    validations: Validations;
+    userLoginRequest: RestRequest;
+
+    constructor(props: Props) {
         super(props);
 
         this.state = {
@@ -67,8 +117,6 @@ export default class Login extends React.PureComponent {
             formValues: {},
             pending: false,
             pristine: false,
-
-            uploadedFiles: [],
         };
 
         // Data for form elements
@@ -93,53 +141,49 @@ export default class Login extends React.PureComponent {
     }
 
     // FORM RELATED
-    changeCallback = (values, { formErrors, formFieldErrors }) => {
+    changeCallback = (
+        values: FormValue,
+        { formErrors, formFieldErrors }: { formErrors: formError[], formFieldErrors: FormFieldErrors}
+    ) => {
         this.setState({
             formValues: { ...this.state.formValues, ...values },
             formFieldErrors: { ...this.state.formFieldErrors, ...formFieldErrors },
             formErrors,
             pristine: true,
         });
-    };
+    }
 
-    failureCallback = ({ formErrors, formFieldErrors }) => {
+    failureCallback = (
+        { formErrors, formFieldErrors }: { formErrors: formError[], formFieldErrors: FormFieldErrors }
+    ) => {
         this.setState({
             formFieldErrors: { ...this.state.formFieldErrors, ...formFieldErrors },
             formErrors,
         });
-    };
+    }
 
-    successCallback = ({ email, password }) => {
-        const url = urlForTokenCreate;
-        const params = createParamsForTokenCreate({
-            username: email,
-            password,
-        });
-        this.login({ url, params });
-    };
-
-    // LOGIN ACTION
-
-    login = ({ url, params }) => {
+    // LOGIN ACTION on successCallback
+    successCallback = ({ email, password }: RequestParams) => {
         // Stop any retry action
         if (this.userLoginRequest) {
             this.userLoginRequest.stop();
         }
-        this.userLoginRequest = this.createRequestLogin(url, params);
-
+        this.userLoginRequest = this.createRequestLogin({ email, password });
         this.userLoginRequest.start();
-    };
+    }
 
     // LOGIN REST API
-
-    createRequestLogin = (url, params) => {
+    createRequestLogin = ({ email, password }: RequestParams) => {
         const userLoginRequest = new FgRestBuilder()
-            .url(url)
-            .params(params)
+            .url(urlForTokenCreate)
+            .params(createParamsForTokenCreate({
+                username: email,
+                password,
+            }))
             .preLoad(() => {
                 this.setState({ pending: true, pristine: false });
             })
-            .success((response) => {
+            .success((response: RequestResponse) => {
                 try {
                     schema.validate(response, 'tokenGetResponse');
                     const { refresh, access } = response;
@@ -153,7 +197,7 @@ export default class Login extends React.PureComponent {
                     console.error(err);
                 }
             })
-            .failure((response) => {
+            .failure((response: RequestResponse) => {
                 console.info('FAILURE:', response);
                 const {
                     formFieldErrors,
@@ -165,7 +209,7 @@ export default class Login extends React.PureComponent {
                     pending: false,
                 });
             })
-            .fatal((response) => {
+            .fatal((response: object) => {
                 console.info('FATAL:', response);
                 this.setState({
                     formErrors: ['Error while trying to log in.'],
@@ -185,15 +229,15 @@ export default class Login extends React.PureComponent {
         } = this.state;
 
         return (
-            <div styleName="login">
-                <div styleName="chrono-container">
-                    <h2 styleName="heading">
+            <div className={styles.login}>
+                <div className={styles.chronoContainer}>
+                    <h2 className={styles.heading}>
                         <small>Welcome To Chrono</small><br />
                     </h2>
                 </div>
-                <div styleName="login-form-container">
+                <div className={styles.loginFormContainer}>
                     <Form
-                        styleName="login-form"
+                        className={styles.loginForm}
                         changeCallback={this.changeCallback}
                         elements={this.elements}
                         failureCallback={this.failureCallback}
@@ -202,13 +246,12 @@ export default class Login extends React.PureComponent {
                         value={formValues}
                         error={formFieldErrors}
                     >
-                        { pending && <LoadingAnimation /> }
+                        {pending && <LoadingAnimation />}
                         <NonFieldErrors errors={formErrors} />
                         <TextInput
                             disabled={pending}
                             formname="email"
                             label="Email"
-                            // FIXME: use strings
                             placeholder="john.doe@mail.com"
                             autoFocus
                         />
@@ -216,21 +259,20 @@ export default class Login extends React.PureComponent {
                             disabled={pending}
                             formname="password"
                             label="Password"
-                            // FIXME: use strings
                             placeholder="**********"
                             required
                             type="password"
                         />
-                        <div styleName="action-buttons">
+                        <div className={styles.actionButtons}>
                             <PrimaryButton disabled={pending}>
                                 Login
                             </PrimaryButton>
                         </div>
                     </Form>
-                    <div styleName="register-link-container">
+                    <div className={styles.registerLinkContainer}>
                         <p>No Account Yet ?</p>
                         <Link
-                            styleName="register-link"
+                            className={styles.registerLink}
                             to={reverseRoute(pathNames.register, {})}
                         >
                             Register
@@ -241,3 +283,5 @@ export default class Login extends React.PureComponent {
         );
     }
 }
+
+export default connect<Props>(undefined, mapDispatchToProps)(Login);

@@ -5,13 +5,12 @@ import {
 } from '../config/rest';
 
 export const urlForTokenCreate = `${wsEndpoint}/token/`;
-export const createParamsForTokenCreate = ({ username, password, recaptchaResponse }) => ({
+export const createParamsForTokenCreate = ({ username, password }) => ({
     method: POST,
     headers: commonHeaderForPost,
     body: JSON.stringify({
         username,
         password,
-        recaptchaResponse,
     }),
 });
 

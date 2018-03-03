@@ -1,6 +1,6 @@
 import React from 'react';
 
-import Bundle from '../../vendor/react-store/components/General/Bundle';
+import Bundle from '../vendor/react-store/components/General/Bundle';
 
 export default class ViewManager extends React.PureComponent {
     componentWillMount() {
