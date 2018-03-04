@@ -1,44 +1,46 @@
 import jwtDecode from 'jwt-decode';
 
 import update from '../../vendor/react-store/utils/immutable-update';
-
 import createReducerWithMap from '../../utils/createReducerWithMap';
-import schema from '../../schema';
+
+import { Auth, Token, ActiveUser, ReducerGroup } from '../interface';
 import initialAuthState from '../initial-state/auth';
+import schema from '../../schema';
 
+// ACTION-TYPE
 
-// TYPE
-
-export const LOGIN_ACTION = 'auth/LOGIN';
-export const LOGOUT_ACTION = 'auth/LOGOUT';
-export const AUTHENTICATE_ACTION = 'auth/AUTHENTICATE_ACTION';
-export const SET_ACCESS_TOKEN_ACTION = 'auth/SET_ACCESS_TOKEN';
+export const enum AUTH_ACTION {
+    login = 'AUTH/login',
+    logout = 'AUTH/logout',
+    authenticate = 'AUTH/logout',
+    setAccessToken = 'AUTH/setAccessToken',
+}
 
 // ACTION-CREATOR
 
-export const loginAction = ({ access, refresh }) => ({
-    type: LOGIN_ACTION,
+export const loginAction = ({ access, refresh }: Token) => ({
+    type: AUTH_ACTION.login,
     access,
     refresh,
 });
 
 export const authenticateAction = () => ({
-    type: AUTHENTICATE_ACTION,
+    type: AUTH_ACTION.authenticate,
 });
 
 export const logoutAction = () => ({
-    type: LOGOUT_ACTION,
+    type: AUTH_ACTION.logout,
 });
 
-export const setAccessTokenAction = access => ({
-    type: SET_ACCESS_TOKEN_ACTION,
+export const setAccessTokenAction = (access: string) => ({
+    type: AUTH_ACTION.setAccessToken,
     access,
 });
 
 // HELPER
 
-const decodeAccessToken = (access) => {
-    const decodedToken = jwtDecode(access);
+const decodeAccessToken = (access: string) => {
+    const decodedToken: ActiveUser = jwtDecode(access);
     try {
         schema.validate(decodedToken, 'accessToken');
         return {
@@ -56,7 +58,7 @@ const decodeAccessToken = (access) => {
 
 // REDUCER
 
-const login = (state, action) => {
+const login = (state: Auth, action: { type: string, access: string, refresh: string}) => {
     const { access, refresh } = action;
     const decodedToken = decodeAccessToken(access);
     const settings = {
@@ -69,7 +71,7 @@ const login = (state, action) => {
     return update(state, settings);
 };
 
-const authenticate = (state) => {
+const authenticate = (state: Auth) => {
     const settings = {
         authenticated: { $set: true },
     };
@@ -78,7 +80,7 @@ const authenticate = (state) => {
 
 const logout = () => initialAuthState;
 
-const setAccessToken = (state, action) => {
+const setAccessToken = (state: Auth, action: { type: string, access: string }) => {
     const { access } = action;
     const decodedToken = decodeAccessToken(access);
     const settings = {
@@ -90,12 +92,10 @@ const setAccessToken = (state, action) => {
     return update(state, settings);
 };
 
-export const authReducers = {
-    [LOGIN_ACTION]: login,
-    [AUTHENTICATE_ACTION]: authenticate,
-    [LOGOUT_ACTION]: logout,
-    [SET_ACCESS_TOKEN_ACTION]: setAccessToken,
+export const authReducers: ReducerGroup<Auth> = {
+    [AUTH_ACTION.login]: login,
+    [AUTH_ACTION.authenticate]: authenticate,
+    [AUTH_ACTION.logout]: logout,
+    [AUTH_ACTION.setAccessToken]: setAccessToken,
 };
-
-const authReducer = createReducerWithMap(authReducers, initialAuthState);
-export default authReducer;
+export default createReducerWithMap(authReducers, initialAuthState);

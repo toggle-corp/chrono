@@ -1,4 +1,6 @@
-const tokenSchema = [];
+import { SchemaGroup } from './interface';
+
+const tokenSchema: SchemaGroup = [];
 
 {
     const name = 'accessToken';
