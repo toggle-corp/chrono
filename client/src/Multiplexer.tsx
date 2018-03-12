@@ -7,6 +7,7 @@ import {
 } from 'react-router-dom';
 import { connect } from 'react-redux';
 
+import ViewManager from './components/ViewManager';
 import PrivateRoute from './vendor/react-store/components/General/PrivateRoute';
 import ExclusivelyPublicRoute from './vendor/react-store/components/General/ExclusivelyPublicRoute';
 
@@ -14,7 +15,7 @@ import pathNames from './constants/pathNames';
 
 import { RootState } from './redux/interface';
 import { authenticatedSelector } from './redux';
-import views from './views';
+// import views from './views';
 
 enum ROUTE {
     exclusivelyPublic = 'exclusively-public',
@@ -40,10 +41,28 @@ const routes: {
     workspace: { type: ROUTE.private },
     team: { type: ROUTE.private },
 };
+
 const routesOrder: string[] = [
     'login',
     'workspace',
 ];
+
+const loaders = {
+    login: () => import('./views/Login'),
+    workspace: () => import('./views/Workspace'),
+};
+
+const views = {};
+Object.keys(loaders).forEach((key) => {
+    const loader = loaders[key]; // tslint:disable-line no-any
+
+    views[key] = (props: object) => (
+        <ViewManager
+            {...props}
+            load={loader}
+        />
+    );
+});
 
 interface OwnProps extends RouteComponentProps<{}> {}
 interface PropsFromDispatch {}
@@ -73,9 +92,10 @@ class Multiplexer extends React.PureComponent<Props, {}> {
                             component={viewComponent}
                             key={routeId}
                             path={path}
+                            exact={true}
+
                             authenticated={authenticated}
                             redirectLink={redirectTo}
-                            exact={true}
                         />
                     );
                 case ROUTE.private:
@@ -84,9 +104,10 @@ class Multiplexer extends React.PureComponent<Props, {}> {
                             component={viewComponent}
                             key={routeId}
                             path={path}
+                            exact={true}
+
                             authenticated={authenticated}
                             redirectLink={redirectTo}
-                            exact={true}
                         />
                     );
                 case ROUTE.public:
