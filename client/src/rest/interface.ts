@@ -16,18 +16,23 @@ export interface RestAuthorizationHeader {
     Authorization?: string;
 }
 
-export interface FormValidationRule {
+export interface FormConditionFnRule {
     message: string;
     truth(value: any): boolean; // tslint:disable-line no-any
 }
-export interface FormValidationRules {
-    [key: string]: FormValidationRule[];
+export interface FormConditionFnRules {
+    [key: string]: FormConditionFnRule[];
 }
 
 export interface FormFieldErrors {
-    [key: string]: string;
+    [key: string]: string | undefined | FormFieldErrors;
 }
-export type FormErrors = string[];
+export type FormErrors = {
+    errors?: (string | undefined)[] | undefined,
+    fields?: {
+        [key: string]: (undefined | FormErrors);
+    },
+};
 
 export interface ErrorsFromForm {
     formFieldErrors: FormFieldErrors;
@@ -42,3 +47,23 @@ export interface ErrorsFromServer {
     [key: string]: string[];
     nonFieldErrors: string[];
 }
+
+// tslint:disable-next-line no-any
+type ConditionFn = (value: any) => { ok: boolean, message?: string };
+type ConditionFns = ConditionFn[];
+// tslint:disable-next-line no-any
+type ValidationFn = (value: any) => string[];
+
+interface ObjectSchema {
+    validation?: ValidationFn;
+    fields: {
+        [key: string]: ObjectSchema | ConditionFns;
+    };
+}
+
+interface ArraySchema {
+    validation?: ValidationFn;
+    members: ArraySchema | ObjectSchema | ConditionFns;
+}
+
+export type Schema = ArraySchema | ObjectSchema | ConditionFns;

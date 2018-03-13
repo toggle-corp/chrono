@@ -16,11 +16,10 @@ import Form, {
 } from '../../vendor/react-store/components/Input/Form';
 
 import {
-    ErrorsFromForm,
     FormErrors,
     FormFieldErrors,
-    FormValidationRules,
     ValuesFromForm,
+    Schema,
 } from '../../rest/interface';
 import {
     authenticateAction,
@@ -55,33 +54,31 @@ interface AuthParams {
 }
 
 class Login extends React.PureComponent<Props, States> {
-    elements: string[];
     userLoginRequest: RestRequest;
-    validations: FormValidationRules;
+    schema: Schema;
 
     constructor(props: Props) {
         super(props);
 
         this.state = {
-            formErrors: [],
+            formErrors: {},
             formFieldErrors: {},
             formValues: {},
             pending: false,
             pristine: false,
         };
 
-        // Data for form elements
-        this.elements = ['email', 'password'];
-
-        this.validations = {
-            email: [
-                requiredCondition,
-                emailCondition,
-            ],
-            password: [
-                requiredCondition,
-                lengthGreaterThanCondition(4),
-            ],
+        this.schema = {
+            fields: {
+                email: [
+                    requiredCondition,
+                    emailCondition,
+                ],
+                password: [
+                    requiredCondition,
+                    lengthGreaterThanCondition(4),
+                ],
+            },
         };
     }
 
@@ -92,21 +89,16 @@ class Login extends React.PureComponent<Props, States> {
     }
 
     // FORM RELATED
-    changeCallback = (
-        values: ValuesFromForm,
-        { formErrors, formFieldErrors }: ErrorsFromForm
-    ) => {
+    changeCallback = (values: AuthParams, formFieldErrors: FormFieldErrors, formErrors: FormErrors) => {
         this.setState({
             formErrors,
-            formFieldErrors: { ...this.state.formFieldErrors, ...formFieldErrors },
-            formValues: { ...this.state.formValues, ...values },
+            formFieldErrors,
+            formValues: values,
             pristine: true,
         });
     }
 
-    failureCallback = (
-        { formErrors, formFieldErrors }: ErrorsFromForm
-    ) => {
+    failureCallback = (formFieldErrors: FormFieldErrors, formErrors: FormErrors) => {
         this.setState({
             formErrors,
             formFieldErrors: { ...this.state.formFieldErrors, ...formFieldErrors },
@@ -114,9 +106,7 @@ class Login extends React.PureComponent<Props, States> {
     }
 
     // LOGIN ACTION on successCallback
-    successCallback = (
-        value: AuthParams
-    ) => {
+    successCallback = (value: AuthParams) => {
         // Stop any retry action
         if (this.userLoginRequest) {
             this.userLoginRequest.stop();
@@ -134,7 +124,7 @@ class Login extends React.PureComponent<Props, States> {
 
     render() {
         const {
-            formErrors = [],
+            formErrors,
             formFieldErrors,
             formValues,
             pending,
@@ -153,17 +143,17 @@ class Login extends React.PureComponent<Props, States> {
                 <div className={styles.loginFormContainer}>
                     <Form
                         className={styles.loginForm}
-                        elements={this.elements}
-                        validations={this.validations}
+                        schema={this.schema}
                         value={formValues}
-                        error={formFieldErrors}
+                        formErrors={formErrors}
+                        fieldErrors={formFieldErrors}
                         changeCallback={this.changeCallback}
                         successCallback={this.successCallback}
                         failureCallback={this.failureCallback}
                         disabled={pending}
                     >
                         {pending && <LoadingAnimation />}
-                        <NonFieldErrors errors={formErrors} />
+                        <NonFieldErrors formerror="" />
                         <TextInput
                             formname="email"
                             label="Email"

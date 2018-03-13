@@ -6,18 +6,19 @@ export const p: {
     (value: {[key: string]: (string | number | (string | number)[])}): string;
 } = RestRequest.prepareUrlParams;
 
-// FIXME: write comment for this statement
-const reactAppApiHttps: (string | undefined) = location.protocol === 'https:'
+// if client is secure, server must be secure
+// else use whatever server is using
+const clientProtocol = location.protocol;
+const serverProtocol = process.env.REACT_APP_API_HTTPS;
+const protocol: (string | undefined) = clientProtocol === 'https:'
     ? 'https'
-    : process.env.REACT_APP_API_HTTPS;
+    : serverProtocol;
 
-export const wsEndpoint: string  = !process.env.REACT_APP_API_END
-    ? 'http://localhost:8000/api/v1'
-    : `${reactAppApiHttps}://${process.env.REACT_APP_API_END}/api/v1`;
+const serverEndpoint = process.env.REACT_APP_API_END;
+const url = serverEndpoint || 'localhost:8000';
 
-export const adminEndpoint: string = !process.env.REACT_APP_ADMIN_END
-    ? 'http://localhost:8000/admin/'
-    : `${reactAppApiHttps}://${process.env.REACT_APP_ADMIN_END}/admin/`;
+export const wsEndpoint: string  = `${protocol}://${url}/api/v1`;
+export const adminEndpoint: string = `${protocol}://${url}/admin/`;
 
 // Available rest methods
 export enum Rest {
