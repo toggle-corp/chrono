@@ -3,6 +3,7 @@ import {
     FgRestBuilder,
 } from '../../../vendor/react-store/utils/rest';
 
+import { Login } from '../index';
 import { Token } from '../../../redux/interface';
 import {
     createParamsForTokenCreate,
@@ -23,18 +24,15 @@ interface AuthParams {
 }
 
 interface Props {
+    setState: Login['setState'];
     login(params: Token): void;
     authenticate(): void;
 }
 
 export default class CreateTokenRequest implements Request<AuthParams> {
-    setState: (value: object) => void;
     props: Props;
 
-    constructor(mother: React.Component, props: Props) {
-        this.setState = (value) => {
-            mother.setState(value);
-        };
+    constructor(props: Props) {
         this.props = props;
     }
 
@@ -47,7 +45,7 @@ export default class CreateTokenRequest implements Request<AuthParams> {
                 username: email,
             }))
             .preLoad(() => {
-                this.setState({ pending: true, pristine: false });
+                this.props.setState({ pending: true, pristine: false });
             })
             .success((response: { access: string, refresh: string }) => {
                 try {
@@ -56,27 +54,25 @@ export default class CreateTokenRequest implements Request<AuthParams> {
                     this.props.login({ refresh, access });
                     // TODO: call refresher here
                     this.props.authenticate();
-                    this.setState({ pending: false });
+                    this.props.setState({ pending: false });
                 } catch (err) {
                     console.error(err);
                 }
             })
             .failure((response: { errors: ErrorsFromServer } ) => {
-                console.info('FAILURE:', response);
                 const {
                     formFieldErrors,
                     formErrors,
                 } = transformResponseErrorToFormError(response.errors);
-                this.setState({
+                this.props.setState({
                     formErrors,
                     formFieldErrors,
                     pending: false,
                 });
             })
             .fatal((response: object) => {
-                console.info('FATAL:', response);
-                this.setState({
-                    formErrors: ['Error while trying to log in.'],
+                this.props.setState({
+                    formErrors: { errors: ['Some error occured.'] },
                     pending: false,
                 });
             })

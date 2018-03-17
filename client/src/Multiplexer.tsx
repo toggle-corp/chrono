@@ -33,23 +33,20 @@ const routes: {
         type: ROUTE.exclusivelyPublic,
         redirectTo: '/',
     },
-    register: {
-        type: ROUTE.exclusivelyPublic,
-        redirectTo: '/',
-    },
-    landing: { type: ROUTE.exclusivelyPublic },
     workspace: { type: ROUTE.private },
-    team: { type: ROUTE.private },
+    notFound: { type: ROUTE.public },
 };
 
 const routesOrder: string[] = [
     'login',
     'workspace',
+    'notFound',
 ];
 
 const loaders = {
     login: () => import('./views/Login'),
     workspace: () => import('./views/Workspace'),
+    notFound: () => import('./views/NotFound'),
 };
 
 const views = {};
@@ -75,7 +72,7 @@ class Multiplexer extends React.PureComponent<Props, {}> {
     renderRoutes = (): (JSX.Element|null)[] => (
         routesOrder.map((routeId) => {
             const viewComponent = views[routeId];
-            const path: string = pathNames[routeId];
+            const path: string | undefined = pathNames[routeId];
             const { authenticated }: { authenticated: boolean } = this.props;
 
             if (!viewComponent) {
@@ -144,3 +141,20 @@ const mapStateToProps = (state: RootState) => ({
 export default withRouter(
     connect<PropsFromState, PropsFromDispatch, OwnProps>(mapStateToProps)(Multiplexer)
 );
+
+/*
+<div className={styles.timeline}>
+    <div className={styles.statusBar}/>
+        <div className={styles.dateSelector} />
+        <div className={styles.timeIndicator} />
+    </div>
+    {
+        days.map((day) => (
+            <div className={styles.row}>
+                <div className={styles.dayIndicator} />
+                <div className={styles.timeslots} />
+            </div>
+        ))
+    }
+</div>
+*/

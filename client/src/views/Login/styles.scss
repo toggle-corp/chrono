@@ -3,6 +3,7 @@
 .login {
     @extend %main-content;
     display: flex;
+    flex-direction: column;
     flex-wrap: wrap;
     align-items: center;
     justify-content: center;
@@ -16,11 +17,6 @@
 
         .heading {
             color: $color-text-on-primary;
-            font-weight: $font-weight-medium;
-
-            small {
-                text-transform: none;
-            }
         }
     }
 
@@ -38,13 +34,8 @@
 
             .action-buttons {
                 display: flex;
-                align-items: flex-start;
-                justify-content: space-between;
-
-                .forgot-password-link {
-                    color: $color-label;
-                    font-size: $font-size-extra-small;
-                }
+                align-items: center;
+                justify-content: flex-end;
             }
         }
 
@@ -54,10 +45,10 @@
             align-items: center;
             justify-content: center;
             margin-top: $spacing-extra-small;
-            background-color: $color-foreground;
             padding: $spacing-large;
 
             p {
+                color: $color-text-on-primary;
                 margin: $spacing-small;
             }
 

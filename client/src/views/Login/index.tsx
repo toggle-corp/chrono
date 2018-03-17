@@ -1,9 +1,9 @@
 import React from 'react';
 import Redux from 'redux';
 import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
+// import { Link } from 'react-router-dom';
 
-import { reverseRoute } from '../../vendor/react-store/utils/common';
+// import { reverseRoute } from '../../vendor/react-store/utils/common';
 import LoadingAnimation from '../../vendor/react-store/components/View/LoadingAnimation';
 import NonFieldErrors from '../../vendor/react-store/components/Input/NonFieldErrors';
 import TextInput from '../../vendor/react-store/components/Input/TextInput';
@@ -26,17 +26,16 @@ import {
     loginAction,
 } from '../../redux';
 import { RootState, Token } from '../../redux/interface';
-import { pathNames } from '../../constants';
+// import { pathNames } from '../../constants';
 
 import CreateTokenRequest from './requests/CreateTokenRequest';
 import styles from './styles.scss';
 
 interface OwnProps {}
+interface PropsFromState { }
 interface PropsFromDispatch {
     authenticate(): void;
     login(params: Token): void;
-}
-interface PropsFromState {
 }
 type Props = OwnProps & PropsFromState & PropsFromDispatch;
 
@@ -53,7 +52,7 @@ interface AuthParams {
     password: string;
 }
 
-class Login extends React.PureComponent<Props, States> {
+export class Login extends React.PureComponent<Props, States> {
     userLoginRequest: RestRequest;
     schema: Schema;
 
@@ -89,7 +88,7 @@ class Login extends React.PureComponent<Props, States> {
     }
 
     // FORM RELATED
-    changeCallback = (values: AuthParams, formFieldErrors: FormFieldErrors, formErrors: FormErrors) => {
+    handleFormChange = (values: AuthParams, formFieldErrors: FormFieldErrors, formErrors: FormErrors) => {
         this.setState({
             formErrors,
             formFieldErrors,
@@ -98,26 +97,24 @@ class Login extends React.PureComponent<Props, States> {
         });
     }
 
-    failureCallback = (formFieldErrors: FormFieldErrors, formErrors: FormErrors) => {
+    handleFormError = (formFieldErrors: FormFieldErrors, formErrors: FormErrors) => {
         this.setState({
             formErrors,
-            formFieldErrors: { ...this.state.formFieldErrors, ...formFieldErrors },
+            formFieldErrors,
+            pristine: true,
         });
     }
 
-    // LOGIN ACTION on successCallback
-    successCallback = (value: AuthParams) => {
-        // Stop any retry action
+    handleFormSubmit = (value: AuthParams) => {
         if (this.userLoginRequest) {
             this.userLoginRequest.stop();
         }
-        const request = new CreateTokenRequest(
-            this,
-            {
+
+        const request = new CreateTokenRequest({
                 login: this.props.login,
                 authenticate: this.props.authenticate,
-            }
-        );
+                setState: v => this.setState(v),
+        });
         this.userLoginRequest = request.create(value);
         this.userLoginRequest.start();
     }
@@ -133,12 +130,9 @@ class Login extends React.PureComponent<Props, States> {
         return (
             <div className={styles.login}>
                 <div className={styles.chronoContainer}>
-                    <h2 className={styles.heading}>
-                        <small>
-                            Welcome To Chrono
-                        </small>
-                        <br />
-                    </h2>
+                    <h1 className={styles.heading}>
+                        Chrono
+                    </h1>
                 </div>
                 <div className={styles.loginFormContainer}>
                     <Form
@@ -147,9 +141,9 @@ class Login extends React.PureComponent<Props, States> {
                         value={formValues}
                         formErrors={formErrors}
                         fieldErrors={formFieldErrors}
-                        changeCallback={this.changeCallback}
-                        successCallback={this.successCallback}
-                        failureCallback={this.failureCallback}
+                        changeCallback={this.handleFormChange}
+                        successCallback={this.handleFormSubmit}
+                        failureCallback={this.handleFormError}
                         disabled={pending}
                     >
                         {pending && <LoadingAnimation />}
@@ -163,8 +157,7 @@ class Login extends React.PureComponent<Props, States> {
                         <TextInput
                             formname="password"
                             label="Password"
-                            placeholder="**********"
-                            required
+                            placeholder="****"
                             type="password"
                         />
                         <div className={styles.actionButtons}>
@@ -173,9 +166,10 @@ class Login extends React.PureComponent<Props, States> {
                             </PrimaryButton>
                         </div>
                     </Form>
+                    {/*
                     <div className={styles.registerLinkContainer}>
                         <p>
-                            No Account Yet ?
+                            No account yet ?
                         </p>
                         <Link
                             className={styles.registerLink}
@@ -184,6 +178,7 @@ class Login extends React.PureComponent<Props, States> {
                             Register
                         </Link>
                     </div>
+                    */}
                 </div>
             </div>
         );

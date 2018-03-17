@@ -44,3 +44,15 @@
         transform: rotate(360deg);
     }
 }
+
+@keyframes slide-in {
+    from {
+        transform: rotateX(1deg);
+        opacity: .5;
+    }
+
+    to {
+        transform: none;
+        opacity: 1;
+    }
+}
