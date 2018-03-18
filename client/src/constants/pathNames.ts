@@ -1,9 +1,9 @@
 const pathNames: Readonly<{
-    [key: string]: string,
+    [key: string]: string | undefined,
 }> = {
     workspace: '/',
     login: '/login',
-    register: '/register',
+    notFound: undefined,
 };
 
 export default pathNames;

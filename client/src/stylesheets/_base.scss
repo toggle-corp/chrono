@@ -15,8 +15,8 @@ $font-family-icons: 'Ionicons';
 
     ::-webkit-scrollbar {
         background-color: $color-background-scrollbar;
-        width: $spacing-small;
-        height: $spacing-small;
+        width: $width-scrollbar;
+        height: $width-scrollbar;
     }
 
     ::-webkit-scrollbar-thumb {
@@ -31,7 +31,6 @@ body {
     font-family: $font-family-sans-serif;
     font-size: $font-size-default;
     font-weight: $font-weight-default;
-
 
     a {
         outline: none;
@@ -61,8 +60,7 @@ body {
             position: relative;
             background-color: $color-background;
             padding: $spacing-small-alt;
-            // height: calc(100vh - #{$height-navbar});
-            height: 100vh;
+            height: calc(100vh - #{$height-navbar});
             perspective: 1000px;
             overflow-y: auto;
         }
@@ -89,12 +87,9 @@ body {
     // @frozenhelium
     transform-origin: bottom;
     animation: slide-in $duration-slow ease forwards;
-    border: $width-separator-thin solid $color-separator;
+    border: $width-separator-thin solid $color-separator-alt;
+    background-color: $color-background-alt;
     height: 100%;
-}
-
-%empty-text {
-    color: $color-empty-text;
 }
 
 @keyframes slide-in {
@@ -107,32 +102,4 @@ body {
         transform: none;
         opacity: 1;
     }
-}
-
-%button-like-link {
-    @include shadow-medium;
-    border-radius: 3px;
-    background-color: $color-foreground;
-    padding: $spacing-small $spacing-medium;
-    text-transform: uppercase;
-    color: $color-label;
-    font-family: inherit;
-    font-size: $font-size-medium-alt;
-    font-weight: $font-weight-normal;
-
-    &:active {
-        @include shadow-small;
-        transform: translateY(1px);
-    }
-}
-
-%transparent-button-like-link {
-    border-radius: 3px;
-    background-color: transparent;
-    padding: $spacing-small $spacing-medium;
-    text-transform: uppercase;
-    color: $color-label;
-    font-family: inherit;
-    font-size: $font-size-medium-alt;
-    font-weight: $font-weight-normal;
 }
