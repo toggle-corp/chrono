@@ -15,8 +15,8 @@ $font-family-icons: 'Ionicons';
 
     ::-webkit-scrollbar {
         background-color: $color-background-scrollbar;
-        width: $spacing-small;
-        height: $spacing-small;
+        width: $width-scrollbar;
+        height: $width-scrollbar;
     }
 
     ::-webkit-scrollbar-thumb {
@@ -31,7 +31,6 @@ body {
     font-family: $font-family-sans-serif;
     font-size: $font-size-default;
     font-weight: $font-weight-default;
-
 
     a {
         outline: none;
@@ -60,7 +59,8 @@ body {
         .chrono-main-content {
             position: relative;
             background-color: $color-background;
-            height: 100vh;
+            padding: $spacing-small-alt;
+            height: calc(100vh - #{$height-navbar});
             perspective: 1000px;
             overflow-y: auto;
         }
@@ -74,7 +74,6 @@ body {
 
 :global {
     .modal-shown {
-        // scss-lint:disable IdSelector
         #root {
             filter: brightness(50%);
             pointer-events: none;
@@ -87,10 +86,19 @@ body {
     // @frozenhelium
     transform-origin: bottom;
     animation: slide-in $duration-slow ease forwards;
-    border: $width-separator-thin solid $color-separator;
+    border: $width-separator-thin solid $color-separator-alt;
+    background-color: $color-background-alt;
     height: 100%;
 }
 
-%empty-text {
-    color: $color-empty-text;
+@keyframes slide-in {
+    from {
+        transform: rotateX(1deg);
+        opacity: .5;
+    }
+
+    to {
+        transform: none;
+        opacity: 1;
+    }
 }
