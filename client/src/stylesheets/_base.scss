@@ -74,6 +74,7 @@ body {
 
 :global {
     .modal-shown {
+        // scss-lint:disable IdSelector
         #root {
             filter: brightness(50%);
             pointer-events: none;

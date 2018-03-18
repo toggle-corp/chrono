@@ -1,6 +1,7 @@
 @import 'base';
 
 body {
+    // scss-lint:disable IdSelector
     :global #modal-container {
         display: flex;
         position: absolute;
