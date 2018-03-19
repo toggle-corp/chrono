@@ -1,7 +1,7 @@
 $theme-type-light: 'light';
 $theme-type-dark: 'dark';
 
-$theme-type: $theme-type-light;
+$theme-type: $theme-type-dark;
 
 @function get-color($color-light, $color-dark) {
     @if ($theme-type == $theme-type-dark) {
@@ -32,7 +32,7 @@ $color-primary-dark: #4ce49c;
 $color-primary: get-color($color-primary-light, $color-primary-dark);
 
 $color-accent-light: #008975;
-$color-accent-dark: #c34176;
+$color-accent-dark: #d3a116;
 $color-accent: get-color($color-accent-light, $color-accent-dark);
 
 $color-info-light: #41a1f0;

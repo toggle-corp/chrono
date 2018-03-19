@@ -91,6 +91,7 @@ class Navbar extends React.PureComponent<Props, State> {
         this.currentPath = pathFromMatch || 'notFound';
 
         const navLinks = [
+            'workspace',
             'dashboard',
         ];
 
@@ -115,7 +116,7 @@ class Navbar extends React.PureComponent<Props, State> {
         return (
             <nav className={`${styles.navbar} ${className}`}>
                 <Link
-                    to={reverseRoute(pathNames.timeline, {})}
+                    to={reverseRoute(pathNames.workspace, {})}
                     className={styles.brand}
                 >
                     <div className={styles.brand}>
