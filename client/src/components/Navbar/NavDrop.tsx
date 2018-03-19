@@ -22,7 +22,7 @@ import {
     pathNames,
     iconNames,
 } from '../../constants';
-import { CloakSettings } from '../../constants/validLinks';
+import { CloakSettings } from '../../constants/routes/interface';
 
 import Cloak from '../Cloak';
 import styles from './styles.scss';
@@ -56,7 +56,7 @@ class NavDrop extends React.PureComponent<Props, State> {
         [key: string]: string
     } = {
         login: iconNames.person,
-        workspace: iconNames.globe,
+        profile: iconNames.globe,
     };
 
     static getDropItemKey = (item: CloakSettingsWithKey): string => item.key;

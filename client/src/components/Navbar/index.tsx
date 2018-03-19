@@ -13,7 +13,7 @@ import {
     validLinks,
     hideNavbar,
 } from '../../constants';
-import { CloakSettings } from '../../constants/validLinks';
+import { CloakSettings } from '../../constants/routes/interface';
 
 import NavMenu from './NavMenu';
 import NavDrop from './NavDrop';
@@ -91,13 +91,11 @@ class Navbar extends React.PureComponent<Props, State> {
         this.currentPath = pathFromMatch || 'notFound';
 
         const navLinks = [
-            'workspace',
-            'login',
+            'timeline',
         ];
 
         const dropLinks: string[] = [
-            'workspace',
-            'login',
+            'profile',
         ];
 
         this.validNavLinks = Navbar.getValidLinks(navLinks, this.currentPath);
@@ -111,7 +109,7 @@ class Navbar extends React.PureComponent<Props, State> {
 
         // Hide navbar
         if (hideNavbar[this.currentPath]) {
-            return <span className="no-Nav" />;
+            return <span className="no-nav" />;
         }
 
         return (

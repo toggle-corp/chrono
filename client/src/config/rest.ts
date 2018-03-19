@@ -12,7 +12,7 @@ const clientProtocol = location.protocol;
 const serverProtocol = process.env.REACT_APP_API_HTTPS;
 const protocol: (string | undefined) = clientProtocol === 'https:'
     ? 'https'
-    : serverProtocol;
+    : serverProtocol || 'http';
 
 const serverEndpoint = process.env.REACT_APP_API_END;
 const url = serverEndpoint || 'localhost:8000';
