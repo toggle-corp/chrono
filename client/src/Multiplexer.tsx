@@ -99,20 +99,3 @@ const mapStateToProps = (state: RootState) => ({
 export default withRouter(
     connect<PropsFromState, PropsFromDispatch, OwnProps>(mapStateToProps)(Multiplexer)
 );
-
-/*
-<div className={styles.timeline}>
-    <div className={styles.statusBar}/>
-        <div className={styles.dateSelector} />
-        <div className={styles.timeIndicator} />
-    </div>
-    {
-        days.map((day) => (
-            <div className={styles.row}>
-                <div className={styles.dayIndicator} />
-                <div className={styles.timeslots} />
-            </div>
-        ))
-    }
-</div>
-*/

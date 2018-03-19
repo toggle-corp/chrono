@@ -26,11 +26,11 @@ export const routes: Map<RouteSetting> = {
         hideNavbar: true,
     },
 
-    timeline: {
+    workspace: {
         order: 3,
         type: ROUTE.private,
         path: '/',
-        loader: () => import('../../views/Timeline'),
+        loader: () => import('../../views/Workspace'),
         links: allLinks,
     },
 

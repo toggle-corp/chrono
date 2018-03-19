@@ -26,8 +26,10 @@ $color-text-on-primary: get-text-color($color-primary);
     }
 
     .main-menu {
+        display: flex;
         flex-grow: 1;
         align-self: stretch;
+        justify-content: center;
 
         >button {
             padding: $spacing-small;
@@ -106,6 +108,7 @@ $color-text-on-primary: get-text-color($color-primary);
     width: 100%;
     text-align: left;
     text-transform: uppercase;
+    color: $color-text;
     font-family: inherit;
     font-size: inherit;
 
@@ -117,7 +120,6 @@ $color-text-on-primary: get-text-color($color-primary);
 
     .label {
         flex-basis: calc(100% - #{$width-icon-extra-large});
-        color: $color-text;
     }
 
     &:hover {
