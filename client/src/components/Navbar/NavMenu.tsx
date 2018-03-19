@@ -13,7 +13,7 @@ import {
     iconNames,
     pathNames,
 } from '../../constants';
-import { CloakSettings } from '../../constants/validLinks';
+import { CloakSettings } from '../../constants/routes/interface';
 
 import Cloak from '../Cloak';
 import styles from './styles.scss';

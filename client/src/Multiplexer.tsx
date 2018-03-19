@@ -8,59 +8,13 @@ import {
 import { connect } from 'react-redux';
 
 import Navbar from './components/Navbar';
-import ViewManager from './components/ViewManager';
 import PrivateRoute from './vendor/react-store/components/General/PrivateRoute';
 import ExclusivelyPublicRoute from './vendor/react-store/components/General/ExclusivelyPublicRoute';
 
-import pathNames from './constants/pathNames';
-
 import { RootState } from './redux/interface';
 import { authenticatedSelector } from './redux';
-// import views from './views';
-
-enum ROUTE {
-    exclusivelyPublic = 'exclusively-public',
-    public = 'public',
-    private = 'private',
-}
-
-const routes: {
-    [key: string]: {
-        type: string;
-        redirectTo?: string;
-    };
-} = {
-    login: {
-        type: ROUTE.exclusivelyPublic,
-        redirectTo: '/',
-    },
-    workspace: { type: ROUTE.public },
-    notFound: { type: ROUTE.public },
-};
-
-const routesOrder: string[] = [
-    'login',
-    'workspace',
-    'notFound',
-];
-
-const loaders = {
-    login: () => import('./views/Login'),
-    workspace: () => import('./views/Workspace'),
-    notFound: () => import('./views/NotFound'),
-};
-
-const views = {};
-Object.keys(loaders).forEach((key) => {
-    const loader = loaders[key]; // tslint:disable-line no-any
-
-    views[key] = (props: object) => (
-        <ViewManager
-            {...props}
-            load={loader}
-        />
-    );
-});
+import { pathNames, views, routes, routesOrder } from './constants';
+import { ROUTE } from './constants/routes/interface';
 
 interface OwnProps extends RouteComponentProps<{}> {}
 interface PropsFromDispatch {}
@@ -82,8 +36,7 @@ class Multiplexer extends React.PureComponent<Props, {}> {
         const { authenticated } = this.props;
 
         const route = routes[routeId];
-        const redirectTo = route.redirectTo;
-        const routeType = route.type;
+        const { redirectTo, type: routeType } = route;
 
         switch (routeType) {
             case ROUTE.exclusivelyPublic:
@@ -128,9 +81,7 @@ class Multiplexer extends React.PureComponent<Props, {}> {
     render() {
         return (
             <Fragment>
-                <Navbar
-                    className="navbar"
-                />
+                <Navbar className="navbar" />
                 <div className="chrono-main-content">
                     <Switch>
                         {routesOrder.map((routeId) => this.renderRoute(routeId))}

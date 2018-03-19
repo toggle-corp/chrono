@@ -10,6 +10,7 @@ interface State {
     rehydrated: boolean;
 }
 
+// NOTE: handles loading of redux
 export default class Root extends React.Component<object, State> {
     // tslint:disable-next-line no-any
     store: Store<any>;
@@ -19,7 +20,6 @@ export default class Root extends React.Component<object, State> {
 
         this.state = { rehydrated: false };
         this.store = store;
-        // console.info('React version:', React.version);
     }
 
     componentWillMount() {
@@ -32,7 +32,9 @@ export default class Root extends React.Component<object, State> {
         if (!this.state.rehydrated) {
             // NOTE: showing empty div, this lasts for a fraction of a second
             return (
-                <div />
+                <div>
+                    Loading state
+                </div>
             );
         }
 
