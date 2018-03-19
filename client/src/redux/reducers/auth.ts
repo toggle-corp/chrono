@@ -12,7 +12,7 @@ import schema from '../../schema';
 export const enum AUTH_ACTION {
     login = 'AUTH/login',
     logout = 'AUTH/logout',
-    authenticate = 'AUTH/logout',
+    authenticate = 'AUTH/authenticate',
     setAccessToken = 'AUTH/setAccessToken',
 }
 

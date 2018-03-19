@@ -29,7 +29,7 @@ export const routes: Map<RouteSetting> = {
     timeline: {
         order: 3,
         type: ROUTE.private,
-        path: '/timeline',
+        path: '/',
         loader: () => import('../../views/Timeline'),
         links: allLinks,
     },
@@ -42,11 +42,11 @@ export const routes: Map<RouteSetting> = {
         links: allLinks,
     },
 
-    workspace: {
+    dashboard: {
         order: 5,
         type: ROUTE.private,
-        path: '/',
-        loader: () => import('../../views/Workspace'),
+        path: '/dashboard',
+        loader: () => import('../../views/Dashboard'),
         links: allLinks,
     },
 
