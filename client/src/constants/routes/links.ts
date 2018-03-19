@@ -28,9 +28,8 @@ const prepareSettings = (semantics: string): CloakSettings => {
 export const noLinks = {};
 export const allLinks = mapObjectToObject<string, CloakSettings>(
     {
-        timeline: 'l',
+        dashboard: 'l',
         profile: 'l',
-        login: 'x',
     },
     prepareSettings,
 );
