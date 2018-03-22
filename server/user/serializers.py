@@ -26,6 +26,7 @@ class UserSerializer(DynamicFieldsMixin, serializers.ModelSerializer):
     def create(self, validated_data):
         profile_data = validated_data.pop('profile', None)
         user = super(UserSerializer, self).create(validated_data)
+        user.email = validated_data['username']
         user.set_password(validated_data['password'])
         user.save()
         user.profile = self.update_or_create_profile(user, profile_data)

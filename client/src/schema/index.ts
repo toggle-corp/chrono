@@ -2,6 +2,7 @@ import dict from '../vendor/ravl/schema';
 import attachValidator from '../vendor/ravl/attachValidator';
 
 import token from './token';
+import user from './user';
 import { SchemaGroup } from './interface';
 
 // Validator mixin
@@ -61,6 +62,7 @@ const userDefinedSchemas: SchemaGroup  = [];
 [
     ...userDefinedSchemas,
     ...token,
+    ...user,
 ].forEach(
     ({ name, schema }) => dict.put(name, schema)
 );

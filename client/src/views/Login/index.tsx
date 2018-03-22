@@ -1,9 +1,9 @@
 import React from 'react';
 import Redux from 'redux';
 import { connect } from 'react-redux';
-// import { Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
-// import { reverseRoute } from '../../vendor/react-store/utils/common';
+import { reverseRoute } from '../../vendor/react-store/utils/common';
 import LoadingAnimation from '../../vendor/react-store/components/View/LoadingAnimation';
 import NonFieldErrors from '../../vendor/react-store/components/Input/NonFieldErrors';
 import TextInput from '../../vendor/react-store/components/Input/TextInput';
@@ -26,7 +26,7 @@ import {
     loginAction,
 } from '../../redux';
 import { RootState, Token } from '../../redux/interface';
-// import { pathNames } from '../../constants';
+import { pathNames } from '../../constants';
 
 import CreateTokenRequest from './requests/CreateTokenRequest';
 import styles from './styles.scss';
@@ -166,7 +166,6 @@ export class Login extends React.PureComponent<Props, States> {
                             </PrimaryButton>
                         </div>
                     </Form>
-                    {/*
                     <div className={styles.registerLinkContainer}>
                         <p>
                             No account yet ?
@@ -178,7 +177,6 @@ export class Login extends React.PureComponent<Props, States> {
                             Register
                         </Link>
                     </div>
-                    */}
                 </div>
             </div>
         );
