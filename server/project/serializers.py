@@ -1,3 +1,4 @@
+from rest_framework import serializers
 from drf_dynamic_fields import DynamicFieldsMixin
 
 from project.models import Project
@@ -9,4 +10,7 @@ class ProjectSerializer(DynamicFieldsMixin, UserResourceSerializer):
         model = Project
         fields = ('__all__')
 
-    # TODO: Validate user_group
+    def validate_user_group(self, group):
+        if not group.can_get(self.context['request'].user):
+            raise serializers.Validations('Invalid user group')
+        return group

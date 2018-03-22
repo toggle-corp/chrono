@@ -10,7 +10,10 @@ class TaskSerializer(DynamicFieldsMixin, UserResourceSerializer):
         model = Task
         fields = ('__all__')
 
-    # TODO: Validate project
+    def validate_project(self, project):
+        if not project.can_get(self.context['request'].user):
+            raise serializers.Validations('Invalid project')
+        return project
 
 
 class TimeSlotSerializer(DynamicFieldsMixin, serializers.ModelSerializer):
@@ -18,7 +21,10 @@ class TimeSlotSerializer(DynamicFieldsMixin, serializers.ModelSerializer):
         model = TimeSlot
         fields = ('__all__')
 
-    # TODO: Validate task
+    def validate_task(self, task):
+        if not task.can_get(self.context['request'].user):
+            raise serializers.Validations('Invalid task')
+        return task
 
     def validate(self, attrs):
         instance = TimeSlot(**attrs)
