@@ -17,8 +17,6 @@ class UserResourceSerializer(NestedCreateMixin,
         source='modified_by.profile.get_display_name',
         read_only=True)
 
-    version_id = serializers.SerializerMethodField()
-
     def create(self, validated_data):
         resource = super(UserResourceSerializer, self).create(validated_data)
         resource.created_by = self.context['request'].user

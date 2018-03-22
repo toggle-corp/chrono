@@ -25,7 +25,6 @@ from user_group.views import (
 )
 from project.views import (
     ProjectViewSet,
-    PhaseViewSet,
 )
 from task.views import (
     TaskViewSet,
@@ -47,8 +46,6 @@ router.register(r'group-memberships', GroupMembershipViewSet,
 # Project, Phase routers
 router.register(r'projects', ProjectViewSet,
                 base_name='project')
-router.register(r'phases', PhaseViewSet,
-                base_name='phase')
 
 # Task, Time Slot routers
 router.register(r'tasks', TaskViewSet,
