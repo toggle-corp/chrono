@@ -14,8 +14,25 @@ export interface Auth {
     activeUser: ActiveUser;
     authenticated: boolean;
 }
+export interface DayData {
+    [key: number]: {
+        // FIXME: fix the types
+        startTime: string,
+        endTime: string,
+        userGroup: number,
+        project: number,
+        task: number,
+        remarks: string,
+    };
+}
+
+export interface DomainData {
+    activeDay: number;
+    dayData: DayData;
+}
+
 export interface RootState {
-    domainData: object;
+    domainData: DomainData;
     auth: Auth;
 }
 

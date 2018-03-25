@@ -178,7 +178,9 @@ export class Register extends React.PureComponent<Props, States> {
                                 type="password"
                             />
                             <div className={styles.actionButtons}>
-                                <PrimaryButton>
+                                <PrimaryButton
+                                    type="submit"
+                                >
                                     Register
                                 </PrimaryButton>
                             </div>

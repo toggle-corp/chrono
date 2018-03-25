@@ -23,6 +23,19 @@ $color-text-on-primary: get-text-color($color-primary);
         align-self: stretch;
         color: $color-text-on-navbar;
         font-size: $font-size-super-large;
+
+        .icon-wrapper {
+            margin-right: $spacing-small;
+
+            .icon {
+                width: $width-navbar-icon;
+                height: $height-navbar-icon;
+
+                path {
+                    fill: $color-text-on-navbar;
+                }
+            }
+        }
     }
 
     .main-menu {

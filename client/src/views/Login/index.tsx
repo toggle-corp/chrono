@@ -161,7 +161,9 @@ export class Login extends React.PureComponent<Props, States> {
                             type="password"
                         />
                         <div className={styles.actionButtons}>
-                            <PrimaryButton>
+                            <PrimaryButton
+                                type="submit"
+                            >
                                 Login
                             </PrimaryButton>
                         </div>
