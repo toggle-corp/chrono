@@ -15,14 +15,7 @@ class TaskViewSet(viewsets.ModelViewSet):
                           ModifyPermission]
 
     def get_queryset(self):
-        user = self.request.GET.get('user', self.request.user)
-        projects = Task.get_for(user)
-
-        user_group = self.request.GET.get('user_group')
-        if user_group:
-            projects = projects.filter(user_group=user_group)
-
-        return projects
+        return Task.get_for(self.request.user)
 
 
 class TimeSlotViewSet(viewsets.ModelViewSet):
@@ -31,11 +24,6 @@ class TimeSlotViewSet(viewsets.ModelViewSet):
                           ModifyPermission]
 
     def get_queryset(self):
-        user = self.request.GET.get('user', self.request.user)
-        phases = TimeSlot.get_for(user)
+        return TimeSlot.get_for(self.request.user)
 
-        user_group = self.request.GET.get('user_group')
-        if user_group:
-            phases = phases.filter(user_group=user_group)
-
-        return phases
+    # TODO: Auto set user from request.user

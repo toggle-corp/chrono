@@ -1,25 +1,19 @@
-from django.contrib.postgres.fields import JSONField
+from django.core.exceptions import ValidationError
 from django.db import models
 
-from project.models import Phase
 from user_resource.models import UserResource
 from user.models import User
+from project.models import Project
 
 
 class Task(UserResource):
     """
-    Project model
+    Task model
     """
 
+    project = models.ForeignKey(Project, on_delete=models.CASCADE)
     title = models.CharField(max_length=255)
     description = models.TextField(blank=True)
-
-    phase = models.ForeignKey(
-            Phase,
-            on_delete=models.CASCADE,
-            # blank=True,
-        )
-    data = JSONField(default=None, blank=True, null=True)
 
     def __str__(self):
         return self.title
@@ -27,56 +21,72 @@ class Task(UserResource):
     @staticmethod
     def get_for(user):
         """
-        Project can be accessed only if
-        * user is member of a group in the project
+        Same logic as project
         """
         return Task.objects.filter(
-            models.Q(phase__in=Phase.get_for(user))
+            project__user_group__members=user
         ).distinct()
 
     def can_get(self, user):
-        return self.phase.can_get(user)
+        return self.project.can_get(user)
 
     def can_modify(self, user):
-        return self.phase.can_get(user)
+        return self.project.can_get(user)
 
 
 class TimeSlot(models.Model):
     """
-    Phase model
+    Timeslot model
     """
+    date = models.DateField()
+    start_time = models.TimeField()
+    # Null end time indicates a task that is actively going on
+    end_time = models.TimeField(default=None, blank=True, null=True)
 
-    title = models.CharField(max_length=255)
-    description = models.TextField(blank=True)
+    task = models.ForeignKey(Task, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
 
-    start_date = models.DateTimeField(default=None, null=True, blank=True)
-    end_date = models.DateTimeField(default=None, null=True, blank=True)
-
-    task = models.ForeignKey(
-        Task,
-        on_delete=models.CASCADE,
-    )
-    user = models.ForeignKey(
-        User,
-        on_delete=models.CASCADE
-    )
-    data = JSONField(default=None, blank=True, null=True)
+    remarks = models.TextField(blank=True)
 
     def __str__(self):
-        return self.title
+        return '{} by {} at {}'.format(
+            self.task.title,
+            str(self.user),
+            str(self.start_time),
+        )
+
+    def clean(self):
+        """
+        Timeslot validation:
+        Make sure, no other timeslots for this date overlaps with this
+        """
+        if self.start_time > self.end_time:
+            raise ValidationError('start_time must be less than end_time')
+
+        if TimeSlot.objects.filter(
+                models.Q(
+                    start_time__lt=self.start_time,
+                    end_time__gt=self.start_time,
+                ) |
+                models.Q(
+                    start_time__lt=self.end_time,
+                    end_time__gt=self.end_time,
+                ),
+                user=self.user,
+                task__project=self.task.project,
+        ).exists():
+            raise ValidationError('This time slot overlaps with another'
+                                  'for this day')
 
     @staticmethod
     def get_for(user):
         """
-        Phases can be accessed only if
-        * user is member of a group of the related project
+        Timeslot can be accessed by the user who created it
         """
-        return TimeSlot.objects.filter(
-            models.Q(task__in=Task.get_for(user))
-        ).distinct()
+        return TimeSlot.objects.filter(user=user)
 
     def can_get(self, user):
-        return self.task.can_get(user)
+        return self.user == user
 
     def can_modify(self, user):
-        return self.task.can_get(user)
+        return self.user == user

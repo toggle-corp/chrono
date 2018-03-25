@@ -1,21 +1,16 @@
+from rest_framework import serializers
 from drf_dynamic_fields import DynamicFieldsMixin
 
-from project.models import (Project, Phase)
+from project.models import Project
 from user_resource.serializers import UserResourceSerializer
 
 
 class ProjectSerializer(DynamicFieldsMixin, UserResourceSerializer):
     class Meta:
         model = Project
-        fields = ('id', 'title', 'description', 'start_date', 'end_date',
-                  'user_group', 'data',
-                  'created_at', 'created_by', 'modified_at', 'modified_by',
-                  'created_by_name', 'modified_by_name')
+        fields = ('__all__')
 
-
-class PhaseSerializer(DynamicFieldsMixin, UserResourceSerializer):
-    class Meta:
-        model = Phase
-        fields = ('id', 'title', 'description', 'project', 'data',
-                  'created_at', 'created_by', 'modified_at', 'modified_by',
-                  'created_by_name', 'modified_by_name')
+    def validate_user_group(self, group):
+        if not group.can_get(self.context['request'].user):
+            raise serializers.Validations('Invalid user group')
+        return group
