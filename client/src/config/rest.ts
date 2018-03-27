@@ -38,7 +38,6 @@ export const commonHeaderForPost: RestHeader = {
     Accept: 'application/json',
     'Content-Type': 'application/json',
 };
-
 export const commonHeaderForGet: RestHeader = {
     Accept: 'application/json',
     'Content-Type': 'application/json',

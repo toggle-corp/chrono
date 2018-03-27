@@ -11,11 +11,9 @@ import {
 } from '../../../rest';
 import schema from '../../../schema'; 
 
+// FIXME: reuse this interface
 interface Request<T> {
     create: (value: T) => RestRequest;
-}
-
-interface UserGroupsParams {
 }
 
 interface Props {
@@ -26,26 +24,26 @@ interface UserGroupsGetResponse {
     count: number;
     next: string;
     previous: string;
-    results: [ {id: number, title: string} ];
+    results: [{ id: number, title: string }];
 }
 
-export default class GetUserGroupsRequest implements Request<UserGroupsParams> {
+export default class GetUserGroupsRequest implements Request<{}> {
     props: Props;
 
     constructor(props: Props) {
         this.props = props;
     }
 
-    create = (userGroupsParams: UserGroupsParams): RestRequest => {
+    create = (): RestRequest => {
         const userGroupsRequest = new FgRestBuilder()
             .url(urlForUserGroups)
-            .params(createParamsForUserGroups({}))
+            .params(createParamsForUserGroups)
             .preLoad(() => { this.props.setState({ pending: true }); })
-            .postLoad(() => { this.props.setState({ pending: false}); })
+            .postLoad(() => { this.props.setState({ pending: false }); })
             .success((response: UserGroupsGetResponse) => {
                 try {
-                    schema.validate(response, 'userGroupsResponse');  // TODO: define this
                     console.log(response);
+                    schema.validate(response, 'userGroupsResponse');  // TODO: define this
                 } catch (err) {
                     console.error(err);
                 }

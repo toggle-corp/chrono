@@ -2,6 +2,7 @@ import {
     wsEndpoint,
     Rest,
     commonHeaderForPost,
+    commonHeaderForGet,
 } from '../config/rest';
 import { RestGetBody, RestPostBody } from './interface';
 
@@ -23,9 +24,7 @@ export const createParamsForUserRegister = (
 
 export const urlForUserGroups: string = `${wsEndpoint}/user-groups/`;
 
-export const createParamsForUserGroups = (
-    {}: {}  // TODO: find params!!
-): RestGetBody => ({
+export const createParamsForUserGroups = (): RestGetBody => ({
     method: Rest.GET,
-    headers: {},
+    headers: commonHeaderForGet,
 });

@@ -9,7 +9,6 @@ import SelectInput from '../../../vendor/react-store/components/Input/SelectInpu
 import PrimaryButton from '../../../vendor/react-store/components/Action/Button/PrimaryButton';
 import DangerButton from '../../../vendor/react-store/components/Action/Button/DangerButton';
 
-import { RestRequest } from '../../../vendor/react-store/utils/rest';
 import Form, {
     requiredCondition,
 } from '../../../vendor/react-store/components/Input/Form';
@@ -30,6 +29,13 @@ import { RootState } from '../../../redux/interface';
 
 import styles from './styles.scss';
 
+type DayParams = DayData;
+
+interface WithIdAndTitle {
+    id: number;
+    title: string;
+}
+
 interface OwnProps {}
 interface PropsFromState {
     dayData: DayParams;
@@ -47,20 +53,16 @@ interface States {
     formValues: ValuesFromForm;
     pending: boolean;
     pristine: boolean;
+    userGroups: WithIdAndTitle[];
+    projects: WithIdAndTitle[];
+    tasks: WithIdAndTitle[];
 }
-
-type DayParams = DayData;
-interface ProjectOption {
-    id: number;
-    title: string;
-}
-
-type UserGroupOption = ProjectOption;
-type TaskOption = ProjectOption;
 
 export class DayEditor extends React.PureComponent<Props, States> {
-    userLoginRequest: RestRequest;
     schema: Schema;
+
+    static keySelector = (d: WithIdAndTitle) => d.id;
+    static labelSelector = (d: WithIdAndTitle) => d.title;
 
     constructor(props: Props) {
         super(props);
@@ -71,6 +73,18 @@ export class DayEditor extends React.PureComponent<Props, States> {
             formValues: props.dayData,
             pending: false,
             pristine: false,
+            userGroups: [
+                { id: 1, title: 'User Group #1' },
+            ],
+            projects: [
+                { id: 1, title: 'Project #1' },
+                { id: 2, title: 'Project #2' },
+            ],
+            tasks: [
+                { id: 1, title: 'Task #1' },
+                { id: 2, title: 'Task #2' },
+                { id: 3, title: 'Task #3' },
+            ],
         };
 
         this.schema = {
@@ -80,7 +94,7 @@ export class DayEditor extends React.PureComponent<Props, States> {
                 userGroup: [ requiredCondition ],
                 project: [ requiredCondition ],
                 task: [ requiredCondition ],
-                remarks: [ requiredCondition ],
+                remarks: [],
             },
         };
     }
@@ -91,13 +105,8 @@ export class DayEditor extends React.PureComponent<Props, States> {
         }
     }
 
-    componentWillUnmount() {
-        if (this.userLoginRequest) {
-            this.userLoginRequest.stop();
-        }
-    }
-
     // FORM RELATED
+
     handleFormChange = (values: DayParams, formFieldErrors: FormFieldErrors, formErrors: FormErrors) => {
         this.setState({
             formErrors,
@@ -120,16 +129,14 @@ export class DayEditor extends React.PureComponent<Props, States> {
     }
 
     handleDiscard = () => {
-        this.setState({ formValues: this.props.dayData });
+        this.setState({
+            formErrors: {},
+            formFieldErrors: {},
+            formValues: this.props.dayData,
+            pending: false,
+            pristine: false,
+        });
     }
-
-    userGroupKeySelector = (d: UserGroupOption) => (d || {}).id;
-    projectKeySelector = (d: ProjectOption) => (d || {}).id;
-    taskKeySelector = (d: TaskOption) => (d || {}).id;
-
-    userGroupLabelSelector = (d: UserGroupOption) => (d || {}).title;
-    projectLabelSelector = (d: ProjectOption) => (d || {}).title;
-    taskLabelSelector = (d: TaskOption) => (d || {}).title;
 
     render() {
         const {
@@ -137,11 +144,11 @@ export class DayEditor extends React.PureComponent<Props, States> {
             formFieldErrors,
             formValues,
             pending,
-        } = this.state;
 
-        const userGroups: object[] = [{ id: 1, title: 'the' }];
-        const projects: object[] = [{ id: 1, title: 'thenav56' }];
-        const tasks: object[] = [{ id: 1, title: 'thenav56' }];
+            userGroups,
+            projects,
+            tasks,
+        } = this.state;
 
         return (
             <div className={styles.dayEditor}>
@@ -178,27 +185,27 @@ export class DayEditor extends React.PureComponent<Props, States> {
                         className={styles.usergroup}
                         label="User Group"
                         options={userGroups}
-                        placeholder="Select a user group for available option(s)"
-                        keySelector={this.userGroupKeySelector}
-                        labelSelector={this.userGroupLabelSelector}
+                        placeholder="Select a user group"
+                        keySelector={DayEditor.keySelector}
+                        labelSelector={DayEditor.labelSelector}
                     />
                     <SelectInput
                         formname="project"
                         label="Project"
                         className={styles.project}
                         options={projects}
-                        placeholder="Select a project for available option(s)"
-                        keySelector={this.projectKeySelector}
-                        labelSelector={this.projectLabelSelector}
+                        placeholder="Select a project"
+                        keySelector={DayEditor.keySelector}
+                        labelSelector={DayEditor.labelSelector}
                     />
                     <SelectInput
                         formname="task"
                         label="Task"
                         className={styles.task}
                         options={tasks}
-                        placeholder="Select a task for available option(s)"
-                        keySelector={this.taskKeySelector}
-                        labelSelector={this.taskLabelSelector}
+                        placeholder="Select a task"
+                        keySelector={DayEditor.keySelector}
+                        labelSelector={DayEditor.labelSelector}
                     />
                     </div>
                     <TextInput
@@ -209,15 +216,10 @@ export class DayEditor extends React.PureComponent<Props, States> {
                         placeholder="Remarks"
                     />
                     <div className={styles.actionButtons}>
-                        <PrimaryButton
-                            type="submit"
-                        >
+                        <PrimaryButton type="submit">
                             Save
                         </PrimaryButton>
-                        <DangerButton
-                            type="button"
-                            onClick={this.handleDiscard}
-                        >
+                        <DangerButton onClick={this.handleDiscard}>
                             Discard
                         </DangerButton>
                     </div>

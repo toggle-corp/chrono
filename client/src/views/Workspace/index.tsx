@@ -15,7 +15,7 @@ interface PropsFromDispatch { }
 type Props = OwnProps & PropsFromState & PropsFromDispatch;
 
 interface States {
-    data: object[];
+    data: Data[];
     pending: boolean;
 }
 
@@ -27,6 +27,8 @@ interface Data {
 
 export default class Workspace extends React.PureComponent<Props, States> {
     userGroupRequest: RestRequest;
+
+    static keyExtractor = (data: Data) => String(data.timestamp);
 
     constructor(props: Props) {
         super(props);
@@ -47,17 +49,12 @@ export default class Workspace extends React.PureComponent<Props, States> {
     }
 
     componentWillMount() {
-        console.log('component will mount');
-        if (this.userGroupRequest) {
-            this.userGroupRequest.stop();
-        }
-
         const request = new GetUserGroupsRequest({
             setState: v => this.setState(v),
         });
-        this.userGroupRequest = request.create({});
+
+        this.userGroupRequest = request.create();
         this.userGroupRequest.start();
-        // TODO: complete this!!
     }
 
     componentWillUnmount() {
@@ -66,13 +63,11 @@ export default class Workspace extends React.PureComponent<Props, States> {
         }
     }
 
-    renderDay = (key: string, date: Data) => {
-        return (
-            <div key={date.timestamp}>
-                {date.year}/{date.month}
-            </div>
-        );
-    }
+    renderDay = (key: string, date: Data) => (
+        <div key={key}>
+            {date.year} / {date.month}
+        </div>
+    )
 
     render() {
         const { data } = this.state;
