@@ -1,0 +1,26 @@
+@import '../../../stylesheets/base';
+
+.day-editor {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: $spacing-extra-large;
+    width: 100%;
+
+    .day-editor-form {
+        @include background-color($color-foreground);
+        padding: $spacing-small $spacing-large $spacing-large;
+        width: 100%;
+
+        .action-buttons {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+
+            .forgot-password-link {
+                color: $color-text-label;
+                font-size: $font-size-extra-small;
+            }
+        }
+    }
+}
