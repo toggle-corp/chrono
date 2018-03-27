@@ -1,9 +1,12 @@
 import React from 'react';
 
 import ListView from '../../vendor/react-store/components/View/List/ListView';
+import { RestRequest } from '../../vendor/react-store/utils/rest';
 
 import DayEditor from './DayEditor';
 import styles from './styles.scss';
+
+import GetUserGroupsRequest from './requests/GetUserGroupsRequest';
 
 interface OwnProps {}
 interface PropsFromState { }
@@ -13,6 +16,7 @@ type Props = OwnProps & PropsFromState & PropsFromDispatch;
 
 interface States {
     data: object[];
+    pending: boolean;
 }
 
 interface Data {
@@ -22,6 +26,8 @@ interface Data {
 }
 
 export default class Workspace extends React.PureComponent<Props, States> {
+    userGroupRequest: RestRequest;
+
     constructor(props: Props) {
         super(props);
 
@@ -36,7 +42,28 @@ export default class Workspace extends React.PureComponent<Props, States> {
 
         this.state = {
             data,
+            pending: false,
         };
+    }
+
+    componentWillMount() {
+        console.log('component will mount');
+        if (this.userGroupRequest) {
+            this.userGroupRequest.stop();
+        }
+
+        const request = new GetUserGroupsRequest({
+            setState: v => this.setState(v),
+        });
+        this.userGroupRequest = request.create({});
+        this.userGroupRequest.start();
+        // TODO: complete this!!
+    }
+
+    componentWillUnmount() {
+        if (this.userGroupRequest) {
+            this.userGroupRequest.stop();
+        }
     }
 
     renderDay = (key: string, date: Data) => {

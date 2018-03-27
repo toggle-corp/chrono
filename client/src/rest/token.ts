@@ -3,13 +3,13 @@ import {
     Rest,
     commonHeaderForPost,
 } from '../config/rest';
-import { RestBody } from './interface';
+import { RestPostBody } from './interface';
 
 export const urlForTokenCreate: string = `${wsEndpoint}/token/`;
 export const createParamsForTokenCreate = (
     { username, password }:
     { username: string, password: string }
-): RestBody => ({
+): RestPostBody => ({
     method: Rest.POST,
     headers: commonHeaderForPost,
     body: JSON.stringify({
@@ -21,7 +21,7 @@ export const createParamsForTokenCreate = (
 export const urlForTokenRefresh = `${wsEndpoint}/token/refresh/`;
 export const createParamsForTokenRefresh = (
     { refresh }: { refresh: string }
-): RestBody => ({
+): RestPostBody => ({
     method: Rest.POST,
     headers: commonHeaderForPost,
     body: JSON.stringify({
