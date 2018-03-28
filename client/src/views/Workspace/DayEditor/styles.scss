@@ -1,21 +1,44 @@
 @import '../../../stylesheets/base';
 
 .day-editor {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: $spacing-extra-large;
-    width: 100%;
+    @include background-color($color-foreground);
 
     .day-editor-form {
-        @include background-color($color-foreground);
-        padding: $spacing-small $spacing-large $spacing-large;
-        width: 100%;
+        display: flex;
+        padding: $spacing-small 0;
+
+        .timewrapper {
+            display: flex;
+            flex-direction: column;
+            margin-right: $spacing-large;
+            width: 150px;
+        }
+
+        .infowrapper {
+            display: flex;
+            align-items: flex-start;
+
+            .usergroup,
+            .project,
+            .task {
+                margin-right: $spacing-large;
+            }
+
+        }
+
+        .remarks {
+            flex-grow: 1;
+        }
 
         .action-buttons {
             display: flex;
-            align-items: flex-start;
-            justify-content: space-between;
+            align-items: flex-end;
+
+            button {
+                margin-right: $spacing-medium;
+            }
+
+
 
             .forgot-password-link {
                 color: $color-text-label;

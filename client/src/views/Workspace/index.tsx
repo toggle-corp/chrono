@@ -51,12 +51,22 @@ export default class Workspace extends React.PureComponent<Props, States> {
         const { data } = this.state;
         return (
             <div className={styles.workspace}>
-                <ListView
-                    className={styles.listView}
-                    data={data}
-                    modifier={this.renderDay}
-                />
+                <div className={styles.datebar}>
+                    <ListView
+                        className={styles.listView}
+                        data={data}
+                        modifier={this.renderDay}
+                    />
+                </div>
+                <div className={styles.information} >
+                    <div className={styles.datewrapper}>
+                        Information Bar
+                    </div>
+                </div>
                 <DayEditor />
+                <div className={styles.bottom} >
+                    Bottom Part
+                </div>
             </div>
         );
     }

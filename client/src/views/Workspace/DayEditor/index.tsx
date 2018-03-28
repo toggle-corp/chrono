@@ -158,20 +158,24 @@ export class DayEditor extends React.PureComponent<Props, States> {
                 >
                     {pending && <LoadingAnimation />}
                     <NonFieldErrors formerror="" />
-                    <TextInput
-                        formname="startTime"
-                        label="Start"
-                        placeholder="10:00"
-                        type="time"
-                    />
-                    <TextInput
-                        formname="endTime"
-                        label="End"
-                        placeholder="5:00"
-                        type="time"
-                    />
+                    <div className={styles.timewrapper} >
+                         <TextInput
+                            formname="startTime"
+                            label="Start"
+                            placeholder="10:00"
+                            type="time"
+                         />
+                        <TextInput
+                            formname="endTime"
+                            label="End"
+                            placeholder="5:00"
+                            type="time"
+                        />
+                    </div>
+                    <div className={styles.infowrapper} >
                     <SelectInput
                         formname="userGroup"
+                        className={styles.usergroup}
                         label="User Group"
                         options={userGroups}
                         placeholder="Select a user group for available option(s)"
@@ -181,6 +185,7 @@ export class DayEditor extends React.PureComponent<Props, States> {
                     <SelectInput
                         formname="project"
                         label="Project"
+                        className={styles.project}
                         options={projects}
                         placeholder="Select a project for available option(s)"
                         keySelector={this.projectKeySelector}
@@ -189,14 +194,18 @@ export class DayEditor extends React.PureComponent<Props, States> {
                     <SelectInput
                         formname="task"
                         label="Task"
+                        className={styles.task}
                         options={tasks}
                         placeholder="Select a task for available option(s)"
                         keySelector={this.taskKeySelector}
                         labelSelector={this.taskLabelSelector}
                     />
+                    </div>
                     <TextInput
                         formname="remarks"
                         label="Remarks"
+                        className={styles.remarks}
+                        options={tasks}
                         placeholder="Remarks"
                     />
                     <div className={styles.actionButtons}>
