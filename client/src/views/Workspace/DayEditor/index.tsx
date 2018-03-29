@@ -22,10 +22,11 @@ import {
 import {
     dayDataViewSelector,
     activeDaySelector,
+    userGroupsSelector,
     setDataAction,
 } from '../../../redux';
 import { DayData } from '../../../redux/interface';
-import { RootState } from '../../../redux/interface';
+import { RootState, UserGroup } from '../../../redux/interface';
 
 import styles from './styles.scss';
 
@@ -37,10 +38,13 @@ interface WithIdAndTitle {
 }
 
 interface OwnProps {}
+
 interface PropsFromState {
     dayData: DayParams;
     activeDay: number;
+    userGroups: UserGroup[];
 }
+
 interface PropsFromDispatch {
     setData(timestamp: number, params: DayParams): void;
 }
@@ -145,10 +149,10 @@ export class DayEditor extends React.PureComponent<Props, States> {
             formValues,
             pending,
 
-            userGroups,
             projects,
             tasks,
         } = this.state;
+        const { userGroups } = this.props;
 
         return (
             <div className={styles.dayEditor}>
@@ -232,6 +236,7 @@ export class DayEditor extends React.PureComponent<Props, States> {
 const mapStateToProps = (state: RootState) => ({
     activeDay: activeDaySelector(state),
     dayData: dayDataViewSelector(state),
+    userGroups: userGroupsSelector(state),
 });
 
 const mapDispatchToProps = (dispatch: Redux.Dispatch<RootState>) => ({

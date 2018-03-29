@@ -2,6 +2,7 @@ import { DomainData } from '../interface';
 
 const initialDomainDataState: DomainData = {
     activeDay: 1521915300,
+    userGroups: [],
     dayData: { // index should be day timestamp or FIXME
         1521915300: {
             startTime: '10:00',

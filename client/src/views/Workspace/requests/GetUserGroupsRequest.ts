@@ -4,11 +4,13 @@ import {
 } from '../../../vendor/react-store/utils/rest';
 
 import { ErrorsFromServer } from '../../../rest/interface';
-import WorkSpace from '../index';
+import { Workspace } from '../index';
+
 import {
     urlForUserGroups,
     createParamsForUserGroups
 } from '../../../rest';
+import { UserGroup } from '../../../redux/interface';
 import schema from '../../../schema'; 
 
 // FIXME: reuse this interface
@@ -17,7 +19,8 @@ interface Request<T> {
 }
 
 interface Props {
-    setState: WorkSpace['setState'];
+    setState: Workspace['setState'];
+    setUserGroups(params: UserGroup[]): void;
 }
 
 interface UserGroupsGetResponse {
@@ -42,8 +45,8 @@ export default class GetUserGroupsRequest implements Request<{}> {
             .postLoad(() => { this.props.setState({ pending: false }); })
             .success((response: UserGroupsGetResponse) => {
                 try {
-                    console.log(response);
-                    schema.validate(response, 'userGroupsResponse');  // TODO: define this
+                    schema.validate(response, 'userGroupsResponse');
+                    this.props.setUserGroups(response.results);
                 } catch (err) {
                     console.error(err);
                 }

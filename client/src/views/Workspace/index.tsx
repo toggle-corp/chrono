@@ -1,8 +1,12 @@
 import React from 'react';
+import Redux from 'redux';
+import { connect } from 'react-redux';
 
 import ListView from '../../vendor/react-store/components/View/List/ListView';
 import { RestRequest } from '../../vendor/react-store/utils/rest';
 
+import { setUserGroupsAction } from '../../redux';
+import { RootState, UserGroup } from '../../redux/interface';
 import DayEditor from './DayEditor';
 import styles from './styles.scss';
 
@@ -10,7 +14,9 @@ import GetUserGroupsRequest from './requests/GetUserGroupsRequest';
 
 interface OwnProps {}
 interface PropsFromState { }
-interface PropsFromDispatch { }
+interface PropsFromDispatch {
+    setUserGroups(params: UserGroup[]): void;
+}
 
 type Props = OwnProps & PropsFromState & PropsFromDispatch;
 
@@ -25,7 +31,7 @@ interface Data {
     year: number;
 }
 
-export default class Workspace extends React.PureComponent<Props, States> {
+export class Workspace extends React.PureComponent<Props, States> {
     userGroupRequest: RestRequest;
 
     static keyExtractor = (data: Data) => String(data.timestamp);
@@ -49,18 +55,25 @@ export default class Workspace extends React.PureComponent<Props, States> {
     }
 
     componentWillMount() {
-        const request = new GetUserGroupsRequest({
-            setState: v => this.setState(v),
-        });
-
-        this.userGroupRequest = request.create();
-        this.userGroupRequest.start();
+        this.startRequestForUserGroup();
     }
 
     componentWillUnmount() {
         if (this.userGroupRequest) {
             this.userGroupRequest.stop();
         }
+    }
+
+    startRequestForUserGroup = () => {
+        if (this.userGroupRequest) {
+            this.userGroupRequest.stop();
+        }
+        const request = new GetUserGroupsRequest({
+            setUserGroups: this.props.setUserGroups,
+            setState: v => this.setState(v),
+        });
+        this.userGroupRequest = request.create();
+        this.userGroupRequest.start();
     }
 
     renderDay = (key: string, date: Data) => (
@@ -96,3 +109,9 @@ export default class Workspace extends React.PureComponent<Props, States> {
         );
     }
 }
+
+const mapDispatchToProps = (dispatch: Redux.Dispatch<RootState>) => ({
+    setUserGroups: (params: UserGroup[]) => dispatch(setUserGroupsAction(params)),
+});
+
+export default connect<PropsFromState, PropsFromDispatch, OwnProps>(undefined, mapDispatchToProps)(Workspace);
