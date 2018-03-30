@@ -23,12 +23,13 @@ $color-text-on-primary: get-text-color($color-primary);
     .information {
         display: flex;
         flex-grow: 1;
+        flex-direction: column;
         border-bottom: $width-separator-thin solid $color-separator-alt;
 
         .datewrapper {
-            border-right: $width-separator-thin solid $color-separator-alt;
             padding: $spacing-medium;
-            width: 150px;
+            width: 100%;
+            border-bottom: $width-separator-thin solid $color-separator-alt;
         }
     }
 

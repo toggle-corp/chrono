@@ -60,7 +60,10 @@ export default class Workspace extends React.PureComponent<Props, States> {
                 </div>
                 <div className={styles.information} >
                     <div className={styles.datewrapper}>
-                        Information Bar
+                        01, Wednesday
+                    </div>
+                    <div className={styles.datewrapper}>
+                        02, Thursday
                     </div>
                 </div>
                 <DayEditor />
