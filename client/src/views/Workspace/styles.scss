@@ -6,12 +6,37 @@ $color-text-on-primary: get-text-color($color-primary);
     @extend %main-content;
     display: flex;
     flex-direction: column;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: center;
 
-    .list-view {
+    .datebar {
         display: flex;
+        flex-shrink: 0;
+        border-bottom: $width-separator-thin solid $color-separator-alt;
+        padding: $spacing-medium;
+
+        .list-view {
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+        }
+    }
+
+    .information {
+        display: flex;
+        flex-grow: 1;
         flex-direction: column;
+        border-bottom: $width-separator-thin solid $color-separator-alt;
+
+        .datewrapper {
+            padding: $spacing-medium;
+            width: 100%;
+            border-bottom: $width-separator-thin solid $color-separator-alt;
+        }
+    }
+
+    .bottom {
+        display: flex;
+        flex-shrink: 0;
+        border-top: $width-separator-thin solid $color-separator-alt;
+        padding: $spacing-small;
     }
 }
