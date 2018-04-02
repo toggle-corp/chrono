@@ -1,9 +1,14 @@
 // FIXME: move form related parts outside
 
-export interface RestBody {
+export interface RestPostBody {
     method: string;
     headers: object;
     body: string;
+}
+
+export interface RestGetBody {
+    method: string;
+    headers: object;
 }
 
 export interface RestHeader {

@@ -26,9 +26,15 @@ export interface DayData {
     };
 }
 
+export interface UserGroup {
+    id: number;
+    title: string;
+}
+
 export interface DomainData {
     activeDay: number;
     dayData: DayData;
+    userGroups: UserGroup[];
 }
 
 export interface RootState {

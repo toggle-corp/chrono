@@ -53,8 +53,8 @@ export default class CreateTokenRequest implements Request<AuthParams> {
                     const { refresh, access } = response;
                     this.props.login({ refresh, access });
                     // TODO: call refresher here
-                    this.props.authenticate();
                     this.props.setState({ pending: false });
+                    this.props.authenticate();
                 } catch (err) {
                     console.error(err);
                 }

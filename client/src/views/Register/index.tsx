@@ -67,6 +67,17 @@ export class Register extends React.PureComponent<Props, States> {
                     requiredCondition,
                     lengthGreaterThanCondition(4),
                 ],
+                confirmPassword: [
+                    requiredCondition,
+                    lengthGreaterThanCondition(4),
+                ],
+            },
+            validation: ({ password, confirmPassword }) => {
+                const errors = [];
+                if (password !== confirmPassword) {
+                    errors.push('Passwords do not match');
+                }
+                return errors;
             },
         };
     }
@@ -78,6 +89,7 @@ export class Register extends React.PureComponent<Props, States> {
     }
 
     // FORM RELATED
+
     handleFormChange = (values: RegisterParams, formFieldErrors: FormFieldErrors, formErrors: FormErrors) => {
         this.setState({
             formErrors,
@@ -106,21 +118,6 @@ export class Register extends React.PureComponent<Props, States> {
         this.userRegisterRequest.start();
     }
 
-    renderSuccess = () => (
-        <div className={styles.registerSuccess}>
-            <p>Successfully Registered, Please Login</p>
-        </div>
-    )
-
-    renderLoginLink = () => (
-        <Link
-            className={styles.loginLink}
-            to={reverseRoute(pathNames.login, {})}
-        >
-            Login
-        </Link>
-    )
-
     render() {
         const {
             formErrors,
@@ -138,59 +135,76 @@ export class Register extends React.PureComponent<Props, States> {
                     </h1>
                 </div>
                 <div className={styles.registerFormContainer}>
-                {
-                    success ? this.renderSuccess() :
-                        <Form
-                            className={styles.registerForm}
-                            schema={this.schema}
-                            value={formValues}
-                            formErrors={formErrors}
-                            fieldErrors={formFieldErrors}
-                            changeCallback={this.handleFormChange}
-                            successCallback={this.handleFormSubmit}
-                            failureCallback={this.handleFormError}
-                            disabled={pending}
-                        >
-                            {pending && <LoadingAnimation />}
-                            <NonFieldErrors formerror="" />
-                            <TextInput
-                                formname="firstName"
-                                label="First Name"
-                                placeholder="John"
-                                autoFocus
-                            />
-                            <TextInput
-                                formname="lastName"
-                                label="Last Name"
-                                placeholder="Doe"
-                                autoFocus
-                            />
-                            <TextInput
-                                formname="username"
-                                label="Email"
-                                placeholder="john.doe@mail.com"
-                                autoFocus
-                            />
-                            <TextInput
-                                formname="password"
-                                label="Password"
-                                placeholder="****"
-                                type="password"
-                            />
-                            <div className={styles.actionButtons}>
-                                <PrimaryButton
-                                    type="submit"
-                                >
-                                    Register
-                                </PrimaryButton>
+                    {
+                        success ? (
+                            <div className={styles.registerSuccess}>
+                                <p>
+                                    User is registered successfully.
+                                    Please login to continue.
+                                </p>
                             </div>
-                        </Form>
-                }
+                        ) : (
+                            <Form
+                                className={styles.registerForm}
+                                schema={this.schema}
+                                value={formValues}
+                                formErrors={formErrors}
+                                fieldErrors={formFieldErrors}
+                                changeCallback={this.handleFormChange}
+                                successCallback={this.handleFormSubmit}
+                                failureCallback={this.handleFormError}
+                                disabled={pending}
+                            >
+                                {pending && <LoadingAnimation />}
+                                <NonFieldErrors formerror="" />
+                                <TextInput
+                                    formname="firstName"
+                                    label="First Name"
+                                    placeholder="John"
+                                    autoFocus
+                                />
+                                <TextInput
+                                    formname="lastName"
+                                    label="Last Name"
+                                    placeholder="Doe"
+                                    autoFocus
+                                />
+                                <TextInput
+                                    formname="username"
+                                    label="Email"
+                                    placeholder="john.doe@mail.com"
+                                    autoFocus
+                                />
+                                <TextInput
+                                    formname="password"
+                                    label="Password"
+                                    placeholder="****"
+                                    type="password"
+                                />
+                                <TextInput
+                                    formname="confirmPassword"
+                                    label="Confirm Password"
+                                    placeholder="****"
+                                    type="password"
+                                />
+                                <div className={styles.actionButtons}>
+                                    <PrimaryButton type="submit">
+                                        Register
+                                    </PrimaryButton>
+                                </div>
+                            </Form>
+                        )
+                    }
                     <div className={styles.loginLinkContainer}>
                         <p>
                             Already have a account ?
                         </p>
-                        {this.renderLoginLink()}
+                        <Link
+                            className={styles.loginLink}
+                            to={reverseRoute(pathNames.login, {})}
+                        >
+                            Login
+                        </Link>
                     </div>
                 </div>
             </div>

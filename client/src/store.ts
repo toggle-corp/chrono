@@ -1,6 +1,18 @@
-import { compose, createStore, applyMiddleware, Middleware } from 'redux';
-import { commonHeaderForPost, authorizationHeaderForPost } from './config/rest';
-import { composeWithDevTools, EnhancerOptions } from 'redux-devtools-extension';
+import {
+    compose,
+    createStore,
+    applyMiddleware,
+    Middleware,
+} from 'redux';
+import {
+    commonHeaderForPost,
+    commonHeaderForGet,
+    authorizationHeaderForPost,
+} from './config/rest';
+import {
+    composeWithDevTools,
+    EnhancerOptions,
+} from 'redux-devtools-extension';
 
 import reducer from './redux/reducers';
 
@@ -35,9 +47,11 @@ if (process.env.NODE_ENV !== 'test') {
         if (prevAccess !== currentAccess) {
             if (currentAccess) {
                 commonHeaderForPost.Authorization = `Bearer ${currentAccess}`;
+                commonHeaderForGet.Authorization = `Bearer ${currentAccess}`;
                 authorizationHeaderForPost.Authorization = `Bearer ${currentAccess}`;
             } else {
                 commonHeaderForPost.Authorization = undefined;
+                commonHeaderForGet.Authorization = undefined;
                 authorizationHeaderForPost.Authorization = undefined;
             }
         }

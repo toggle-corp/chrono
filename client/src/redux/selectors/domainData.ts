@@ -1,5 +1,5 @@
 import { createSelector } from 'reselect';
-import { RootState, DayData } from '../interface';
+import { RootState, DayData, UserGroup } from '../interface';
 
 const emptyObject = {};
 
@@ -9,6 +9,10 @@ export const dayDataSelector = ({ domainData }: RootState): DayData => (
 
 export const activeDaySelector = ({ domainData }: RootState): number => (
     domainData.activeDay
+);
+
+export const userGroupsSelector = ({ domainData }: RootState): UserGroup[] => (
+    domainData.userGroups
 );
 
 // COMPLEX

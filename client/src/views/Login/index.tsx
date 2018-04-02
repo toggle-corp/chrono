@@ -88,6 +88,7 @@ export class Login extends React.PureComponent<Props, States> {
     }
 
     // FORM RELATED
+
     handleFormChange = (values: AuthParams, formFieldErrors: FormFieldErrors, formErrors: FormErrors) => {
         this.setState({
             formErrors,
@@ -161,9 +162,7 @@ export class Login extends React.PureComponent<Props, States> {
                             type="password"
                         />
                         <div className={styles.actionButtons}>
-                            <PrimaryButton
-                                type="submit"
-                            >
+                            <PrimaryButton type="submit">
                                 Login
                             </PrimaryButton>
                         </div>
