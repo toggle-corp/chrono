@@ -8,6 +8,8 @@ import TextInput from '../../../vendor/react-store/components/Input/TextInput';
 import SelectInput from '../../../vendor/react-store/components/Input/SelectInput';
 import PrimaryButton from '../../../vendor/react-store/components/Action/Button/PrimaryButton';
 import DangerButton from '../../../vendor/react-store/components/Action/Button/DangerButton';
+import { RestRequest } from '../../../vendor/react-store/utils/rest';
+import SlotPostRequest from '../requests/SlotPostRequest';
 
 import Form, {
     requiredCondition,
@@ -20,17 +22,17 @@ import {
     Schema,
 } from '../../../rest/interface';
 import {
-    dayDataViewSelector,
+    slotDataSelector,
     activeDaySelector,
     userGroupsSelector,
-    setDataAction,
 } from '../../../redux';
-import { DayData } from '../../../redux/interface';
 import { RootState, UserGroup } from '../../../redux/interface';
+import {
+    setSlotAction,
+} from '../../../redux';
+import { SlotData } from '../../../redux/interface';
 
 import styles from './styles.scss';
-
-type DayParams = DayData;
 
 interface WithIdAndTitle {
     id: number;
@@ -40,13 +42,13 @@ interface WithIdAndTitle {
 interface OwnProps {}
 
 interface PropsFromState {
-    dayData: DayParams;
+    slotData: SlotParams;
     activeDay: number;
     userGroups: UserGroup[];
 }
 
 interface PropsFromDispatch {
-    setData(timestamp: number, params: DayParams): void;
+    setSlot(params: SlotParams): void;
 }
 
 type Props = OwnProps & PropsFromState & PropsFromDispatch;
@@ -62,8 +64,11 @@ interface States {
     tasks: WithIdAndTitle[];
 }
 
+type SlotParams = SlotData;
+
 export class DayEditor extends React.PureComponent<Props, States> {
     schema: Schema;
+    submitSlotRequest: RestRequest;
 
     static keySelector = (d: WithIdAndTitle) => d.id;
     static labelSelector = (d: WithIdAndTitle) => d.title;
@@ -74,7 +79,7 @@ export class DayEditor extends React.PureComponent<Props, States> {
         this.state = {
             formErrors: {},
             formFieldErrors: {},
-            formValues: props.dayData,
+            formValues: props.slotData,
             pending: false,
             pristine: false,
             userGroups: [
@@ -104,14 +109,27 @@ export class DayEditor extends React.PureComponent<Props, States> {
     }
 
     componentWillReceiveProps(nextProps: Props) {
-        if (this.props.dayData !== nextProps.dayData) {
-            this.setState({ formValues: nextProps.dayData });
+        if (this.props.slotData !== nextProps.slotData) {
+            this.setState({ formValues: nextProps.slotData });
         }
     }
 
+    startSubmitSlotRequest = (value: SlotParams) => {
+        if (this.submitSlotRequest) {
+            this.submitSlotRequest.stop();
+        }
+        const request = new SlotPostRequest({
+            setState: params => this.setState(params),   
+            setSlot: this.props.setSlot,
+        });
+        this.submitSlotRequest = request.create(value);
+        this.submitSlotRequest.start();
+    }
+    
     // FORM RELATED
-
-    handleFormChange = (values: DayParams, formFieldErrors: FormFieldErrors, formErrors: FormErrors) => {
+    handleFormChange = (
+        values: SlotParams, formFieldErrors: FormFieldErrors, formErrors: FormErrors
+    ) => {
         this.setState({
             formErrors,
             formFieldErrors,
@@ -128,15 +146,15 @@ export class DayEditor extends React.PureComponent<Props, States> {
         });
     }
 
-    handleFormSubmit = (value: DayParams) => {
-        this.props.setData(this.props.activeDay, value);
+    handleFormSuccess = (value: SlotParams) => {
+        this.startSubmitSlotRequest(value);
     }
 
     handleDiscard = () => {
         this.setState({
             formErrors: {},
             formFieldErrors: {},
-            formValues: this.props.dayData,
+            formValues: this.props.slotData,
             pending: false,
             pristine: false,
         });
@@ -163,7 +181,7 @@ export class DayEditor extends React.PureComponent<Props, States> {
                     formErrors={formErrors}
                     fieldErrors={formFieldErrors}
                     changeCallback={this.handleFormChange}
-                    successCallback={this.handleFormSubmit}
+                    successCallback={this.handleFormSuccess}
                     failureCallback={this.handleFormError}
                     disabled={pending}
                 >
@@ -235,12 +253,12 @@ export class DayEditor extends React.PureComponent<Props, States> {
 
 const mapStateToProps = (state: RootState) => ({
     activeDay: activeDaySelector(state),
-    dayData: dayDataViewSelector(state),
     userGroups: userGroupsSelector(state),
+    slotData: slotDataSelector(state),
 });
 
 const mapDispatchToProps = (dispatch: Redux.Dispatch<RootState>) => ({
-    setData: (timestamp: number, params: DayParams) => dispatch(setDataAction(timestamp, params)),
+    setSlot: (params: SlotParams) => dispatch(setSlotAction(params)),
 });
 
 export default connect<PropsFromState, PropsFromDispatch, OwnProps>(mapStateToProps, mapDispatchToProps)(DayEditor);

@@ -1,24 +1,28 @@
 import update from '../../vendor/react-store/utils/immutable-update';
 import createReducerWithMap from '../../utils/createReducerWithMap';
 
-import { DayData, DomainData, ReducerGroup, UserGroup } from '../interface';
+import {
+    DomainData,
+    ReducerGroup,
+    SlotData,
+    UserGroup,
+} from '../interface';
 import initialDominDataState from '../initial-state/domainData';
 
 // ACTION-TYPE
 
-export const enum DAY_DATA_ACTION {
-    setDay = 'DOMAIN_DATA/SET_DAY',
+export const enum SLOT_DATA_ACTION {
+    setSlot = 'domainData/SET_SLOT',
 }
 
 export const enum USERGROUP_ACTION {
-    setUserGroups = 'DOMAIN_DATA/SET_USERGROUPS',
+    setUserGroups = 'domainData/SET_USERGROUPS',
 }
 
 // ACTION-CREATOR
 
-export const setDataAction = (timestamp: number, data: DayData) => ({
-    type: DAY_DATA_ACTION.setDay,
-    timestamp,
+export const setSlotAction = (data: SlotData) => ({
+    type: SLOT_DATA_ACTION.setSlot,
     data,
 });
 
@@ -31,13 +35,13 @@ export const setUserGroupsAction = (userGroups: UserGroup[]) => ({
 
 // REDUCER
 
-const setDayData = (state: DomainData, action: { timestamp: number, data: DayData }) => {
-    const { data, timestamp } = action;
+const setSlotData = (state: DomainData, action: { data: SlotData }) => {
+    const { data } = action;
     const settings = {
-        dayData: {
-            [timestamp]: { $auto: {
+        slotData: {
+            $auto: {
                 $set: data,
-            } },
+            },
         },
     };
     return update(state, settings);
@@ -54,8 +58,8 @@ const setUserGroups = (state: DomainData, action: { userGroups: UserGroup[] }) =
 };
 
 export const domainDataReducer: ReducerGroup<DomainData> = {
-    [DAY_DATA_ACTION.setDay]: setDayData,
     [USERGROUP_ACTION.setUserGroups]: setUserGroups,
+    [SLOT_DATA_ACTION.setSlot]: setSlotData,
 };
 
 export default createReducerWithMap(domainDataReducer, initialDominDataState);

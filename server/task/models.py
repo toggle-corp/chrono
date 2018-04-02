@@ -60,20 +60,22 @@ class TimeSlot(models.Model):
         Timeslot validation:
         Make sure, no other timeslots for this date overlaps with this
         """
-        if self.start_time > self.end_time:
+        if self.end_time and self.start_time > self.end_time:
             raise ValidationError('start_time must be less than end_time')
 
-        if TimeSlot.objects.filter(
-                models.Q(
-                    start_time__lt=self.start_time,
-                    end_time__gt=self.start_time,
-                ) |
-                models.Q(
+        time_condition = models.Q(
+            start_time__lt=self.start_time,
+            end_time__gt=self.start_time,
+        )
+        if self.end_time:
+            time_condition |= models.Q(
                     start_time__lt=self.end_time,
                     end_time__gt=self.end_time,
-                ),
-                user=self.user,
-                task__project=self.task.project,
+                )
+        if TimeSlot.objects.filter(
+            time_condition,
+            user=self.user,
+            task__project=self.task.project,
         ).exists():
             raise ValidationError('This time slot overlaps with another'
                                   'for this day')

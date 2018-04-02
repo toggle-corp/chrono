@@ -1,23 +1,24 @@
 import { createSelector } from 'reselect';
-import { RootState, DayData, UserGroup } from '../interface';
+import { RootState, SlotData, UserGroup } from '../interface';
 
 const emptyObject = {};
 
-export const dayDataSelector = ({ domainData }: RootState): DayData => (
-    domainData.dayData || emptyObject
+export const slotDataSelector = ({ domainData }: RootState): SlotData => (
+    domainData.slotData || emptyObject
 );
 
 export const activeDaySelector = ({ domainData }: RootState): number => (
     domainData.activeDay
 );
 
+// FIXME: Use empty array here
 export const userGroupsSelector = ({ domainData }: RootState): UserGroup[] => (
     domainData.userGroups
 );
 
 // COMPLEX
-export const dayDataViewSelector = createSelector(
-    dayDataSelector,
+export const slotDataViewSelector = createSelector(
+    slotDataSelector,
     activeDaySelector,
-    (dayData, activeDay) => dayData[activeDay] || emptyObject,
+    (slotData, activeDay) => slotData[activeDay] || emptyObject,
 );
