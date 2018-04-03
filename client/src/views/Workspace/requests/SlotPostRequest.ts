@@ -4,7 +4,7 @@ import {
 } from '../../../vendor/react-store/utils/rest';
 
 import { ErrorsFromServer } from '../../../rest/interface';
-import { DayEditor } from '../DayEditor';
+import { SlotEditor } from '../SlotEditor';
 
 import {
     urlForSlot,
@@ -19,7 +19,7 @@ interface Request<T> {
 }
 
 interface Props {
-    setState: DayEditor['setState'];
+    setState: SlotEditor['setState'];
     setSlot(params: SlotData): void;
 }
 
