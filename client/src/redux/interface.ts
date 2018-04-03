@@ -14,16 +14,15 @@ export interface Auth {
     activeUser: ActiveUser;
     authenticated: boolean;
 }
-export interface DayData {
-    [key: number]: {
-        // FIXME: fix the types
-        startTime: string,
-        endTime: string,
-        userGroup: number,
-        project: number,
-        task: number,
-        remarks: string,
-    };
+
+export interface SlotData {
+    id: number;
+    date: string;
+    startTime: string;
+    endTime: string;
+    user: number;
+    task: number;
+    remarks: string;
 }
 
 export interface UserGroup {
@@ -33,8 +32,8 @@ export interface UserGroup {
 
 export interface DomainData {
     activeDay: number;
-    dayData: DayData;
     userGroups: UserGroup[];
+    slotData: SlotData;
 }
 
 export interface RootState {
