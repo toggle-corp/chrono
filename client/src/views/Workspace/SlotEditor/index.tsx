@@ -35,7 +35,7 @@ import {
 } from '../../../redux';
 import { SlotData } from '../../../redux/interface';
 
-import styles from './styles.scss';
+import * as styles from './styles.scss';
 
 interface WithIdAndTitle {
     id: number;

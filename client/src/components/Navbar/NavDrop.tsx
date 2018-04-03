@@ -12,6 +12,7 @@ import List from '../../vendor/react-store/components/View/List';
 import DropdownMenu from '../../vendor/react-store/components/Action/DropdownMenu';
 import DropdownGroup from '../../vendor/react-store/components/Action/DropdownMenu/Group';
 
+import { stopTasksAction } from '../../redux/middlewares/taskManager';
 import {
     logoutAction,
     activeUserSelector,
@@ -25,7 +26,7 @@ import {
 import { CloakSettings } from '../../constants/routes/interface';
 
 import Cloak from '../Cloak';
-import styles from './styles.scss';
+import * as styles from './styles.scss';
 
 const defaultProps = {
     className: '',
@@ -40,6 +41,7 @@ interface OwnProps extends RouteComponentProps<{}> {
 }
 interface PropsFromDispatch {
     logout(): void;
+    stopTasks(): void;
 }
 interface PropsFromState {
     activeUser: ActiveUser;
@@ -92,6 +94,7 @@ class NavDrop extends React.PureComponent<Props, State> {
     }
 
     handleLogoutButtonClick = () => {
+        this.props.stopTasks();
         this.props.logout();
     }
 
@@ -145,6 +148,7 @@ const mapStateToProps = (state: RootState) => ({
 
 const mapDispatchToProps = (dispatch: Redux.Dispatch<RootState>) => ({
     logout: () => dispatch(logoutAction()),
+    stopTasks: () => dispatch(stopTasksAction()),
 });
 
 export default withRouter(

@@ -2,8 +2,8 @@ import React from 'react';
 import { Provider, Store } from 'react-redux';
 import { persistStore } from 'redux-persist';
 
+import { startActionsSync } from './vendor/react-store/utils/redux-sync';
 import store from './store';
-
 import App from './App';
 
 interface State {
@@ -26,6 +26,7 @@ export default class Root extends React.Component<object, State> {
         // console.log('Mounting Root');
         const afterRehydrateCallback = () => this.setState({ rehydrated: true });
         persistStore(this.store, undefined, afterRehydrateCallback);
+        startActionsSync(this.store);
     }
 
     render() {

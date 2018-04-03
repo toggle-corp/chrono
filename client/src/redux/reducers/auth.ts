@@ -10,10 +10,10 @@ import schema from '../../schema';
 // ACTION-TYPE
 
 export const enum AUTH_ACTION {
-    login = 'AUTH/login',
-    logout = 'AUTH/logout',
-    authenticate = 'AUTH/authenticate',
-    setAccessToken = 'AUTH/setAccessToken',
+    login = 'auth/LOGIN',
+    logout = 'auth/LOGOUT',
+    authenticate = 'auth/AUTHENTICATE',
+    setAccessToken = 'auth/SET_ACCESS_TOKEN',
 }
 
 // ACTION-CREATOR

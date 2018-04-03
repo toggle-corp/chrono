@@ -16,7 +16,7 @@ import {
 import { CloakSettings } from '../../constants/routes/interface';
 
 import Cloak from '../Cloak';
-import styles from './styles.scss';
+import * as styles from './styles.scss';
 
 const defaultProps = {
     className: '',

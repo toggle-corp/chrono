@@ -23,7 +23,7 @@ import {
 import { pathNames } from '../../constants';
 
 import UserRegisterRequest, { RegisterParams } from './requests/UserRegisterRequest';
-import styles from './styles.scss';
+import * as styles from './styles.scss';
 
 interface OwnProps {}
 interface PropsFromState { }

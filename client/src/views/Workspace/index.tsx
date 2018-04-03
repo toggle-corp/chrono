@@ -8,7 +8,7 @@ import { RestRequest } from '../../vendor/react-store/utils/rest';
 import { setUserGroupsAction } from '../../redux';
 import { RootState, UserGroup } from '../../redux/interface';
 import SlotEditor from './SlotEditor';
-import styles from './styles.scss';
+import * as styles from './styles.scss';
 
 import GetUserGroupsRequest from './requests/GetUserGroupsRequest';
 

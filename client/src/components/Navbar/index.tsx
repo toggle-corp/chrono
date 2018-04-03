@@ -20,7 +20,7 @@ import logo from '../../resources/img/Chrono.svg';
 
 import NavMenu from './NavMenu';
 import NavDrop from './NavDrop';
-import styles from './styles.scss';
+import * as styles from './styles.scss';
 
 const defaultProps = {
     className: '',
