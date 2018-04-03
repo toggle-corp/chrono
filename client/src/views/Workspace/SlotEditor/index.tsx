@@ -66,7 +66,7 @@ interface States {
 
 type SlotParams = SlotData;
 
-export class DayEditor extends React.PureComponent<Props, States> {
+export class SlotEditor extends React.PureComponent<Props, States> {
     schema: Schema;
     submitSlotRequest: RestRequest;
 
@@ -119,13 +119,13 @@ export class DayEditor extends React.PureComponent<Props, States> {
             this.submitSlotRequest.stop();
         }
         const request = new SlotPostRequest({
-            setState: params => this.setState(params),   
+            setState: params => this.setState(params),
             setSlot: this.props.setSlot,
         });
         this.submitSlotRequest = request.create(value);
         this.submitSlotRequest.start();
     }
-    
+
     // FORM RELATED
     handleFormChange = (
         values: SlotParams, formFieldErrors: FormFieldErrors, formErrors: FormErrors
@@ -208,8 +208,8 @@ export class DayEditor extends React.PureComponent<Props, States> {
                         label="User Group"
                         options={userGroups}
                         placeholder="Select a user group"
-                        keySelector={DayEditor.keySelector}
-                        labelSelector={DayEditor.labelSelector}
+                        keySelector={SlotEditor.keySelector}
+                        labelSelector={SlotEditor.labelSelector}
                     />
                     <SelectInput
                         formname="project"
@@ -217,8 +217,8 @@ export class DayEditor extends React.PureComponent<Props, States> {
                         className={styles.project}
                         options={projects}
                         placeholder="Select a project"
-                        keySelector={DayEditor.keySelector}
-                        labelSelector={DayEditor.labelSelector}
+                        keySelector={SlotEditor.keySelector}
+                        labelSelector={SlotEditor.labelSelector}
                     />
                     <SelectInput
                         formname="task"
@@ -226,8 +226,8 @@ export class DayEditor extends React.PureComponent<Props, States> {
                         className={styles.task}
                         options={tasks}
                         placeholder="Select a task"
-                        keySelector={DayEditor.keySelector}
-                        labelSelector={DayEditor.labelSelector}
+                        keySelector={SlotEditor.keySelector}
+                        labelSelector={SlotEditor.labelSelector}
                     />
                     </div>
                     <TextInput
@@ -261,4 +261,4 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<RootState>) => ({
     setSlot: (params: SlotParams) => dispatch(setSlotAction(params)),
 });
 
-export default connect<PropsFromState, PropsFromDispatch, OwnProps>(mapStateToProps, mapDispatchToProps)(DayEditor);
+export default connect<PropsFromState, PropsFromDispatch, OwnProps>(mapStateToProps, mapDispatchToProps)(SlotEditor);

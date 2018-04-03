@@ -7,7 +7,7 @@ import { RestRequest } from '../../vendor/react-store/utils/rest';
 
 import { setUserGroupsAction } from '../../redux';
 import { RootState, UserGroup } from '../../redux/interface';
-import DayEditor from './DayEditor';
+import SlotEditor from './SlotEditor';
 import styles from './styles.scss';
 
 import GetUserGroupsRequest from './requests/GetUserGroupsRequest';
@@ -101,7 +101,7 @@ export class Workspace extends React.PureComponent<Props, States> {
                         02, Thursday
                     </div>
                 </div>
-                <DayEditor />
+                <SlotEditor />
                 <div className={styles.bottom} >
                     Bottom Part
                 </div>
