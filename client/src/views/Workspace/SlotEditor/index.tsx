@@ -26,7 +26,10 @@ import {
     activeDaySelector,
     userGroupsSelector,
 } from '../../../redux';
-import { RootState, UserGroup } from '../../../redux/interface';
+import {
+    RootState,
+    UserGroup,
+} from '../../../redux/interface';
 import {
     setSlotAction,
 } from '../../../redux';
@@ -43,7 +46,7 @@ interface OwnProps {}
 
 interface PropsFromState {
     slotData: SlotParams;
-    activeDay: number;
+    activeDay: string;
     userGroups: UserGroup[];
 }
 
@@ -147,7 +150,10 @@ export class SlotEditor extends React.PureComponent<Props, States> {
     }
 
     handleFormSuccess = (value: SlotParams) => {
-        this.startSubmitSlotRequest(value);
+        this.startSubmitSlotRequest({
+            ...value,
+            date: this.props.activeDay,
+        });
     }
 
     handleDiscard = () => {

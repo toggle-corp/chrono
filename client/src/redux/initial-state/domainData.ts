@@ -1,7 +1,7 @@
 import { DomainData } from '../interface';
 
 const initialDomainDataState: DomainData = {
-    activeDay: 1521915300,
+    activeDay: '2017-10-10',
     userGroups: [],
     slotData: {
         // index should be day timestamp or FIXME

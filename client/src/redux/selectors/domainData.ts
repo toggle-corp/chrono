@@ -7,7 +7,7 @@ export const slotDataSelector = ({ domainData }: RootState): SlotData => (
     domainData.slotData || emptyObject
 );
 
-export const activeDaySelector = ({ domainData }: RootState): number => (
+export const activeDaySelector = ({ domainData }: RootState): string => (
     domainData.activeDay
 );
 
