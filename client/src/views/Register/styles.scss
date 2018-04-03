@@ -8,6 +8,7 @@ $color-text-on-primary: get-text-color($color-primary);
     flex-wrap: wrap;
     align-items: center;
     justify-content: center;
+    flex-direction: column;
 
     .chrono-container {
         display: flex;
@@ -28,7 +29,6 @@ $color-text-on-primary: get-text-color($color-primary);
         display: flex;
         position: relative;
         flex-direction: column;
-        margin: $spacing-extra-large;
         width: $width-register-form;
 
         .register-success {
@@ -55,7 +55,6 @@ $color-text-on-primary: get-text-color($color-primary);
         }
 
         .login-link-container {
-            @include background-color($color-foreground);
             display: flex;
             flex-basis: 100%;
             align-items: center;

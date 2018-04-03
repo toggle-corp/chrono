@@ -167,13 +167,11 @@ export class Register extends React.PureComponent<Props, States> {
                                     formname="lastName"
                                     label="Last Name"
                                     placeholder="Doe"
-                                    autoFocus
                                 />
                                 <TextInput
                                     formname="username"
                                     label="Email"
                                     placeholder="john.doe@mail.com"
-                                    autoFocus
                                 />
                                 <TextInput
                                     formname="password"
