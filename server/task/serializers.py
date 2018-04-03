@@ -19,7 +19,7 @@ class TaskSerializer(DynamicFieldsMixin, UserResourceSerializer):
 class TimeSlotSerializer(DynamicFieldsMixin, serializers.ModelSerializer):
     class Meta:
         model = TimeSlot
-        fields = ('__all__')
+        exclude = ('user',)  # can be obtained from context
 
     def validate_task(self, task):
         if not task.can_get(self.context['request'].user):
@@ -27,6 +27,7 @@ class TimeSlotSerializer(DynamicFieldsMixin, serializers.ModelSerializer):
         return task
 
     def validate(self, attrs):
+        attrs['user'] = self.context['request'].user
         instance = TimeSlot(**attrs)
         instance.clean()
         return attrs
