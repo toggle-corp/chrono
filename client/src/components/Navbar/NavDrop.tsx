@@ -83,7 +83,7 @@ class NavDrop extends React.PureComponent<Props, State> {
                 render={() => (
                     <Link
                         to={reverseRoute(pathNames[key], params)}
-                        className={styles['dropdown-item']}
+                        className={styles.dropdownItem}
                     >
                         {iconName && <span className={`${iconName} ${styles.icon}`} />}
                         {key}

@@ -5,10 +5,10 @@ $color-text-on-primary: get-text-color($color-primary);
 .register {
     @extend %main-content;
     display: flex;
+    flex-direction: column;
     flex-wrap: wrap;
     align-items: center;
     justify-content: center;
-    flex-direction: column;
 
     .chrono-container {
         display: flex;

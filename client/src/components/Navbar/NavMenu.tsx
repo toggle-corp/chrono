@@ -154,7 +154,7 @@ class NavMenu extends React.PureComponent<Props, State> {
     )
 
     renderOverflowMenuItem = (key: string, item: CloakSettingsWithKey) => (
-        this.renderNavItem(key, item, styles.overflowMenuItem)
+        this.renderNavItem(key, item, `${styles.overflowMenuItem} ${styles.dropdownItem}`)
     )
 
     keyExtractor = (d: CloakSettingsWithKey): string => d.key;
