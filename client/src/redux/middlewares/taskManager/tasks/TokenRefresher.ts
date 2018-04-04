@@ -21,8 +21,8 @@ const REFRESH_CHECK_TIME = 1000;
 export default class TokenRefresher implements AbstractTask {
     store: MiddlewareAPI<RootState>;
     refreshTime: number;
-    refreshCheckTime: number;
-    refreshId?: number;
+    refreshCheckTime?: number;
+    refreshTimeoutId?: number;
     lastRefreshTime: number;
     refreshRequest: RestRequest;
 
@@ -38,12 +38,12 @@ export default class TokenRefresher implements AbstractTask {
         this.lastRefreshTime = (new Date()).getTime();
     }
 
-    start() {
+    start = () => {
         this.scheduleRefreshCheck();
         return Promise.resolve();
     }
 
-    stop() {
+    stop = () => {
         this.clearRefreshCheck();
         return Promise.resolve();
     }
@@ -84,7 +84,7 @@ export default class TokenRefresher implements AbstractTask {
     }
 
     refreshAction = () => {
-        this.refreshId = undefined;
+        this.refreshTimeoutId = undefined;
 
         const now = (new Date()).getTime();
         const difference = now - this.lastRefreshTime;
@@ -107,18 +107,18 @@ export default class TokenRefresher implements AbstractTask {
     }
 
     scheduleRefreshCheck = () => {
-        if (this.refreshId) {
+        if (this.refreshTimeoutId) {
             console.warn('Refresh is already scheduled. Not re-scheduling.');
             return;
         }
-        this.refreshId = window.setTimeout(this.refreshAction, this.refreshCheckTime);
+        this.refreshTimeoutId = window.setTimeout(this.refreshAction, this.refreshCheckTime);
     }
 
     clearRefreshCheck = () => {
-        if (this.refreshId) {
-            window.clearTimeout(this.refreshId);
+        if (this.refreshTimeoutId) {
+            window.clearTimeout(this.refreshTimeoutId);
         }
-        this.refreshId = undefined;
+        this.refreshTimeoutId = undefined;
     }
 
 }

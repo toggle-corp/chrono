@@ -10,4 +10,5 @@ export default storeConfig;
 export const reducersToSync = [
     'auth',
     'domainData',
+    'taskManager', // middleware
 ];
