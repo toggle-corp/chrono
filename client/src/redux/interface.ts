@@ -31,7 +31,7 @@ export interface UserGroup {
 }
 
 export interface DomainData {
-    activeDay: number;
+    activeDay: string;
     userGroups: UserGroup[];
     slotData: SlotData;
 }
