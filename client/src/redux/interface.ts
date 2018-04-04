@@ -2,6 +2,14 @@ import {
     FormErrors,
     FormFieldErrors,
 } from '../rest/interface';
+
+export interface Notification {
+    type: string;
+    title: string;
+    message: string;
+    dismissable: boolean;
+    duration: number;
+}
 export interface Token {
     access?: string;
     refresh?: string;
@@ -67,9 +75,14 @@ export interface DomainData {
     timeslotViews: TimeslotViews;
 }
 
+export interface Notify {
+    notifications: Notification[];
+}
+
 export interface RootState {
     domainData: DomainData;
     auth: Auth;
+    notify: Notify;
 }
 
 export interface ReducerGroup<T> {

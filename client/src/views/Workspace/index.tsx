@@ -5,12 +5,12 @@ import { connect } from 'react-redux';
 import ListView from '../../vendor/react-store/components/View/List/ListView';
 import { RestRequest } from '../../vendor/react-store/utils/rest';
 
+import notify from '../../notify';
 import { setUserGroupsAction } from '../../redux';
 import { RootState, UserGroup } from '../../redux/interface';
+import GetUserGroupsRequest from './requests/GetUserGroupsRequest';
 import SlotEditor from './SlotEditor';
 import * as styles from './styles.scss';
-
-import GetUserGroupsRequest from './requests/GetUserGroupsRequest';
 
 interface OwnProps {}
 interface PropsFromState { }
@@ -56,6 +56,10 @@ export class Workspace extends React.PureComponent<Props, States> {
 
     componentWillMount() {
         this.startRequestForUserGroup();
+
+        notify.send({
+            type: notify.type.INFO,
+        });
     }
 
     componentWillUnmount() {
