@@ -3,15 +3,15 @@ checks:
   complex-logic:
     enabled: true
     config:
-        threshold: 4
+        threshold: 10
   file-lines:
     enabled: true
     config:
-        threshold: 500
+        threshold: 999
   method-complexity:
     enabled: true
     config:
-        threshold: 5
+        threshold: 10
   method-count:
     enabled: true
     config:
@@ -36,14 +36,10 @@ checks:
     enabled: false
 
 plugins:
-  eslint:
+  tslint:
     enabled: true
-    channel: "eslint-4"
-    checks:
-      complexity:
-        enabled: false
     config:
-      config: client/.eslintrc
+      config: client/tslint.json
   pep8:
     enabled: true
     checks:
@@ -52,17 +48,30 @@ plugins:
   scss-lint:
     enabled: true
     config: client/.scss-lint.yml
+plugins:
+  fixme:
+    enabled: true
+    config:
+      strings:
+      - FIXME
+      - XXX
+      - TODO
 
 exclude_patterns:
 - "server/*/migrations/*"
 - "server/*/tests/*"
 - "server/*/wsgi.py"
 - "server/manage.py"
+
+- "client/build/"
+- "client/coverage/"
 - "client/config/"
 - "client/scripts/"
+
 - "**/node_modules/"
 - "script/"
 - "**/spec/"
 - "**/test/"
 - "**/tests/"
 - "**/vendor/"
+- "**/*.test.js"
