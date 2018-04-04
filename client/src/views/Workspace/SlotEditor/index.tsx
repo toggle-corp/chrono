@@ -22,15 +22,18 @@ import {
     Schema,
 } from '../../../rest/interface';
 import {
-    slotDataSelector,
+    workspaceActiveTimeslotSelector,
+    timeslotActiveViewSelector,
     activeDaySelector,
     userGroupsSelector,
     setSlotAction,
+    setSlotViewAction,
 } from '../../../redux';
 import {
     RootState,
     UserGroup,
     SlotData,
+    TimeslotView,
 } from '../../../redux/interface';
 
 import * as styles from './styles.scss';
@@ -45,11 +48,13 @@ interface OwnProps {}
 interface PropsFromState {
     slotData: SlotParams;
     activeDay: string;
+    slotView: TimeslotView;
     userGroups: UserGroup[];
 }
 
 interface PropsFromDispatch {
     setSlot(params: SlotParams): void;
+    setSlotView(params: TimeslotView): void;
 }
 
 type Props = OwnProps & PropsFromState & PropsFromDispatch;
@@ -60,7 +65,6 @@ interface States {
     formValues: ValuesFromForm;
     pending: boolean;
     pristine: boolean;
-    userGroups: WithIdAndTitle[];
     projects: WithIdAndTitle[];
     tasks: WithIdAndTitle[];
 }
@@ -77,15 +81,13 @@ export class SlotEditor extends React.PureComponent<Props, States> {
     constructor(props: Props) {
         super(props);
 
+        const { slotView } = props;
         this.state = {
             formErrors: {},
             formFieldErrors: {},
-            formValues: props.slotData,
+            formValues: slotView.data,
             pending: false,
-            pristine: false,
-            userGroups: [
-                { id: 1, title: 'User Group #1' },
-            ],
+            pristine: slotView.pristine,
             projects: [
                 { id: 1, title: 'Project #1' },
                 { id: 2, title: 'Project #2' },
@@ -109,12 +111,6 @@ export class SlotEditor extends React.PureComponent<Props, States> {
         };
     }
 
-    componentWillReceiveProps(nextProps: Props) {
-        if (this.props.slotData !== nextProps.slotData) {
-            this.setState({ formValues: nextProps.slotData });
-        }
-    }
-
     startSubmitSlotRequest = (value: SlotParams) => {
         if (this.submitSlotRequest) {
             this.submitSlotRequest.stop();
@@ -131,16 +127,17 @@ export class SlotEditor extends React.PureComponent<Props, States> {
     handleFormChange = (
         values: SlotParams, formFieldErrors: FormFieldErrors, formErrors: FormErrors,
     ) => {
-        this.setState({
+        this.props.setSlotView({
             formErrors,
             formFieldErrors,
-            formValues: values,
+            data: values,
             pristine: true,
         });
     }
 
     handleFormError = (formFieldErrors: FormFieldErrors, formErrors: FormErrors) => {
-        this.setState({
+        this.props.setSlotView({
+            ...this.props.slotView,
             formErrors,
             formFieldErrors,
             pristine: true,
@@ -155,26 +152,27 @@ export class SlotEditor extends React.PureComponent<Props, States> {
     }
 
     handleDiscard = () => {
-        this.setState({
+        this.props.setSlotView({
+            data: this.props.slotData,
+            pristine: false,
             formErrors: {},
             formFieldErrors: {},
-            formValues: this.props.slotData,
-            pending: false,
-            pristine: false,
         });
     }
 
     render() {
         const {
-            formErrors,
-            formFieldErrors,
-            formValues,
             pending,
-
             projects,
             tasks,
         } = this.state;
-        const { userGroups } = this.props;
+        const { userGroups, slotView } = this.props;
+        const {
+            formErrors,
+            formFieldErrors,
+            data: formValues,
+            pristine,
+        } = slotView;
 
         return (
             <div className={styles.dayEditor}>
@@ -242,10 +240,16 @@ export class SlotEditor extends React.PureComponent<Props, States> {
                         placeholder="Remarks"
                     />
                     <div className={styles.actionButtons}>
-                        <PrimaryButton type="submit">
+                        <PrimaryButton
+                            type="submit"
+                            disabled={!pristine || pending}
+                        >
                             Save
                         </PrimaryButton>
-                        <DangerButton onClick={this.handleDiscard}>
+                        <DangerButton
+                            onClick={this.handleDiscard}
+                            disabled={!pristine || pending}
+                        >
                             Discard
                         </DangerButton>
                     </div>
@@ -258,11 +262,13 @@ export class SlotEditor extends React.PureComponent<Props, States> {
 const mapStateToProps = (state: RootState) => ({
     activeDay: activeDaySelector(state),
     userGroups: userGroupsSelector(state),
-    slotData: slotDataSelector(state),
+    slotData: workspaceActiveTimeslotSelector(state),
+    slotView: timeslotActiveViewSelector(state),
 });
 
 const mapDispatchToProps = (dispatch: Redux.Dispatch<RootState>) => ({
     setSlot: (params: SlotParams) => dispatch(setSlotAction(params)),
+    setSlotView: (params: TimeslotView) => dispatch(setSlotViewAction(params)),
 });
 
 export default connect<PropsFromState, PropsFromDispatch, OwnProps>(
