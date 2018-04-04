@@ -79,7 +79,7 @@ export const views = mapObjectToObject<RouteSetting, (props: object) => JSX.Elem
 
 export const pathNames = mapObjectToObject<RouteSetting, string | undefined>(
     routes,
-    route => route.path
+    route => route.path,
 );
 
 export const validLinks = mapObjectToObject<RouteSetting, CloakSettings>(

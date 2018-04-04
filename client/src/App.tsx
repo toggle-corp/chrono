@@ -111,4 +111,6 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<RootState>) => ({
     startTasks: () => dispatch(startTasksAction()),
 });
 
-export default connect<PropsFromState, PropsFromDispatch, OwnProps>(mapStateToProps, mapDispatchToProps)(App);
+export default connect<PropsFromState, PropsFromDispatch, OwnProps>(
+    mapStateToProps, mapDispatchToProps,
+)(App);

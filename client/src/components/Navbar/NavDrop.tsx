@@ -55,7 +55,7 @@ class NavDrop extends React.PureComponent<Props, State> {
     static defaultProps = defaultProps;
 
     static dropdownItemIcons: {
-        [key: string]: string
+        [key: string]: string,
     } = {
         login: iconNames.person,
         profile: iconNames.globe,
@@ -74,21 +74,23 @@ class NavDrop extends React.PureComponent<Props, State> {
 
         const iconName = NavDrop.dropdownItemIcons[key];
 
+        const renderFn = () => (
+            <Link
+                to={reverseRoute(pathNames[key], params)}
+                className={styles.dropdownItem}
+            >
+                {iconName && <span className={`${iconName} ${styles.icon}`} />}
+                {key}
+            </Link>
+        );
+
         return (
             <Cloak
                 key={key}
                 requireLogin={item.requireLogin}
                 requireAdminRights={item.requireAdminRights}
                 requireDevMode={item.requireDevMode}
-                render={() => (
-                    <Link
-                        to={reverseRoute(pathNames[key], params)}
-                        className={styles.dropdownItem}
-                    >
-                        {iconName && <span className={`${iconName} ${styles.icon}`} />}
-                        {key}
-                    </Link>
-                )}
+                render={renderFn}
             />
         );
     }
@@ -108,6 +110,18 @@ class NavDrop extends React.PureComponent<Props, State> {
         // const currentValidLinks = validLinks[this.currentPath];
         const userName = activeUser.displayName || 'Anon';
 
+        const renderFn = () => (
+            <DropdownGroup>
+                <button
+                    className={styles.dropdownItem}
+                    onClick={this.handleLogoutButtonClick}
+                >
+                    <span className={`${styles.icon} ${iconNames.logout}`} />
+                    Logout
+                </button>
+            </DropdownGroup>
+        );
+
         return (
             <DropdownMenu
                 className={className}
@@ -123,19 +137,7 @@ class NavDrop extends React.PureComponent<Props, State> {
                 </DropdownGroup>
                 <Cloak
                     requireLogin
-                    render={
-                        () => (
-                            <DropdownGroup>
-                                <button
-                                    className={styles.dropdownItem}
-                                    onClick={this.handleLogoutButtonClick}
-                                >
-                                    <span className={`${styles.icon} ${iconNames.logout}`} />
-                                    Logout
-                                </button>
-                            </DropdownGroup>
-                        )
-                    }
+                    render={renderFn}
                 />
             </DropdownMenu>
         );
@@ -152,5 +154,7 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<RootState>) => ({
 });
 
 export default withRouter(
-    connect<PropsFromState, PropsFromDispatch, OwnProps>(mapStateToProps, mapDispatchToProps)(NavDrop)
+    connect<PropsFromState, PropsFromDispatch, OwnProps>(
+        mapStateToProps, mapDispatchToProps,
+    )(NavDrop),
 );

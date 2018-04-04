@@ -57,8 +57,8 @@ export class Register extends React.PureComponent<Props, States> {
 
         this.schema = {
             fields: {
-                firstName: [ requiredCondition ],
-                lastName: [ requiredCondition ],
+                firstName: [requiredCondition],
+                lastName: [requiredCondition],
                 username: [
                     requiredCondition,
                     emailCondition,
@@ -90,7 +90,9 @@ export class Register extends React.PureComponent<Props, States> {
 
     // FORM RELATED
 
-    handleFormChange = (values: RegisterParams, formFieldErrors: FormFieldErrors, formErrors: FormErrors) => {
+    handleFormChange = (
+        values: RegisterParams, formFieldErrors: FormFieldErrors, formErrors: FormErrors,
+    ) => {
         this.setState({
             formErrors,
             formFieldErrors,

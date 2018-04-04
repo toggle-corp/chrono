@@ -63,7 +63,7 @@ export default class CreateTokenRequest implements Request<AuthParams> {
                     console.error(err);
                 }
             })
-            .failure((response: { errors: ErrorsFromServer } ) => {
+            .failure((response: { errors: ErrorsFromServer }) => {
                 const {
                     formFieldErrors,
                     formErrors,
@@ -74,7 +74,7 @@ export default class CreateTokenRequest implements Request<AuthParams> {
                     pending: false,
                 });
             })
-            .fatal((response: object) => {
+            .fatal(() => {
                 this.props.setState({
                     formErrors: { errors: ['Some error occured.'] },
                     pending: false,

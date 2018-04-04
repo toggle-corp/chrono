@@ -8,7 +8,7 @@ import { RestPostBody } from './interface';
 export const urlForTokenCreate: string = `${wsEndpoint}/token/`;
 export const createParamsForTokenCreate = (
     { username, password }:
-    { username: string, password: string }
+    { username: string, password: string },
 ): RestPostBody => ({
     method: Rest.POST,
     headers: commonHeaderForPost,
@@ -20,7 +20,7 @@ export const createParamsForTokenCreate = (
 
 export const urlForTokenRefresh = `${wsEndpoint}/token/refresh/`;
 export const createParamsForTokenRefresh = (
-    { refresh }: { refresh: string }
+    { refresh }: { refresh: string },
 ): RestPostBody => ({
     method: Rest.POST,
     headers: commonHeaderForPost,

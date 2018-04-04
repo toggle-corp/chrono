@@ -91,7 +91,9 @@ export class Login extends React.PureComponent<Props, States> {
 
     // FORM RELATED
 
-    handleFormChange = (values: AuthParams, formFieldErrors: FormFieldErrors, formErrors: FormErrors) => {
+    handleFormChange = (
+        values: AuthParams, formFieldErrors: FormFieldErrors, formErrors: FormErrors,
+    ) => {
         this.setState({
             formErrors,
             formFieldErrors,
@@ -193,4 +195,6 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<RootState>) => ({
     startTasks: () => dispatch(startTasksAction()),
 });
 
-export default connect<PropsFromState, PropsFromDispatch, OwnProps>(undefined, mapDispatchToProps)(Login);
+export default connect<PropsFromState, PropsFromDispatch, OwnProps>(
+    undefined, mapDispatchToProps,
+)(Login);

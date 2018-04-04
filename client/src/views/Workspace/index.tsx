@@ -114,4 +114,6 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<RootState>) => ({
     setUserGroups: (params: UserGroup[]) => dispatch(setUserGroupsAction(params)),
 });
 
-export default connect<PropsFromState, PropsFromDispatch, OwnProps>(undefined, mapDispatchToProps)(Workspace);
+export default connect<PropsFromState, PropsFromDispatch, OwnProps>(
+    undefined, mapDispatchToProps,
+)(Workspace);

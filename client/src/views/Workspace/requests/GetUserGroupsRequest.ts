@@ -8,7 +8,7 @@ import { Workspace } from '../index';
 
 import {
     urlForUserGroups,
-    createParamsForUserGroups
+    createParamsForUserGroups,
 } from '../../../rest';
 import { UserGroup } from '../../../redux/interface';
 import schema from '../../../schema'; 

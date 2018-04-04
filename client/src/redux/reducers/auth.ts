@@ -19,9 +19,9 @@ export const enum AUTH_ACTION {
 // ACTION-CREATOR
 
 export const loginAction = ({ access, refresh }: Token) => ({
-    type: AUTH_ACTION.login,
     access,
     refresh,
+    type: AUTH_ACTION.login,
 });
 
 export const authenticateAction = () => ({
@@ -33,8 +33,8 @@ export const logoutAction = () => ({
 });
 
 export const setAccessTokenAction = (access: string) => ({
-    type: AUTH_ACTION.setAccessToken,
     access,
+    type: AUTH_ACTION.setAccessToken,
 });
 
 // HELPER

@@ -61,8 +61,8 @@ class NavMenu extends React.PureComponent<Props, State> {
         if (this.props.links !== nextProps.links) {
             const overflowMenuLinks = this.computeSize(nextProps.links);
             this.setState({
-                navLinks: nextProps.links,
                 overflowMenuLinks,
+                navLinks: nextProps.links,
             });
         }
     }
@@ -127,24 +127,24 @@ class NavMenu extends React.PureComponent<Props, State> {
         const params = {
             // projectId, countryId
         };
+        const renderFn = () => (
+            <NavLink
+                activeClassName={styles.active}
+                to={reverseRoute(pathNames[key], params)}
+                className={className}
+                exact
+            >
+                {key}
+            </NavLink>
+        );
+
         return (
             <Cloak
                 key={key}
                 requireLogin={item.requireLogin}
                 requireAdminRights={item.requireAdminRights}
                 requireDevMode={item.requireDevMode}
-                render={
-                    () => (
-                        <NavLink
-                            activeClassName={styles.active}
-                            to={reverseRoute(pathNames[key], params)}
-                            className={className}
-                            exact
-                        >
-                            {key}
-                        </NavLink>
-                    )
-                }
+                render={renderFn}
             />
         );
     }
