@@ -30,8 +30,9 @@ const notifySend = (state: Notify, action: { type: string, notification: Notific
     return newState;
 };
 
-const notifyHide = () => {
+const notifyHide = (state: Notify) => {
     const newState = {
+        ...state,
         notifications: [],
     };
     return newState;
