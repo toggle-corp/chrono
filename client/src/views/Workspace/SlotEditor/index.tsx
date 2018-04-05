@@ -71,8 +71,6 @@ interface States {
     formValues: ValuesFromForm;
     pending: boolean;
     pristine: boolean;
-    projects: Project[];
-    tasks: WithIdAndTitle[];
 }
 
 type SlotParams = SlotData;
@@ -94,8 +92,6 @@ export class SlotEditor extends React.PureComponent<Props, States> {
             formValues: slotView.data,
             pending: false,
             pristine: slotView.pristine,
-            projects: [],
-            tasks: [],
         };
 
         this.schema = {
