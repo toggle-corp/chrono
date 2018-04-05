@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { Fragment }  from 'react';
+import Helmet from 'react-helmet';
 
 import Bundle from '../vendor/react-store/components/General/Bundle';
 
@@ -18,10 +19,19 @@ export default class ViewManager extends React.PureComponent<Props, {}> {
     render() {
         const { load, ...otherProps } = this.props;
         return (
-            <Bundle
-                load={load}
-                {...otherProps}
-            />
+            <Fragment>
+                <Helmet>
+                    <meta charSet="utf-8" />
+                    <title>
+                        {/* TODO: use dynamic strings here */}
+                        Chrono
+                    </title>
+                </Helmet>
+                <Bundle
+                    load={load}
+                    {...otherProps}
+                />
+            </Fragment>
         );
     }
 }

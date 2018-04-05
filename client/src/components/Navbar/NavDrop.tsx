@@ -12,6 +12,7 @@ import List from '../../vendor/react-store/components/View/List';
 import DropdownMenu from '../../vendor/react-store/components/Action/DropdownMenu';
 import DropdownGroup from '../../vendor/react-store/components/Action/DropdownMenu/Group';
 
+import { stopTasksAction } from '../../redux/middlewares/taskManager';
 import {
     logoutAction,
     activeUserSelector,
@@ -25,7 +26,7 @@ import {
 import { CloakSettings } from '../../constants/routes/interface';
 
 import Cloak from '../Cloak';
-import styles from './styles.scss';
+import * as styles from './styles.scss';
 
 const defaultProps = {
     className: '',
@@ -40,6 +41,7 @@ interface OwnProps extends RouteComponentProps<{}> {
 }
 interface PropsFromDispatch {
     logout(): void;
+    stopTasks(): void;
 }
 interface PropsFromState {
     activeUser: ActiveUser;
@@ -53,7 +55,7 @@ class NavDrop extends React.PureComponent<Props, State> {
     static defaultProps = defaultProps;
 
     static dropdownItemIcons: {
-        [key: string]: string
+        [key: string]: string,
     } = {
         login: iconNames.person,
         profile: iconNames.globe,
@@ -72,26 +74,29 @@ class NavDrop extends React.PureComponent<Props, State> {
 
         const iconName = NavDrop.dropdownItemIcons[key];
 
+        const renderFn = () => (
+            <Link
+                to={reverseRoute(pathNames[key], params)}
+                className={styles.dropdownItem}
+            >
+                {iconName && <span className={`${iconName} ${styles.icon}`} />}
+                {key}
+            </Link>
+        );
+
         return (
             <Cloak
                 key={key}
                 requireLogin={item.requireLogin}
                 requireAdminRights={item.requireAdminRights}
                 requireDevMode={item.requireDevMode}
-                render={() => (
-                    <Link
-                        to={reverseRoute(pathNames[key], params)}
-                        className={styles['dropdown-item']}
-                    >
-                        {iconName && <span className={`${iconName} ${styles.icon}`} />}
-                        {key}
-                    </Link>
-                )}
+                render={renderFn}
             />
         );
     }
 
     handleLogoutButtonClick = () => {
+        this.props.stopTasks();
         this.props.logout();
     }
 
@@ -104,6 +109,18 @@ class NavDrop extends React.PureComponent<Props, State> {
 
         // const currentValidLinks = validLinks[this.currentPath];
         const userName = activeUser.displayName || 'Anon';
+
+        const renderFn = () => (
+            <DropdownGroup>
+                <button
+                    className={styles.dropdownItem}
+                    onClick={this.handleLogoutButtonClick}
+                >
+                    <span className={`${styles.icon} ${iconNames.logout}`} />
+                    Logout
+                </button>
+            </DropdownGroup>
+        );
 
         return (
             <DropdownMenu
@@ -120,19 +137,7 @@ class NavDrop extends React.PureComponent<Props, State> {
                 </DropdownGroup>
                 <Cloak
                     requireLogin
-                    render={
-                        () => (
-                            <DropdownGroup>
-                                <button
-                                    className={styles.dropdownItem}
-                                    onClick={this.handleLogoutButtonClick}
-                                >
-                                    <span className={`${styles.icon} ${iconNames.logout}`} />
-                                    Logout
-                                </button>
-                            </DropdownGroup>
-                        )
-                    }
+                    render={renderFn}
                 />
             </DropdownMenu>
         );
@@ -145,8 +150,11 @@ const mapStateToProps = (state: RootState) => ({
 
 const mapDispatchToProps = (dispatch: Redux.Dispatch<RootState>) => ({
     logout: () => dispatch(logoutAction()),
+    stopTasks: () => dispatch(stopTasksAction()),
 });
 
 export default withRouter(
-    connect<PropsFromState, PropsFromDispatch, OwnProps>(mapStateToProps, mapDispatchToProps)(NavDrop)
+    connect<PropsFromState, PropsFromDispatch, OwnProps>(
+        mapStateToProps, mapDispatchToProps,
+    )(NavDrop),
 );

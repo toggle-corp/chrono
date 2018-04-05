@@ -4,6 +4,9 @@ import {
     applyMiddleware,
     Middleware,
 } from 'redux';
+
+import { createActionSyncMiddleware } from './vendor/react-store/utils/redux-sync.js';
+
 import {
     commonHeaderForPost,
     commonHeaderForGet,
@@ -13,11 +16,19 @@ import {
     composeWithDevTools,
     EnhancerOptions,
 } from 'redux-devtools-extension';
-
+import logger from './redux/middlewares/logger';
+import taskManager from './redux/middlewares/taskManager';
+import { reducersToSync } from './config/store';
 import reducer from './redux/reducers';
 
+const actionSyncer: Middleware = createActionSyncMiddleware(reducersToSync);
+
 // Invoke refresh access token every 10m
-const middleware: Middleware[] = [];
+const middleware: Middleware[] = [
+    logger,
+    actionSyncer,
+    taskManager,
+];
 
 const enhancerOptions: EnhancerOptions = {
 };
@@ -33,7 +44,7 @@ const enhancer = applicableComposer(
 );
 
 // NOTE: replace undefined with an initialState if required
-const store = createStore(reducer, undefined, enhancer);
+const store = createStore(reducer, {}, enhancer);
 
 if (process.env.NODE_ENV !== 'test') {
     // eslint-disable-next-line global-require

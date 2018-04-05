@@ -66,7 +66,7 @@ const userDefinedSchemas: SchemaGroup  = [];
     ...user,
     ...userGroup,
 ].forEach(
-    ({ name, schema }) => dict.put(name, schema)
+    ({ name, schema }) => dict.put(name, schema),
 );
 
 export default dict;

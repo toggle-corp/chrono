@@ -23,7 +23,7 @@ import {
 import { pathNames } from '../../constants';
 
 import UserRegisterRequest, { RegisterParams } from './requests/UserRegisterRequest';
-import styles from './styles.scss';
+import * as styles from './styles.scss';
 
 interface OwnProps {}
 interface PropsFromState { }
@@ -57,8 +57,8 @@ export class Register extends React.PureComponent<Props, States> {
 
         this.schema = {
             fields: {
-                firstName: [ requiredCondition ],
-                lastName: [ requiredCondition ],
+                firstName: [requiredCondition],
+                lastName: [requiredCondition],
                 username: [
                     requiredCondition,
                     emailCondition,
@@ -90,7 +90,9 @@ export class Register extends React.PureComponent<Props, States> {
 
     // FORM RELATED
 
-    handleFormChange = (values: RegisterParams, formFieldErrors: FormFieldErrors, formErrors: FormErrors) => {
+    handleFormChange = (
+        values: RegisterParams, formFieldErrors: FormFieldErrors, formErrors: FormErrors,
+    ) => {
         this.setState({
             formErrors,
             formFieldErrors,
@@ -167,13 +169,11 @@ export class Register extends React.PureComponent<Props, States> {
                                     formname="lastName"
                                     label="Last Name"
                                     placeholder="Doe"
-                                    autoFocus
                                 />
                                 <TextInput
                                     formname="username"
                                     label="Email"
                                     placeholder="john.doe@mail.com"
-                                    autoFocus
                                 />
                                 <TextInput
                                     formname="password"

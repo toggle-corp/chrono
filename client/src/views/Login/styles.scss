@@ -5,6 +5,7 @@ $color-text-on-primary: get-text-color($color-primary);
 .login {
     @extend %main-content;
     display: flex;
+    flex-direction: column;
     flex-wrap: wrap;
     align-items: center;
     justify-content: center;
@@ -28,7 +29,6 @@ $color-text-on-primary: get-text-color($color-primary);
         display: flex;
         position: relative;
         flex-direction: column;
-        margin: $spacing-extra-large;
         width: $width-login-form;
 
         .hid-link-container {
@@ -99,7 +99,6 @@ $color-text-on-primary: get-text-color($color-primary);
         }
 
         .register-link-container {
-            @include background-color($color-foreground);
             display: flex;
             flex-basis: 100%;
             align-items: center;

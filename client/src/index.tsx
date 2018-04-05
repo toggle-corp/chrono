@@ -5,6 +5,6 @@ import registerServiceWorker from './registerServiceWorker';
 
 ReactDOM.render(
     <Root />,
-    document.getElementById('root') as HTMLElement
+    document.getElementById('root') as HTMLElement,
 );
 registerServiceWorker();

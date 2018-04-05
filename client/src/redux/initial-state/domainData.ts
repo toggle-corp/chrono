@@ -12,7 +12,7 @@ const initialDomainDataState: DomainData = {
         user: 1,
         task: 1,
         remarks: 'some remark',
-    }
+    },
 };
 
 export default initialDomainDataState;

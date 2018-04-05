@@ -57,8 +57,8 @@ body {
         }
 
         .chrono-main-content {
+            @include background-color($color-background);
             position: relative;
-            background-color: $color-background;
             padding: $spacing-small-alt;
             height: calc(100vh - #{$height-navbar});
             perspective: 1000px;
@@ -85,10 +85,10 @@ body {
 
 %main-content {
     // @frozenhelium
+    @include background-color($color-background-alt);
     transform-origin: bottom;
     animation: slide-in $duration-slow ease forwards;
     border: $width-separator-thin solid $color-separator-alt;
-    background-color: $color-background-alt;
     height: 100%;
 }
 

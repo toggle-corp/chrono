@@ -25,17 +25,15 @@ import {
     slotDataSelector,
     activeDaySelector,
     userGroupsSelector,
+    setSlotAction,
 } from '../../../redux';
 import {
     RootState,
     UserGroup,
+    SlotData,
 } from '../../../redux/interface';
-import {
-    setSlotAction,
-} from '../../../redux';
-import { SlotData } from '../../../redux/interface';
 
-import styles from './styles.scss';
+import * as styles from './styles.scss';
 
 interface WithIdAndTitle {
     id: number;
@@ -101,11 +99,11 @@ export class SlotEditor extends React.PureComponent<Props, States> {
 
         this.schema = {
             fields: {
-                startTime: [ requiredCondition ],
-                endTime: [ requiredCondition ],
-                userGroup: [ requiredCondition ],
-                project: [ requiredCondition ],
-                task: [ requiredCondition ],
+                startTime: [requiredCondition],
+                endTime: [requiredCondition],
+                userGroup: [requiredCondition],
+                project: [requiredCondition],
+                task: [requiredCondition],
                 remarks: [],
             },
         };
@@ -131,7 +129,7 @@ export class SlotEditor extends React.PureComponent<Props, States> {
 
     // FORM RELATED
     handleFormChange = (
-        values: SlotParams, formFieldErrors: FormFieldErrors, formErrors: FormErrors
+        values: SlotParams, formFieldErrors: FormFieldErrors, formErrors: FormErrors,
     ) => {
         this.setState({
             formErrors,
@@ -267,4 +265,6 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<RootState>) => ({
     setSlot: (params: SlotParams) => dispatch(setSlotAction(params)),
 });
 
-export default connect<PropsFromState, PropsFromDispatch, OwnProps>(mapStateToProps, mapDispatchToProps)(SlotEditor);
+export default connect<PropsFromState, PropsFromDispatch, OwnProps>(
+    mapStateToProps, mapDispatchToProps,
+)(SlotEditor);

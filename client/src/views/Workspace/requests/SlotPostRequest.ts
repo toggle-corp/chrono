@@ -8,7 +8,7 @@ import { SlotEditor } from '../SlotEditor';
 
 import {
     urlForSlot,
-    createParamsForPostSlot
+    createParamsForPostSlot,
 } from '../../../rest';
 import { SlotData } from '../../../redux/interface';
 import schema from '../../../schema'; 

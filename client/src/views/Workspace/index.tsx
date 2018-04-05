@@ -8,7 +8,7 @@ import { RestRequest } from '../../vendor/react-store/utils/rest';
 import { setUserGroupsAction } from '../../redux';
 import { RootState, UserGroup } from '../../redux/interface';
 import SlotEditor from './SlotEditor';
-import styles from './styles.scss';
+import * as styles from './styles.scss';
 
 import GetUserGroupsRequest from './requests/GetUserGroupsRequest';
 
@@ -114,4 +114,6 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<RootState>) => ({
     setUserGroups: (params: UserGroup[]) => dispatch(setUserGroupsAction(params)),
 });
 
-export default connect<PropsFromState, PropsFromDispatch, OwnProps>(undefined, mapDispatchToProps)(Workspace);
+export default connect<PropsFromState, PropsFromDispatch, OwnProps>(
+    undefined, mapDispatchToProps,
+)(Workspace);

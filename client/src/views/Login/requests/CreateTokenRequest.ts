@@ -27,6 +27,7 @@ interface Props {
     setState: Login['setState'];
     login(params: Token): void;
     authenticate(): void;
+    startTasks(): void;
 }
 
 export default class CreateTokenRequest implements Request<AuthParams> {
@@ -54,12 +55,15 @@ export default class CreateTokenRequest implements Request<AuthParams> {
                     this.props.login({ refresh, access });
                     // TODO: call refresher here
                     this.props.setState({ pending: false });
+
+                    this.props.startTasks();
+
                     this.props.authenticate();
                 } catch (err) {
                     console.error(err);
                 }
             })
-            .failure((response: { errors: ErrorsFromServer } ) => {
+            .failure((response: { errors: ErrorsFromServer }) => {
                 const {
                     formFieldErrors,
                     formErrors,
@@ -70,7 +74,7 @@ export default class CreateTokenRequest implements Request<AuthParams> {
                     pending: false,
                 });
             })
-            .fatal((response: object) => {
+            .fatal(() => {
                 this.props.setState({
                     formErrors: { errors: ['Some error occured.'] },
                     pending: false,

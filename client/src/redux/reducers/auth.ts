@@ -10,18 +10,18 @@ import schema from '../../schema';
 // ACTION-TYPE
 
 export const enum AUTH_ACTION {
-    login = 'AUTH/login',
-    logout = 'AUTH/logout',
-    authenticate = 'AUTH/authenticate',
-    setAccessToken = 'AUTH/setAccessToken',
+    login = 'auth/LOGIN',
+    logout = 'auth/LOGOUT',
+    authenticate = 'auth/AUTHENTICATE',
+    setAccessToken = 'auth/SET_ACCESS_TOKEN',
 }
 
 // ACTION-CREATOR
 
 export const loginAction = ({ access, refresh }: Token) => ({
-    type: AUTH_ACTION.login,
     access,
     refresh,
+    type: AUTH_ACTION.login,
 });
 
 export const authenticateAction = () => ({
@@ -33,8 +33,8 @@ export const logoutAction = () => ({
 });
 
 export const setAccessTokenAction = (access: string) => ({
-    type: AUTH_ACTION.setAccessToken,
     access,
+    type: AUTH_ACTION.setAccessToken,
 });
 
 // HELPER

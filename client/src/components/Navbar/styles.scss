@@ -4,13 +4,12 @@ $color-text-on-navbar: get-text-color($color-navbar);
 $color-text-on-primary: get-text-color($color-primary);
 
 .navbar {
+    @include background-color($color-navbar);
     display: flex;
     align-items: center;
     justify-content: space-between;
     box-shadow: 0 $spacing-extra-small $spacing-small (-$spacing-extra-small) $color-shadow-medium;
-    background-color: $color-navbar;
     padding: 0 $spacing-medium-alt;
-    color: $color-text-on-navbar;
 
     .dropdown-title {
         align-self: stretch;
@@ -99,7 +98,7 @@ $color-text-on-primary: get-text-color($color-primary);
     padding: $spacing-medium $spacing-medium-alt;
 
     &:hover {
-        background-color: $color-background-hover;
+        @include background-color($color-background-hover);
     }
 
     &.active {
@@ -136,6 +135,6 @@ $color-text-on-primary: get-text-color($color-primary);
     }
 
     &:hover {
-        background-color: $color-background-header;
+        @include background-color($color-background-header);
     }
 }

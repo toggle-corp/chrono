@@ -166,7 +166,7 @@ module.exports = {
               {
                 loader: require.resolve('typings-for-css-modules-loader'),
                 options: {
-                  sourceMap: true,
+                  sourceMap: false,
                   importLoaders: 2,
                   localIdentName: '[local]-[hash:base64:5]',
                   modules: true,

@@ -84,7 +84,7 @@ class Multiplexer extends React.PureComponent<Props, {}> {
                 <Navbar className="navbar" />
                 <div className="chrono-main-content">
                     <Switch>
-                        {routesOrder.map((routeId) => this.renderRoute(routeId))}
+                        {routesOrder.map(routeId => this.renderRoute(routeId))}
                     </Switch>
                 </div>
             </Fragment>
@@ -97,5 +97,7 @@ const mapStateToProps = (state: RootState) => ({
 });
 
 export default withRouter(
-    connect<PropsFromState, PropsFromDispatch, OwnProps>(mapStateToProps)(Multiplexer)
+    connect<PropsFromState, PropsFromDispatch, OwnProps>(
+        mapStateToProps,
+    )(Multiplexer),
 );

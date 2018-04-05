@@ -21,6 +21,7 @@ import {
     ValuesFromForm,
     Schema,
 } from '../../rest/interface';
+import { startTasksAction } from '../../redux/middlewares/taskManager';
 import {
     authenticateAction,
     loginAction,
@@ -29,13 +30,14 @@ import { RootState, Token } from '../../redux/interface';
 import { pathNames } from '../../constants';
 
 import CreateTokenRequest from './requests/CreateTokenRequest';
-import styles from './styles.scss';
+import * as styles from './styles.scss';
 
 interface OwnProps {}
 interface PropsFromState { }
 interface PropsFromDispatch {
     authenticate(): void;
     login(params: Token): void;
+    startTasks(): void;
 }
 type Props = OwnProps & PropsFromState & PropsFromDispatch;
 
@@ -89,7 +91,9 @@ export class Login extends React.PureComponent<Props, States> {
 
     // FORM RELATED
 
-    handleFormChange = (values: AuthParams, formFieldErrors: FormFieldErrors, formErrors: FormErrors) => {
+    handleFormChange = (
+        values: AuthParams, formFieldErrors: FormFieldErrors, formErrors: FormErrors,
+    ) => {
         this.setState({
             formErrors,
             formFieldErrors,
@@ -112,9 +116,10 @@ export class Login extends React.PureComponent<Props, States> {
         }
 
         const request = new CreateTokenRequest({
-                login: this.props.login,
-                authenticate: this.props.authenticate,
-                setState: v => this.setState(v),
+            login: this.props.login,
+            authenticate: this.props.authenticate,
+            setState: v => this.setState(v),
+            startTasks: this.props.startTasks,
         });
         this.userLoginRequest = request.create(value);
         this.userLoginRequest.start();
@@ -187,6 +192,9 @@ export class Login extends React.PureComponent<Props, States> {
 const mapDispatchToProps = (dispatch: Redux.Dispatch<RootState>) => ({
     authenticate: () => dispatch(authenticateAction()),
     login: (params: Token) => dispatch(loginAction(params)),
+    startTasks: () => dispatch(startTasksAction()),
 });
 
-export default connect<PropsFromState, PropsFromDispatch, OwnProps>(undefined, mapDispatchToProps)(Login);
+export default connect<PropsFromState, PropsFromDispatch, OwnProps>(
+    undefined, mapDispatchToProps,
+)(Login);

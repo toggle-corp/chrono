@@ -22,13 +22,13 @@ export const enum USERGROUP_ACTION {
 // ACTION-CREATOR
 
 export const setSlotAction = (data: SlotData) => ({
-    type: SLOT_DATA_ACTION.setSlot,
     data,
+    type: SLOT_DATA_ACTION.setSlot,
 });
 
 export const setUserGroupsAction = (userGroups: UserGroup[]) => ({
-    type: USERGROUP_ACTION.setUserGroups,
     userGroups,
+    type: USERGROUP_ACTION.setUserGroups,
 });
 
 // HELPER

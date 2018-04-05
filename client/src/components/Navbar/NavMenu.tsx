@@ -16,7 +16,7 @@ import {
 import { CloakSettings } from '../../constants/routes/interface';
 
 import Cloak from '../Cloak';
-import styles from './styles.scss';
+import * as styles from './styles.scss';
 
 const defaultProps = {
     className: '',
@@ -61,8 +61,8 @@ class NavMenu extends React.PureComponent<Props, State> {
         if (this.props.links !== nextProps.links) {
             const overflowMenuLinks = this.computeSize(nextProps.links);
             this.setState({
-                navLinks: nextProps.links,
                 overflowMenuLinks,
+                navLinks: nextProps.links,
             });
         }
     }
@@ -127,24 +127,24 @@ class NavMenu extends React.PureComponent<Props, State> {
         const params = {
             // projectId, countryId
         };
+        const renderFn = () => (
+            <NavLink
+                activeClassName={styles.active}
+                to={reverseRoute(pathNames[key], params)}
+                className={className}
+                exact
+            >
+                {key}
+            </NavLink>
+        );
+
         return (
             <Cloak
                 key={key}
                 requireLogin={item.requireLogin}
                 requireAdminRights={item.requireAdminRights}
                 requireDevMode={item.requireDevMode}
-                render={
-                    () => (
-                        <NavLink
-                            activeClassName={styles.active}
-                            to={reverseRoute(pathNames[key], params)}
-                            className={className}
-                            exact
-                        >
-                            {key}
-                        </NavLink>
-                    )
-                }
+                render={renderFn}
             />
         );
     }
@@ -154,7 +154,7 @@ class NavMenu extends React.PureComponent<Props, State> {
     )
 
     renderOverflowMenuItem = (key: string, item: CloakSettingsWithKey) => (
-        this.renderNavItem(key, item, styles.overflowMenuItem)
+        this.renderNavItem(key, item, `${styles.overflowMenuItem} ${styles.dropdownItem}`)
     )
 
     keyExtractor = (d: CloakSettingsWithKey): string => d.key;
