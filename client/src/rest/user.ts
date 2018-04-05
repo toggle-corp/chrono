@@ -2,12 +2,11 @@ import {
     wsEndpoint,
     Rest,
     commonHeaderForPost,
-    commonHeaderForGet,
 } from '../config/rest';
 import {
     UserIdFromRoute,
 } from '../redux/interface';
-import { RestGetBody, RestPostBody } from './interface';
+import { RestPostBody } from './interface';
 
 export const urlForUsers: string = `${wsEndpoint}/users/`;
 export const createUrlForUsers = (userId: UserIdFromRoute): string => (
@@ -26,11 +25,4 @@ export const createParamsForUserRegister = (
         username,
         password,
     }),
-});
-
-export const urlForUserGroups: string = `${wsEndpoint}/user-groups/`;
-
-export const createParamsForUserGroups = (): RestGetBody => ({
-    method: Rest.GET,
-    headers: commonHeaderForGet,
 });

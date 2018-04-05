@@ -9,7 +9,7 @@ import {
     Project,
     Task,
     TimeslotView,
-    User,
+    SetUserAction,
 } from '../interface';
 import initialDominDataState from '../initial-state/domainData';
 
@@ -65,8 +65,13 @@ export const setTasksAction = (tasks:  Task[]) => ({
     type: TASKS_ACTION.setUserTasks,
 });
 
-export const setUserAction = (user: User) => ({
-    user,
+export const setUserAction = (
+    { userId, information, userGroups, projects }: SetUserAction,
+) => ({
+    userId,
+    information,
+    userGroups,
+    projects,
     type: USER_PROFILE_ACTION.setUser,
 });
 
@@ -142,12 +147,29 @@ const setTasks = (state: DomainData, action: { tasks: Task[] }) => {
     return update(state, settings);
 };
 
-const setUser = (state: DomainData, action: { user: User }) => {
-    const { user } = action;
+const setUser = (state: DomainData, action: SetUserAction) => {
+    const { userId, information, userGroups, projects } = action;
     const settings = {
         users: {
-            [user.id]: { $auto: {
-                $set: user,
+            [userId]: { $auto: {
+                information: {
+                    $if: [
+                        information,
+                        { $set: information },
+                    ],
+                },
+                userGroups: {
+                    $if: [
+                        userGroups,
+                        { $set: userGroups },
+                    ],
+                },
+                userProjects: {
+                    $if: [
+                        projects,
+                        { $set: projects },
+                    ],
+                },
             } },
         },
     };

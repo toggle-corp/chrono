@@ -36,6 +36,7 @@ export const commonParamsForGet = (): RestGetBody => ({
 
 export * from './token';
 export * from './user';
+export * from './userGroups';
 export * from './slot';
 export * from './project';
 export * from './task';

@@ -3,7 +3,7 @@ import {
     FgRestBuilder,
 } from '../../../vendor/react-store/utils/rest';
 import {
-    createUrlForUsers,
+    createUrlForUserGroups,
     commonParamsForGet,
 } from '../../../rest';
 import {
@@ -12,7 +12,7 @@ import {
 } from '../../../rest/interface';
 import {
     UserIdFromRoute,
-    UserInformation,
+    UserGroup,
     SetUserAction,
 } from '../../../redux/interface';
 
@@ -25,19 +25,19 @@ interface Props {
     setUser(params: SetUserAction): void;
 }
 
-export default class UserProfileRequest implements Request<UserIdFromRoute> {
+export default class UserGroupsRequest implements Request<UserIdFromRoute> {
     props: Props;
 
     constructor(props: Props) {
         this.props = props;
     }
 
-    success = (userId: UserIdFromRoute) => (response: UserInformation) => {
+    success = (userId: UserIdFromRoute) => (response: { results: UserGroup[] }) => {
         try {
-            schema.validate(response, 'userGetResponse');
+            schema.validate(response, 'userGroupsResponse');
             this.props.setUser({
                 userId,
-                information: response,
+                userGroups: response.results,
             });
         } catch (err) {
             console.error(err);
@@ -53,8 +53,10 @@ export default class UserProfileRequest implements Request<UserIdFromRoute> {
     }
 
     create = (userId: UserIdFromRoute): RestRequest => {
+        // FIXME: add required fields only
+        const url = createUrlForUserGroups({ user: userId });
         const request = new FgRestBuilder()
-            .url(createUrlForUsers(userId))
+            .url(url)
             .params(commonParamsForGet)
             .preLoad(() => { this.props.setState({ pending: true }); })
             .postLoad(() => { this.props.setState({ pending: false }); })

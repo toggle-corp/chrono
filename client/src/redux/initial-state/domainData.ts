@@ -44,11 +44,15 @@ const initialDomainDataState: DomainData = {
     },
     users: {
         1: {
-            id: 1,
-            firstName: 'John',
-            lastName: 'Cena',
-            email: 'john@cena.com',
-            organization: 'WWF',
+            information: {
+                id: 1,
+                firstName: 'John',
+                lastName: 'Cena',
+                email: 'john@cena.com',
+                organization: 'WWF',
+            },
+            userGroups: [],
+            projects: [],
         },
     },
     slotData: {

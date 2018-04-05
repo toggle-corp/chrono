@@ -19,11 +19,8 @@ const emptyFormState: object = {
     formFieldErrors: {},
 };
 
-export const userIdFromRoute = ({ domainData }: RootState): UserIdFromRoute => {
-    // FIXME: removet this with actual id from route
-    console.warn(domainData);
-    return 1;
-};
+// FIXME: removet this with actual id from route
+export const userIdFromRoute = ({}: RootState): UserIdFromRoute => 1;
 
 export const usersSelector = ({ domainData }: RootState): Users => (
     domainData.users || emptyObject
@@ -104,4 +101,19 @@ export const userSelector = createSelector(
     userIdFromRoute,
     usersSelector,
     (userId, users) => (users[userId] || emptyObject),
+);
+
+export const userInformationSelector = createSelector(
+    userSelector,
+    user => (user.information || emptyObject),
+);
+
+export const userUserGroupsSelector = createSelector(
+    userSelector,
+    user => (user.userGroups || emptyArray),
+);
+
+export const userProjectsSelector = createSelector(
+    userSelector,
+    user => (user.projects || emptyArray),
 );

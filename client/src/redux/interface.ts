@@ -39,12 +39,18 @@ export interface SlotData {
 
 export type UserIdFromRoute = number;
 
-export interface User {
+export interface UserInformation {
     id: UserIdFromRoute;
     firstName: string;
     lastName: string;
     email: string;
     organization: string;
+}
+
+export interface User {
+    information: UserInformation;
+    userGroups: UserGroup[];
+    projects: Project[];
 }
 
 export interface Users {
@@ -130,4 +136,8 @@ export interface RootState {
 
 export interface ReducerGroup<T> {
     [key: string]: ((state: T, action: object) => T);
+}
+
+export interface SetUserAction extends Partial<User> {
+    userId: UserIdFromRoute;
 }
