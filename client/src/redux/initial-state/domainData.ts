@@ -57,6 +57,9 @@ const initialDomainDataState: DomainData = {
 
     projects: [
     ],
+
+    tasks: [
+    ],
 };
 
 export default initialDomainDataState;
