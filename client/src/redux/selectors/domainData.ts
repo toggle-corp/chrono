@@ -4,6 +4,7 @@ import {
     SlotData,
     UserGroup,
     Workspace,
+    Project,
     TimeslotViews,
 } from '../interface';
 
@@ -33,6 +34,10 @@ export const workspaceSelector = ({ domainData }: RootState): Workspace => (
 
 export const timeslotViewSelector = ({ domainData }: RootState): TimeslotViews => (
     domainData.timeslotViews || emptyObject
+);
+
+export const projectsSelector = ({ domainData }: RootState): Project[] => (
+    domainData.projects || emptyObject
 );
 
 // COMPLEX

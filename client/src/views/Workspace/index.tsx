@@ -5,17 +5,22 @@ import { connect } from 'react-redux';
 import ListView from '../../vendor/react-store/components/View/List/ListView';
 import { RestRequest } from '../../vendor/react-store/utils/rest';
 
-import { setUserGroupsAction } from '../../redux';
-import { RootState, UserGroup } from '../../redux/interface';
+import { 
+    setUserGroupsAction,
+    setProjectsAction,
+} from '../../redux';
+import { RootState, UserGroup, Project } from '../../redux/interface';
 import SlotEditor from './SlotEditor';
 import * as styles from './styles.scss';
 
 import GetUserGroupsRequest from './requests/GetUserGroupsRequest';
+import GetProjectsRequest from './requests/GetProjectsRequest';
 
 interface OwnProps {}
 interface PropsFromState { }
 interface PropsFromDispatch {
     setUserGroups(params: UserGroup[]): void;
+    setUserProjects(params: Project[]): void;
 }
 
 type Props = OwnProps & PropsFromState & PropsFromDispatch;
@@ -33,6 +38,7 @@ interface Data {
 
 export class Workspace extends React.PureComponent<Props, States> {
     userGroupRequest: RestRequest;
+    projectsRequest: RestRequest;
 
     static keyExtractor = (data: Data) => String(data.timestamp);
 
@@ -56,6 +62,7 @@ export class Workspace extends React.PureComponent<Props, States> {
 
     componentWillMount() {
         this.startRequestForUserGroup();
+        this.startRequestForProjects();
     }
 
     componentWillUnmount() {
@@ -64,13 +71,25 @@ export class Workspace extends React.PureComponent<Props, States> {
         }
     }
 
+    startRequestForProjects = () => {
+        if (this.projectsRequest) {
+            this.projectsRequest.stop();
+        }
+        const request = new GetProjectsRequest({
+            setUserProjects: this.props.setUserProjects,
+            setState: params => this.setState(params),
+        });
+        this.projectsRequest = request.create();
+        this.projectsRequest.start();
+    }
+
     startRequestForUserGroup = () => {
         if (this.userGroupRequest) {
             this.userGroupRequest.stop();
         }
         const request = new GetUserGroupsRequest({
             setUserGroups: this.props.setUserGroups,
-            setState: v => this.setState(v),
+            setState: params => this.setState(params),
         });
         this.userGroupRequest = request.create();
         this.userGroupRequest.start();
@@ -112,6 +131,7 @@ export class Workspace extends React.PureComponent<Props, States> {
 
 const mapDispatchToProps = (dispatch: Redux.Dispatch<RootState>) => ({
     setUserGroups: (params: UserGroup[]) => dispatch(setUserGroupsAction(params)),
+    setUserProjects: (params: Project[]) => dispatch(setProjectsAction(params)),
 });
 
 export default connect<PropsFromState, PropsFromDispatch, OwnProps>(
