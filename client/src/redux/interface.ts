@@ -47,6 +47,19 @@ export interface Project {
     description: string;
 }
 
+export interface Task {
+    id: number;
+    createdAt: string;
+    modifiedAt: string;
+    createdBy: number;
+    modifiedBy: number;
+    createdByName: string;
+    modifiedByName: string;
+    title: string;
+    description: string;
+    project: number;
+}
+
 export interface Workspace {
     active: {
         date: string;
@@ -76,6 +89,7 @@ export interface DomainData {
     activeDay: string;
     userGroups: UserGroup[];
     projects: Project[];
+    tasks: Task[];
     slotData: SlotData;
     workspace: Workspace;
     timeslotViews: TimeslotViews;

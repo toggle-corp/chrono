@@ -27,6 +27,7 @@ import {
     activeDaySelector,
     userGroupsSelector,
     projectsSelector,
+    tasksSelector,
     setSlotAction,
     setSlotViewAction,
 } from '../../../redux';
@@ -35,6 +36,7 @@ import {
     UserGroup,
     SlotData,
     Project,
+    Task,
     TimeslotView,
 } from '../../../redux/interface';
 
@@ -53,6 +55,7 @@ interface PropsFromState {
     slotView: TimeslotView;
     userGroups: UserGroup[];
     projects: Project[];
+    tasks: Task[];
 }
 
 interface PropsFromDispatch {
@@ -92,11 +95,7 @@ export class SlotEditor extends React.PureComponent<Props, States> {
             pending: false,
             pristine: slotView.pristine,
             projects: [],
-            tasks: [
-                { id: 1, title: 'Task #1' },
-                { id: 2, title: 'Task #2' },
-                { id: 3, title: 'Task #3' },
-            ],
+            tasks: [],
         };
 
         this.schema = {
@@ -163,11 +162,11 @@ export class SlotEditor extends React.PureComponent<Props, States> {
     render() {
         const {
             pending,
-            tasks,
         } = this.state;
         const { 
             userGroups,
             slotView,
+            tasks,
             projects,
         } = this.props;
         const {
@@ -266,6 +265,7 @@ const mapStateToProps = (state: RootState) => ({
     activeDay: activeDaySelector(state),
     userGroups: userGroupsSelector(state),
     projects: projectsSelector(state),
+    tasks: tasksSelector(state),
     slotData: workspaceActiveTimeslotSelector(state),
     slotView: timeslotActiveViewSelector(state),
 });

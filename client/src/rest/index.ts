@@ -25,3 +25,4 @@ export * from './token';
 export * from './user';
 export * from './slot';
 export * from './project';
+export * from './task';
