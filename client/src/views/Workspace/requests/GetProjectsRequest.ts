@@ -45,7 +45,7 @@ export default class GetUserProjectsRequest implements Request<{}> {
             .postLoad(() => { this.props.setState({ pending: false }); })
             .success((response: ProjectsGetResponse) => {
                 try {
-                    schema.validate(response, 'projectsResponse');
+                    schema.validate(response, 'projectsGetResponse');
                     this.props.setUserProjects(response.results);
                 } catch (err) {
                     console.error(err);

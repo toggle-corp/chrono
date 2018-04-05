@@ -45,7 +45,7 @@ export default class GetTasksRequest implements Request<{}> {
             .postLoad(() => { this.props.setState({ pending: false }); })
             .success((response: TasksGetResponse) => {
                 try {
-                    schema.validate(response, 'tasksResponse');
+                    schema.validate(response, 'tasksGetResponse');
                     this.props.setUserTasks(response.results);
                 } catch (err) {
                     console.error(err);

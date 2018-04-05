@@ -5,7 +5,6 @@ import { connect } from 'react-redux';
 import ListView from '../../vendor/react-store/components/View/List/ListView';
 import { RestRequest } from '../../vendor/react-store/utils/rest';
 
-import notify from '../../notify';
 import { 
     setUserGroupsAction,
     setProjectsAction,
@@ -67,11 +66,9 @@ export class Workspace extends React.PureComponent<Props, States> {
 
     componentWillMount() {
         this.startRequestForUserGroup();
-        notify.send({
-            type: notify.type.INFO,
-        });
         this.startRequestForProjects();
         this.startRequestForTasks();
+        
     }
 
     componentWillUnmount() {
