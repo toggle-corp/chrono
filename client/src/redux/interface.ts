@@ -37,6 +37,20 @@ export interface SlotData {
     remarks: string;
 }
 
+export type UserIdFromRoute = number;
+
+export interface User {
+    id: UserIdFromRoute;
+    firstName: string;
+    lastName: string;
+    email: string;
+    organization: string;
+}
+
+export interface Users {
+    [key: string]: User;
+}
+
 export interface UserGroup {
     id: number;
     title: string;
@@ -101,6 +115,7 @@ export interface DomainData {
     slotData: SlotData;
     workspace: Workspace;
     timeslotViews: TimeslotViews;
+    users: Users;
 }
 
 export interface Notify {

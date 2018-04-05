@@ -1,4 +1,12 @@
-import { ErrorsFromServer, ErrorsFromForm } from './interface';
+import {
+    ErrorsFromServer,
+    ErrorsFromForm,
+    RestGetBody,
+} from './interface';
+import {
+    Rest,
+    commonHeaderForGet,
+} from '../config/rest';
 
 export const transformResponseErrorToFormError = (errors: ErrorsFromServer): ErrorsFromForm => {
     const {
@@ -20,6 +28,11 @@ export const transformResponseErrorToFormError = (errors: ErrorsFromServer): Err
     );
     return { formFieldErrors, formErrors };
 };
+
+export const commonParamsForGet = (): RestGetBody => ({
+    method: Rest.GET,
+    headers: commonHeaderForGet,
+});
 
 export * from './token';
 export * from './user';

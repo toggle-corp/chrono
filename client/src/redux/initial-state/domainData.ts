@@ -3,7 +3,6 @@ import { DomainData } from '../interface';
 const initialDomainDataState: DomainData = {
     activeDay: '2017-10-10',
     userGroups: [],
-
     workspace: {
         active: {
             date: '2017-10-10',
@@ -43,7 +42,15 @@ const initialDomainDataState: DomainData = {
 
         },
     },
-
+    users: {
+        1: {
+            id: 1,
+            firstName: 'John',
+            lastName: 'Cena',
+            email: 'john@cena.com',
+            organization: 'WWF',
+        },
+    },
     slotData: {
         // index should be day timestamp or FIXME
         startTime: '10:00',

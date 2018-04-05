@@ -9,6 +9,7 @@ import {
     Project,
     Task,
     TimeslotView,
+    User,
 } from '../interface';
 import initialDominDataState from '../initial-state/domainData';
 
@@ -29,6 +30,9 @@ export const enum PROJECTS_ACTION {
 
 export const enum TASKS_ACTION {
     setUserTasks = 'domainData/SET_USER_TASKS',
+}
+export const enum USER_PROFILE_ACTION {
+    setUser = 'domainData/SET_USER',
 }
 
 // ACTION-CREATOR
@@ -55,10 +59,15 @@ export const setUserGroupsAction = (userGroups: UserGroup[]) => ({
     type: USERGROUP_ACTION.setUserGroups,
 });
 
-// TASKS    
+// TASKS
 export const setTasksAction = (tasks:  Task[]) => ({
     tasks,
     type: TASKS_ACTION.setUserTasks,
+});
+
+export const setUserAction = (user: User) => ({
+    user,
+    type: USER_PROFILE_ACTION.setUser,
 });
 
 // HELPER
@@ -133,12 +142,25 @@ const setTasks = (state: DomainData, action: { tasks: Task[] }) => {
     return update(state, settings);
 };
 
+const setUser = (state: DomainData, action: { user: User }) => {
+    const { user } = action;
+    const settings = {
+        users: {
+            [user.id]: { $auto: {
+                $set: user,
+            } },
+        },
+    };
+    return update(state, settings);
+};
+
 export const domainDataReducer: ReducerGroup<DomainData> = {
     [USERGROUP_ACTION.setUserGroups]: setUserGroups,
     [SLOT_DATA_ACTION.setSlot]: setSlotData,
     [SLOT_DATA_ACTION.setSlotView]: setSlotViewData,
     [PROJECTS_ACTION.setUserProjects]: setProjects,
     [TASKS_ACTION.setUserTasks]: setTasks,
+    [USER_PROFILE_ACTION.setUser]: setUser,
 };
 
 export default createReducerWithMap(domainDataReducer, initialDominDataState);

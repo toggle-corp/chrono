@@ -7,6 +7,8 @@ import {
     Project,
     Task,
     TimeslotViews,
+    Users,
+    UserIdFromRoute,
 } from '../interface';
 
 const emptyObject = {};
@@ -16,6 +18,16 @@ const emptyFormState: object = {
     formErrors: {},
     formFieldErrors: {},
 };
+
+export const userIdFromRoute = ({ domainData }: RootState): UserIdFromRoute => {
+    // FIXME: removet this with actual id from route
+    console.warn(domainData);
+    return 1;
+};
+
+export const usersSelector = ({ domainData }: RootState): Users => (
+    domainData.users || emptyObject
+);
 
 export const slotDataSelector = ({ domainData }: RootState): SlotData => (
     domainData.slotData || emptyObject
@@ -86,4 +98,10 @@ export const timeslotActiveViewSelector = createSelector(
             ...emptyFormState,
         }
     ),
+);
+// userIdFromRoute
+export const userSelector = createSelector(
+    userIdFromRoute,
+    usersSelector,
+    (userId, users) => (users[userId] || emptyObject),
 );

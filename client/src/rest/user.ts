@@ -4,9 +4,15 @@ import {
     commonHeaderForPost,
     commonHeaderForGet,
 } from '../config/rest';
+import {
+    UserIdFromRoute,
+} from '../redux/interface';
 import { RestGetBody, RestPostBody } from './interface';
 
 export const urlForUsers: string = `${wsEndpoint}/users/`;
+export const createUrlForUsers = (userId: UserIdFromRoute): string => (
+    `${wsEndpoint}/users/${userId}`
+);
 
 export const createParamsForUserRegister = (
     { firstName, lastName, username, password }:
