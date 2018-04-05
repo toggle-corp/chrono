@@ -6,6 +6,7 @@ import {
     ReducerGroup,
     SlotData,
     UserGroup,
+    Project,
     TimeslotView,
 } from '../interface';
 import initialDominDataState from '../initial-state/domainData';
@@ -21,6 +22,10 @@ export const enum USERGROUP_ACTION {
     setUserGroups = 'domainData/SET_USERGROUPS',
 }
 
+export const enum PROJECTS_ACTION {
+    setUserProjects = 'domainData/SET_USER_PROJECTS',
+}
+
 // ACTION-CREATOR
 
 export const setSlotAction = (data: SlotData) => ({
@@ -33,6 +38,13 @@ export const setSlotViewAction = (params: TimeslotView) => ({
     type: SLOT_DATA_ACTION.setSlotView,
 });
 
+// PROJECTS
+export const setProjectsAction = (projects: Project[]) => ({
+    projects,
+    type: PROJECTS_ACTION.setUserProjects,
+});
+
+// USER-GROUP
 export const setUserGroupsAction = (userGroups: UserGroup[]) => ({
     userGroups,
     type: USERGROUP_ACTION.setUserGroups,
@@ -42,6 +54,7 @@ export const setUserGroupsAction = (userGroups: UserGroup[]) => ({
 
 // REDUCER
 
+// Slot
 const setSlotData = (state: DomainData, action: { data: SlotData }) => {
     const { data } = action;
     const settings = {
@@ -70,6 +83,7 @@ const setSlotViewData = (state: DomainData, action: { params: TimeslotView }) =>
     return update(state, settings);
 };
 
+// UserGroups
 const setUserGroups = (state: DomainData, action: { userGroups: UserGroup[] }) => {
     const { userGroups } = action;
     const settings = {
@@ -82,10 +96,24 @@ const setUserGroups = (state: DomainData, action: { userGroups: UserGroup[] }) =
     return update(state, settings);
 };
 
+// Projects
+const setProjects = (state: DomainData, action: { projects: Project[] }) => {
+    const { projects } = action;
+    const settings = {
+        projects: {
+            $auto: {
+                $set: projects,
+            },
+        },
+    };
+    return update(state, settings);
+};
+
 export const domainDataReducer: ReducerGroup<DomainData> = {
     [USERGROUP_ACTION.setUserGroups]: setUserGroups,
     [SLOT_DATA_ACTION.setSlot]: setSlotData,
     [SLOT_DATA_ACTION.setSlotView]: setSlotViewData,
+    [PROJECTS_ACTION.setUserProjects]: setProjects,
 };
 
 export default createReducerWithMap(domainDataReducer, initialDominDataState);

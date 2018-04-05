@@ -26,6 +26,7 @@ import {
     timeslotActiveViewSelector,
     activeDaySelector,
     userGroupsSelector,
+    projectsSelector,
     setSlotAction,
     setSlotViewAction,
 } from '../../../redux';
@@ -33,6 +34,7 @@ import {
     RootState,
     UserGroup,
     SlotData,
+    Project,
     TimeslotView,
 } from '../../../redux/interface';
 
@@ -50,6 +52,7 @@ interface PropsFromState {
     activeDay: string;
     slotView: TimeslotView;
     userGroups: UserGroup[];
+    projects: Project[];
 }
 
 interface PropsFromDispatch {
@@ -65,7 +68,7 @@ interface States {
     formValues: ValuesFromForm;
     pending: boolean;
     pristine: boolean;
-    projects: WithIdAndTitle[];
+    projects: Project[];
     tasks: WithIdAndTitle[];
 }
 
@@ -88,10 +91,7 @@ export class SlotEditor extends React.PureComponent<Props, States> {
             formValues: slotView.data,
             pending: false,
             pristine: slotView.pristine,
-            projects: [
-                { id: 1, title: 'Project #1' },
-                { id: 2, title: 'Project #2' },
-            ],
+            projects: [],
             tasks: [
                 { id: 1, title: 'Task #1' },
                 { id: 2, title: 'Task #2' },
@@ -163,10 +163,13 @@ export class SlotEditor extends React.PureComponent<Props, States> {
     render() {
         const {
             pending,
-            projects,
             tasks,
         } = this.state;
-        const { userGroups, slotView } = this.props;
+        const { 
+            userGroups,
+            slotView,
+            projects,
+        } = this.props;
         const {
             formErrors,
             formFieldErrors,
@@ -262,6 +265,7 @@ export class SlotEditor extends React.PureComponent<Props, States> {
 const mapStateToProps = (state: RootState) => ({
     activeDay: activeDaySelector(state),
     userGroups: userGroupsSelector(state),
+    projects: projectsSelector(state),
     slotData: workspaceActiveTimeslotSelector(state),
     slotView: timeslotActiveViewSelector(state),
 });
