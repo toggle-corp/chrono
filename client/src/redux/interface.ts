@@ -1,3 +1,7 @@
+import {
+    FormErrors,
+    FormFieldErrors,
+} from '../rest/interface';
 export interface Token {
     access?: string;
     refresh?: string;
@@ -30,10 +34,37 @@ export interface UserGroup {
     title: string;
 }
 
+export interface Workspace {
+    active: {
+        date: string;
+        slot: {
+            [key: string]: number;
+        };
+    };
+    timeslot: {
+        [key: string]: {
+            [key: number]: SlotData;
+        };
+    };
+}
+
+export interface TimeslotView {
+    data: SlotData;
+    pristine: boolean;
+    formErrors: FormErrors;
+    formFieldErrors: FormFieldErrors;
+}
+
+export interface TimeslotViews {
+    [key: number]: TimeslotView;
+}
+
 export interface DomainData {
     activeDay: string;
     userGroups: UserGroup[];
     slotData: SlotData;
+    workspace: Workspace;
+    timeslotViews: TimeslotViews;
 }
 
 export interface RootState {
