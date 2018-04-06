@@ -18,9 +18,11 @@ import {
     setUserAction,
 } from '../../redux';
 
+import UserProjects from './UserProjects';
 import UserUserGroups from './UserUserGroups';
-import UserProfileRequest from './requests/UserProfileRequest';
-import UserGroupsRequest from './requests/UserGroupsRequest';
+import UserProfileGetRequest from './requests/UserProfileGetRequest';
+import UserGroupsGetRequest from './requests/UserGroupsGetRequest';
+import ProjectsGetRequest from './requests/ProjectsGetRequest';
 
 import * as styles from './styles.scss';
 
@@ -39,6 +41,7 @@ interface States { }
 export class Profile extends React.PureComponent<Props, States> {
     userProfileRequest: RestRequest;
     userGroupsRequest: RestRequest;
+    projectsRequest: RestRequest;
 
     constructor(props: Props) {
         super(props);
@@ -67,18 +70,22 @@ export class Profile extends React.PureComponent<Props, States> {
         if (this.userGroupsRequest) {
             this.userGroupsRequest.stop();
         }
+        if (this.projectsRequest) {
+            this.projectsRequest.stop();
+        }
     }
 
     startRequestsForUser = (userId: UserIdFromRoute) => {
         this.startRequestForUserProfile(userId);
         this.startRequestForUserGroups(userId);
+        this.startRequestForProjects(userId);
     }
 
     startRequestForUserProfile = (userId: UserIdFromRoute) => {
         if (this.userProfileRequest) {
             this.userProfileRequest.stop();
         }
-        const userProfileRequest = new UserProfileRequest({
+        const userProfileRequest = new UserProfileGetRequest({
             setUser: this.props.setUser,
             setState: states => this.setState(states),
         });
@@ -90,12 +97,24 @@ export class Profile extends React.PureComponent<Props, States> {
         if (this.userGroupsRequest) {
             this.userGroupsRequest.stop();
         }
-        const userGroupsRequest = new UserGroupsRequest({
+        const userGroupsRequest = new UserGroupsGetRequest({
             setUser: this.props.setUser,
             setState: states => this.setState(states),
         });
         this.userGroupsRequest = userGroupsRequest.create(userId);
         this.userGroupsRequest.start();
+    }
+
+    startRequestForProjects = (userId: UserIdFromRoute) => {
+        if (this.projectsRequest) {
+            this.projectsRequest.stop();
+        }
+        const projectsRequest = new ProjectsGetRequest({
+            setUser: this.props.setUser,
+            setState: states => this.setState(states),
+        });
+        this.projectsRequest = projectsRequest.create(userId);
+        this.projectsRequest.start();
     }
 
     render() {
@@ -130,6 +149,7 @@ export class Profile extends React.PureComponent<Props, States> {
                     </div>
                 </div>
                 <UserUserGroups />
+                <UserProjects />
             </div>
         );
     }

@@ -11,6 +11,7 @@ import {
     TimeslotView,
 
     UnsetUserUserGroupAction,
+    UnsetUserProjectAction,
     SetUserAction,
 } from '../interface';
 import initialDominDataState from '../initial-state/domainData';
@@ -34,9 +35,11 @@ export const enum PROJECTS_ACTION {
 export const enum TASKS_ACTION {
     setUserTasks = 'domainData/SET_USER_TASKS',
 }
+
 export const enum USER_PROFILE_ACTION {
     setUser = 'domainData/SET_USER',
     unsetUserGroup = 'domainData/USER_PROFILE/UNSET_USERGROUP',
+    unsetProject = 'domainData/USER_PROFILE/UNSET_PROJECT',
 }
 
 // ACTION-CREATOR
@@ -85,6 +88,14 @@ export const unsetUserUserGroupAction = (
     userId,
     userGroup,
     type: USER_PROFILE_ACTION.unsetUserGroup,
+});
+
+export const unsetUserProjectAction = (
+    { userId, project }: UnsetUserProjectAction,
+) => ({
+    userId,
+    project,
+    type: USER_PROFILE_ACTION.unsetProject,
 });
 
 // HELPER
@@ -176,7 +187,7 @@ const setUser = (state: DomainData, action: SetUserAction) => {
                         { $set: userGroups },
                     ],
                 },
-                userProjects: {
+                projects: {
                     $if: [
                         projects,
                         { $set: projects },
@@ -208,14 +219,36 @@ const usetUserUserGroup = (state: DomainData, action: UnsetUserUserGroupAction) 
     return update(state, settings);
 };
 
+const usetUserProject = (state: DomainData, action: UnsetUserProjectAction) => {
+    const { userId, project } = action;
+    const { projects } = state.users[userId] || emptyArray;
+    const projectIndex = projects.findIndex(p => p.id === project.id);
+
+    const settings = {
+        users: {
+            [userId]: { $auto: {
+                projects: {
+                    $if: [
+                        projectIndex !== -1,
+                        { $splice: [[projectIndex, 1]] },
+                    ],
+                },
+            } },
+        },
+    };
+    return update(state, settings);
+};
+
 export const domainDataReducer: ReducerGroup<DomainData> = {
     [USERGROUP_ACTION.setUserGroups]: setUserGroups,
     [SLOT_DATA_ACTION.setSlot]: setSlotData,
     [SLOT_DATA_ACTION.setSlotView]: setSlotViewData,
     [PROJECTS_ACTION.setUserProjects]: setProjects,
     [TASKS_ACTION.setUserTasks]: setTasks,
+
     [USER_PROFILE_ACTION.setUser]: setUser,
     [USER_PROFILE_ACTION.unsetUserGroup]: usetUserUserGroup,
+    [USER_PROFILE_ACTION.unsetProject]: usetUserProject,
 };
 
 export default createReducerWithMap(domainDataReducer, initialDominDataState);

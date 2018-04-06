@@ -12,17 +12,17 @@ import LoadingAnimation from '../../../vendor/react-store/components/View/Loadin
 import { RestRequest } from '../../../vendor/react-store/utils/rest';
 import {
     RootState,
-    UserUserGroup,
-    UnsetUserUserGroupAction,
+    UserProject,
+    UnsetUserProjectAction,
     UserIdFromRoute,
 } from '../../../redux/interface';
 import {
-    userUserGroupsSelector,
-    unsetUserUserGroupAction,
+    userProjectsSelector,
+    unsetUserProjectAction,
     userIdFromRoute,
 } from '../../../redux';
 
-import UserGroupDeleteRequest from '../requests/UserGroupDeleteRequest';
+import ProjectDeleteRequest from '../requests/ProjectDeleteRequest';
 import ActionButtons from './ActionButtons';
 
 import * as styles from './styles.scss';
@@ -30,10 +30,10 @@ import * as styles from './styles.scss';
 interface OwnProps {}
 interface PropsFromState {
     userId: UserIdFromRoute;
-    userGroups: UserUserGroup[];
+    Projects: UserProject[];
 }
 interface PropsFromDispatch {
-    unsetUserGroup: (params: UnsetUserUserGroupAction) => void;
+    unsetProject: (params: UnsetUserProjectAction) => void;
 }
 
 type Props = OwnProps & PropsFromState & PropsFromDispatch;
@@ -41,11 +41,11 @@ type Props = OwnProps & PropsFromState & PropsFromDispatch;
 interface States {
     showDeleteModal: boolean;
     pending: boolean;
-    selectedRowForDelete?: UserUserGroup;
+    selectedRowForDelete?: UserProject;
 }
 
-export class UserUserGroups extends React.PureComponent<Props, States> {
-    userGroupDeleteRequest: RestRequest;
+export class UserProjects extends React.PureComponent<Props, States> {
+    projectDeleteRequest: RestRequest;
     headers: object[];
 
     constructor(props: Props) {
@@ -63,21 +63,21 @@ export class UserUserGroups extends React.PureComponent<Props, States> {
                 label: 'Title',
                 order: 1,
                 sortable: true,
-                comparator: (a: UserUserGroup, b: UserUserGroup) => compareString(a.title, b.title),
+                comparator: (a: UserProject, b: UserProject) => compareString(a.title, b.title),
             },
             {
                 key: 'role',
                 label: 'Role',
                 order: 2,
                 sortable: true,
-                comparator: (a: UserUserGroup, b: UserUserGroup) => compareString(a.role, b.role),
+                comparator: (a: UserProject, b: UserProject) => compareString(a.role, b.role),
             },
             {
                 key: 'action',
                 label: 'Action',
                 order: 3,
                 sortable: false,
-                modifier: (row: UserUserGroup) => (
+                modifier: (row: UserProject) => (
                     <ActionButtons
                         row={row}
                         onRemove={this.onRemove}
@@ -88,27 +88,27 @@ export class UserUserGroups extends React.PureComponent<Props, States> {
     }
 
     componentWillUnmount() {
-        if (this.userGroupDeleteRequest) {
-            this.userGroupDeleteRequest.stop();
+        if (this.projectDeleteRequest) {
+            this.projectDeleteRequest.stop();
         }
     }
 
-    startRequestForUserGroupDelete = (row: UserUserGroup) => {
-        if (this.userGroupDeleteRequest) {
-            this.userGroupDeleteRequest.stop();
+    startRequestForProjectDelete = (row: UserProject) => {
+        if (this.projectDeleteRequest) {
+            this.projectDeleteRequest.stop();
         }
-        const userGroupDeleteRequest = new UserGroupDeleteRequest({
-            unsetUserGroup: this.props.unsetUserGroup,
+        const projectDeleteRequest = new ProjectDeleteRequest({
+            unsetProject: this.props.unsetProject,
             setState: states => this.setState(states),
         });
-        this.userGroupDeleteRequest = userGroupDeleteRequest.create({
+        this.projectDeleteRequest = projectDeleteRequest.create({
             userId: this.props.userId,
-            userGroup: row,
+            project: row,
         });
-        this.userGroupDeleteRequest.start();
+        this.projectDeleteRequest.start();
     }
 
-    onRemove = (row: UserUserGroup) => {
+    onRemove = (row: UserProject) => {
         this.setState({
             selectedRowForDelete: row,
             showDeleteModal: true,
@@ -118,12 +118,12 @@ export class UserUserGroups extends React.PureComponent<Props, States> {
     handleDeleteModalClose = (confirm: boolean) => {
         const { selectedRowForDelete } = this.state;
         if (selectedRowForDelete && confirm) {
-            this.startRequestForUserGroupDelete(selectedRowForDelete);
+            this.startRequestForProjectDelete(selectedRowForDelete);
         }
         this.setState({ showDeleteModal: false });
     }
 
-    keyExtractor = (userGroup: UserUserGroup) => userGroup.id;
+    keyExtractor = (project: UserProject) => project.id;
 
     render() {
         const {
@@ -131,14 +131,14 @@ export class UserUserGroups extends React.PureComponent<Props, States> {
             pending,
         } = this.state;
         const {
-            userGroups,
+            Projects,
         } = this.props;
 
         return (
-            <div className={styles.userGroups}>
+            <div className={styles.projects}>
                 {pending && <LoadingAnimation />}
                 <Table
-                    data={userGroups}
+                    data={Projects}
                     headers={this.headers}
                     keyExtractor={this.keyExtractor}
                 />
@@ -158,14 +158,14 @@ export class UserUserGroups extends React.PureComponent<Props, States> {
 
 const mapStateToProps = (state: RootState) => ({
     userId: userIdFromRoute(state),
-    userGroups: userUserGroupsSelector(state),
+    Projects: userProjectsSelector(state),
 });
 
 const mapDispatchToProps = (dispatch: Redux.Dispatch<RootState>) => ({
-    unsetUserGroup: (params: UnsetUserUserGroupAction) =>
-        dispatch(unsetUserUserGroupAction(params)),
+    unsetProject: (params: UnsetUserProjectAction) =>
+        dispatch(unsetUserProjectAction(params)),
 });
 
 export default connect<PropsFromState, PropsFromDispatch, OwnProps>(
     mapStateToProps, mapDispatchToProps,
-)(UserUserGroups);
+)(UserProjects);
