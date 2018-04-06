@@ -34,6 +34,11 @@ export const commonParamsForGet = (): RestGetBody => ({
     headers: commonHeaderForGet,
 });
 
+export const commonParamsForDelete = (): RestGetBody => ({
+    method: Rest.DELETE,
+    headers: commonHeaderForGet,
+});
+
 export * from './token';
 export * from './user';
 export * from './userGroups';

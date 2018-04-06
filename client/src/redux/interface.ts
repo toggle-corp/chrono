@@ -49,7 +49,7 @@ export interface UserInformation {
 
 export interface User {
     information: UserInformation;
-    userGroups: UserGroup[];
+    userGroups: UserUserGroup[];
     projects: Project[];
 }
 
@@ -60,6 +60,10 @@ export interface Users {
 export interface UserGroup {
     id: number;
     title: string;
+}
+
+export interface UserUserGroup extends UserGroup {
+    role?: string;
 }
 
 export interface Project {
@@ -140,4 +144,9 @@ export interface ReducerGroup<T> {
 
 export interface SetUserAction extends Partial<User> {
     userId: UserIdFromRoute;
+}
+
+export interface UnsetUserUserGroupAction {
+    userId: UserIdFromRoute;
+    userGroup: UserUserGroup;
 }

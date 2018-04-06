@@ -18,6 +18,7 @@ import {
     setUserAction,
 } from '../../redux';
 
+import UserUserGroups from './UserUserGroups';
 import UserProfileRequest from './requests/UserProfileRequest';
 import UserGroupsRequest from './requests/UserGroupsRequest';
 
@@ -128,6 +129,7 @@ export class Profile extends React.PureComponent<Props, States> {
                         </p>
                     </div>
                 </div>
+                <UserUserGroups />
             </div>
         );
     }

@@ -12,7 +12,7 @@ import {
 } from '../../../rest/interface';
 import {
     UserIdFromRoute,
-    UserGroup,
+    UserUserGroup,
     SetUserAction,
 } from '../../../redux/interface';
 
@@ -32,7 +32,7 @@ export default class UserGroupsRequest implements Request<UserIdFromRoute> {
         this.props = props;
     }
 
-    success = (userId: UserIdFromRoute) => (response: { results: UserGroup[] }) => {
+    success = (userId: UserIdFromRoute) => (response: { results: UserUserGroup[] }) => {
         try {
             schema.validate(response, 'userGroupsResponse');
             this.props.setUser({

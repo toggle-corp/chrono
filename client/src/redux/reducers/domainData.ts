@@ -9,10 +9,13 @@ import {
     Project,
     Task,
     TimeslotView,
+
+    UnsetUserUserGroupAction,
     SetUserAction,
 } from '../interface';
 import initialDominDataState from '../initial-state/domainData';
 
+const emptyArray: object[] = [];
 // ACTION-TYPE
 
 export const enum SLOT_DATA_ACTION {
@@ -33,6 +36,7 @@ export const enum TASKS_ACTION {
 }
 export const enum USER_PROFILE_ACTION {
     setUser = 'domainData/SET_USER',
+    unsetUserGroup = 'domainData/USER_PROFILE/UNSET_USERGROUP',
 }
 
 // ACTION-CREATOR
@@ -73,6 +77,14 @@ export const setUserAction = (
     userGroups,
     projects,
     type: USER_PROFILE_ACTION.setUser,
+});
+
+export const unsetUserUserGroupAction = (
+    { userId, userGroup }: UnsetUserUserGroupAction,
+) => ({
+    userId,
+    userGroup,
+    type: USER_PROFILE_ACTION.unsetUserGroup,
 });
 
 // HELPER
@@ -176,6 +188,26 @@ const setUser = (state: DomainData, action: SetUserAction) => {
     return update(state, settings);
 };
 
+const usetUserUserGroup = (state: DomainData, action: UnsetUserUserGroupAction) => {
+    const { userId, userGroup } = action;
+    const { userGroups } = state.users[userId] || emptyArray;
+    const userGroupIndex = userGroups.findIndex(userG => userG.id === userGroup.id);
+
+    const settings = {
+        users: {
+            [userId]: { $auto: {
+                userGroups: {
+                    $if: [
+                        userGroupIndex !== -1,
+                        { $splice: [[userGroupIndex, 1]] },
+                    ],
+                },
+            } },
+        },
+    };
+    return update(state, settings);
+};
+
 export const domainDataReducer: ReducerGroup<DomainData> = {
     [USERGROUP_ACTION.setUserGroups]: setUserGroups,
     [SLOT_DATA_ACTION.setSlot]: setSlotData,
@@ -183,6 +215,7 @@ export const domainDataReducer: ReducerGroup<DomainData> = {
     [PROJECTS_ACTION.setUserProjects]: setProjects,
     [TASKS_ACTION.setUserTasks]: setTasks,
     [USER_PROFILE_ACTION.setUser]: setUser,
+    [USER_PROFILE_ACTION.unsetUserGroup]: usetUserUserGroup,
 };
 
 export default createReducerWithMap(domainDataReducer, initialDominDataState);
