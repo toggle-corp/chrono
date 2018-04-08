@@ -29,5 +29,15 @@ const userSchema: SchemaGroup = [];
     };
     userSchema.push({ name, schema });
 }
+{
+    const name = 'userGetResponse';
+    const schema = {
+        doc: {
+            name: 'User Get Reponse',
+        },
+        extends: 'user',
+    };
+    userSchema.push({ name, schema });
+}
 
 export default userSchema;

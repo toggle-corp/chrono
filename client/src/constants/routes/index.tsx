@@ -42,8 +42,26 @@ export const routes: Map<RouteSetting> = {
         links: allLinks,
     },
 
-    dashboard: {
+    userGroup: {
         order: 5,
+        type: ROUTE.private,
+        path: '/user-group/:userGroupId/',
+        // FIXME: create userGroup view
+        loader: () => import('../../views/Dashboard'),
+        links: allLinks,
+    },
+
+    project: {
+        order: 6,
+        type: ROUTE.private,
+        path: '/project/:projectId/',
+        // FIXME: create project view
+        loader: () => import('../../views/Dashboard'),
+        links: allLinks,
+    },
+
+    dashboard: {
+        order: 7,
         type: ROUTE.private,
         path: '/dashboard',
         loader: () => import('../../views/Dashboard'),
@@ -52,7 +70,7 @@ export const routes: Map<RouteSetting> = {
 
     // NOTE: 404 page should always be at the end
     notFound: {
-        order: 6,
+        order: 8,
         type: ROUTE.public,
         path: undefined,
         loader: () => import('../../views/NotFound'),

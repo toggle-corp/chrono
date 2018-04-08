@@ -3,7 +3,10 @@ import {
     FgRestBuilder,
 } from '../../../vendor/react-store/utils/rest';
 
-import { ErrorsFromServer } from '../../../rest/interface';
+import {
+    ErrorsFromServer,
+    Request,
+} from '../../../rest/interface';
 import { Workspace } from '../index';
 
 import {
@@ -12,11 +15,6 @@ import {
 } from '../../../rest';
 import { UserGroup } from '../../../redux/interface';
 import schema from '../../../schema'; 
-
-// FIXME: reuse this interface
-interface Request<T> {
-    create: (value: T) => RestRequest;
-}
 
 interface Props {
     setState: Workspace['setState'];

@@ -9,13 +9,11 @@ import {
     transformResponseErrorToFormError,
     urlForUsers,
 } from '../../../rest';
-import { ErrorsFromServer } from '../../../rest/interface';
+import {
+    ErrorsFromServer,
+    Request,
+} from '../../../rest/interface';
 import schema from '../../../schema';
-
-// FIXME: Move this
-interface Request<T> {
-    create: (value: T) => RestRequest;
-}
 
 export interface RegisterParams {
     firstName: string;

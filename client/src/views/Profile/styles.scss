@@ -1,0 +1,52 @@
+@import '../../stylesheets/base';
+
+.profile {
+    display: flex;
+
+    .header {
+        display: flex;
+        align-items: center;
+        border-right: $width-separator-thin solid $color-separator;
+        border-bottom: $width-separator-thin solid $color-separator;
+        background-color: $color-background-header;
+        padding: 0 $spacing-medium-alt;
+        grid-area: header;
+    }
+
+    .info {
+        display: flex;
+        align-items: flex-start;
+        border-right: $width-separator-thin solid $color-separator;
+        border-bottom: $width-separator-thin solid $color-separator;
+        padding: $spacing-large;
+        grid-area: info;
+
+        .detail {
+            padding: $spacing-medium $spacing-extra-large;
+
+            .name {
+                display: flex;
+                justify-content: space-between;
+                font-size: $font-size-super-large;
+
+                .first {
+                    margin-right: $spacing-small;
+                    color: $color-text;
+                }
+
+                .last {
+                    color: $color-text;
+                }
+            }
+
+            .email {
+                margin: 0;
+                color: $color-text-label;
+            }
+
+            .organization {
+                color: $color-text-label;
+            }
+        }
+    }
+}

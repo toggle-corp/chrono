@@ -37,9 +37,31 @@ export interface SlotData {
     remarks: string;
 }
 
+export interface UserInformation {
+    id: number;
+    firstName: string;
+    lastName: string;
+    email: string;
+    organization: string;
+}
+
+export interface User {
+    information: UserInformation;
+    userGroups: UserUserGroup[];
+    projects: UserProject[];
+}
+
+export interface Users {
+    [key: string]: User;
+}
+
 export interface UserGroup {
     id: number;
     title: string;
+}
+
+export interface UserUserGroup extends UserGroup {
+    role?: string;
 }
 
 export interface Project {
@@ -53,6 +75,11 @@ export interface Project {
     createdByName: string;
     modifiedByname: string;
     description: string;
+}
+
+
+export interface UserProject extends Project {
+    role?: string;
 }
 
 export interface Task {
@@ -101,6 +128,7 @@ export interface DomainData {
     slotData: SlotData;
     workspace: Workspace;
     timeslotViews: TimeslotViews;
+    users: Users;
 }
 
 export interface Notify {
@@ -115,4 +143,18 @@ export interface RootState {
 
 export interface ReducerGroup<T> {
     [key: string]: ((state: T, action: object) => T);
+}
+
+export interface SetUserAction extends Partial<User> {
+    userId: number;
+}
+
+export interface UnsetUserUserGroupAction {
+    userId: number;
+    userGroup: UserUserGroup;
+}
+
+export interface UnsetUserProjectAction {
+    userId: number;
+    project: UserProject;
 }

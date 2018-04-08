@@ -2,8 +2,13 @@ import { RestRequest } from '../vendor/react-store/utils/rest';
 import { RestHeader, RestAuthorizationHeader } from '../rest/interface';
 
 // Just an alias for prepareQueryParams
+
+export interface PP {
+    [key: string]: (undefined | string | number | (string | number)[]);
+}
+
 export const p: {
-    (value: {[key: string]: (string | number | (string | number)[])}): string;
+    (value: PP): string;
 } = RestRequest.prepareUrlParams;
 
 // if client is secure, server must be secure

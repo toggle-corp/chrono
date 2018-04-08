@@ -1,5 +1,8 @@
 // FIXME: move form related parts outside
 
+import {
+    RestRequest,
+} from '../vendor/react-store/utils/rest';
 export interface RestPostBody {
     method: string;
     headers: object;
@@ -72,3 +75,7 @@ interface ArraySchema {
 }
 
 export type Schema = ArraySchema | ObjectSchema | ConditionFns;
+
+export interface Request<T> {
+    create: (value: T) => RestRequest;
+}
