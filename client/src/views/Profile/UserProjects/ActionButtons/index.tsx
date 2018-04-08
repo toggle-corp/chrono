@@ -23,10 +23,6 @@ interface States { }
 
 export class ActionButtons extends React.PureComponent<Props, States> {
 
-    constructor(props: Props) {
-        super(props);
-    }
-
     getLinks = () => {
         const {
             row,
@@ -34,8 +30,7 @@ export class ActionButtons extends React.PureComponent<Props, States> {
 
         const edit = {
             pathname: reverseRoute(
-                // FIXME: define this
-                pathNames.project || '',
+                pathNames.project,
                 {
                     projectId: row.id,
                 },
@@ -58,11 +53,10 @@ export class ActionButtons extends React.PureComponent<Props, States> {
                 <DangerButton
                     title="Remove Project"
                     onClick={this.onRemove}
+                    iconName={iconNames.delete}
                     smallVerticalPadding
                     transparent
-                >
-                    <i className={iconNames.delete} />
-                </DangerButton>
+                />
                 <Link
                     className={styles.editLink}
                     title="Edit Project"

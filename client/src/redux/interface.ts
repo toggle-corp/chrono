@@ -37,10 +37,8 @@ export interface SlotData {
     remarks: string;
 }
 
-export type UserIdFromRoute = number;
-
 export interface UserInformation {
-    id: UserIdFromRoute;
+    id: number;
     firstName: string;
     lastName: string;
     email: string;
@@ -148,15 +146,15 @@ export interface ReducerGroup<T> {
 }
 
 export interface SetUserAction extends Partial<User> {
-    userId: UserIdFromRoute;
+    userId: number;
 }
 
 export interface UnsetUserUserGroupAction {
-    userId: UserIdFromRoute;
+    userId: number;
     userGroup: UserUserGroup;
 }
 
 export interface UnsetUserProjectAction {
-    userId: UserIdFromRoute;
+    userId: number;
     project: UserProject;
 }

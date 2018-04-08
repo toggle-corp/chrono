@@ -14,7 +14,6 @@ import {
     RootState,
     UserProject,
     UnsetUserProjectAction,
-    UserIdFromRoute,
 } from '../../../redux/interface';
 import {
     userProjectsSelector,
@@ -29,8 +28,8 @@ import * as styles from './styles.scss';
 
 interface OwnProps {}
 interface PropsFromState {
-    userId: UserIdFromRoute;
-    Projects: UserProject[];
+    userId: number;
+    projects: UserProject[];
 }
 interface PropsFromDispatch {
     unsetProject: (params: UnsetUserProjectAction) => void;
@@ -131,14 +130,14 @@ export class UserProjects extends React.PureComponent<Props, States> {
             pending,
         } = this.state;
         const {
-            Projects,
+            projects,
         } = this.props;
 
         return (
             <div className={styles.projects}>
                 {pending && <LoadingAnimation />}
                 <Table
-                    data={Projects}
+                    data={projects}
                     headers={this.headers}
                     keyExtractor={this.keyExtractor}
                 />
@@ -158,7 +157,7 @@ export class UserProjects extends React.PureComponent<Props, States> {
 
 const mapStateToProps = (state: RootState) => ({
     userId: userIdFromRoute(state),
-    Projects: userProjectsSelector(state),
+    projects: userProjectsSelector(state),
 });
 
 const mapDispatchToProps = (dispatch: Redux.Dispatch<RootState>) => ({

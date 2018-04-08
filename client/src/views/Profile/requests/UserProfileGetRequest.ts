@@ -8,15 +8,14 @@ import {
 } from '../../../rest';
 import {
     Request,
-    ErrorsFromServer,
 } from '../../../rest/interface';
 import {
-    UserIdFromRoute,
     UserInformation,
     SetUserAction,
 } from '../../../redux/interface';
 
 import schema from '../../../schema';
+import notify from '../../../notify';
 
 import { Profile } from '../index';
 
@@ -25,14 +24,14 @@ interface Props {
     setUser(params: SetUserAction): void;
 }
 
-export default class UserProfileRequest implements Request<UserIdFromRoute> {
+export default class UserProfileRequest implements Request<number> {
     props: Props;
 
     constructor(props: Props) {
         this.props = props;
     }
 
-    success = (userId: UserIdFromRoute) => (response: UserInformation) => {
+    success = (userId: number) => (response: UserInformation) => {
         try {
             schema.validate(response, 'userGetResponse');
             this.props.setUser({
@@ -44,20 +43,30 @@ export default class UserProfileRequest implements Request<UserIdFromRoute> {
         }
     }
 
-    failure = (response: { errors: ErrorsFromServer }) => {
-        console.warn('FAILURE:', response);
+    failure = () => {
+        notify.send({
+            title: 'User Profile',
+            type: notify.type.ERROR,
+            message: 'Failed when trying to pull user\'s profile',
+            duration: notify.duration.MEDIUM,
+        });
     }
 
-    fatal = (response: object) => {
-        console.warn('FATAL:', response);
+    fatal = () => {
+        notify.send({
+            title: 'User Profile',
+            type: notify.type.ERROR,
+            message: 'Failed when trying to pull user\'s profile',
+            duration: notify.duration.SLOW,
+        });
     }
 
-    create = (userId: UserIdFromRoute): RestRequest => {
+    create = (userId: number): RestRequest => {
         const request = new FgRestBuilder()
             .url(createUrlForUsers(userId))
             .params(commonParamsForGet)
-            .preLoad(() => { this.props.setState({ pending: true }); })
-            .postLoad(() => { this.props.setState({ pending: false }); })
+            .preLoad(() => { this.props.setState({ informationPending: true }); })
+            .postLoad(() => { this.props.setState({ informationPending: false }); })
             .success(this.success(userId))
             .failure(this.failure)
             .fatal(this.fatal)

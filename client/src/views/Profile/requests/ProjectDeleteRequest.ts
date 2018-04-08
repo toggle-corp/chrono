@@ -10,7 +10,6 @@ import {
 } from '../../../rest';
 import {
     Request,
-    ErrorsFromServer,
 } from '../../../rest/interface';
 import {
     UnsetUserProjectAction,
@@ -31,15 +30,10 @@ export default class ProjectDeleteRequest implements Request<UnsetUserProjectAct
     }
 
     success = (params: UnsetUserProjectAction) => () => {
-        try {
-            this.props.unsetProject(params);
-        } catch (err) {
-            console.error(err);
-        }
+        this.props.unsetProject(params);
     }
 
-    failure = (response: { errors: ErrorsFromServer }) => {
-        console.warn('FAILURE:', response);
+    failure = () => {
         notify.send({
             title: 'Project Delete',
             type: notify.type.ERROR,
@@ -48,8 +42,7 @@ export default class ProjectDeleteRequest implements Request<UnsetUserProjectAct
         });
     }
 
-    fatal = (response: object) => {
-        console.warn('FATAL:', response);
+    fatal = () => {
         notify.send({
             title: 'Project Delete',
             type: notify.type.ERROR,

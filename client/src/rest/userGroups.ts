@@ -5,11 +5,10 @@ import {
     p,
 } from '../config/rest';
 import { RestGetBody } from './interface';
-import { UserIdFromRoute } from '../redux/interface';
 
 export type UserGroupUrlParams = {
     fields?: string[];
-    user?: UserIdFromRoute;
+    user?: number;
 };
 
 export const urlForUserGroups: string = `${wsEndpoint}/user-groups/`;

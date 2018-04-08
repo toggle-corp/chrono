@@ -5,10 +5,9 @@ import {
     wsEndpoint,
 } from '../config/rest';
 import { RestGetBody } from './interface';
-import { UserIdFromRoute } from '../redux/interface';
 export type ProjectUrlParams = {
     fields?: string[];
-    user?: UserIdFromRoute;
+    user?: number;
 };
 
 export const urlForProjects: string = `${wsEndpoint}/projects/`;

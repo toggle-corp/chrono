@@ -3,16 +3,14 @@ import Redux from 'redux';
 import { connect } from 'react-redux';
 import {
     RootState,
-    User,
-    UserIdFromRoute,
+    UserInformation,
     SetUserAction,
 } from '../../redux/interface';
 
+import LoadingAnimation from '../../vendor/react-store/components/View/LoadingAnimation';
 import { RestRequest } from '../../vendor/react-store/utils/rest';
 import {
     userInformationSelector,
-    userProjectsSelector,
-    userUserGroupsSelector,
     userIdFromRoute,
 
     setUserAction,
@@ -27,8 +25,9 @@ import ProjectsGetRequest from './requests/ProjectsGetRequest';
 import * as styles from './styles.scss';
 
 interface OwnProps {}
-interface PropsFromState extends User {
-    userId: UserIdFromRoute;
+interface PropsFromState {
+    userId: number;
+    information: UserInformation;
 }
 interface PropsFromDispatch {
     setUser(params: SetUserAction): void;
@@ -36,7 +35,11 @@ interface PropsFromDispatch {
 
 type Props = OwnProps & PropsFromState & PropsFromDispatch;
 
-interface States { }
+interface States {
+    projectPending: boolean;
+    userGroupPending: boolean;
+    informationPending: boolean;
+}
 
 export class Profile extends React.PureComponent<Props, States> {
     userProfileRequest: RestRequest;
@@ -47,7 +50,9 @@ export class Profile extends React.PureComponent<Props, States> {
         super(props);
 
         this.state = {
-            pending: true,
+            projectPending: true,
+            userGroupPending: true,
+            informationPending: true,
         };
     }
 
@@ -75,13 +80,13 @@ export class Profile extends React.PureComponent<Props, States> {
         }
     }
 
-    startRequestsForUser = (userId: UserIdFromRoute) => {
+    startRequestsForUser = (userId: number) => {
         this.startRequestForUserProfile(userId);
         this.startRequestForUserGroups(userId);
         this.startRequestForProjects(userId);
     }
 
-    startRequestForUserProfile = (userId: UserIdFromRoute) => {
+    startRequestForUserProfile = (userId: number) => {
         if (this.userProfileRequest) {
             this.userProfileRequest.stop();
         }
@@ -93,7 +98,7 @@ export class Profile extends React.PureComponent<Props, States> {
         this.userProfileRequest.start();
     }
 
-    startRequestForUserGroups = (userId: UserIdFromRoute) => {
+    startRequestForUserGroups = (userId: number) => {
         if (this.userGroupsRequest) {
             this.userGroupsRequest.stop();
         }
@@ -105,7 +110,7 @@ export class Profile extends React.PureComponent<Props, States> {
         this.userGroupsRequest.start();
     }
 
-    startRequestForProjects = (userId: UserIdFromRoute) => {
+    startRequestForProjects = (userId: number) => {
         if (this.projectsRequest) {
             this.projectsRequest.stop();
         }
@@ -120,14 +125,18 @@ export class Profile extends React.PureComponent<Props, States> {
     render() {
         const {
             information,
-            userGroups,
-            projects,
         } = this.props;
+        const {
+            projectPending,
+            userGroupPending,
+            informationPending,
+        } = this.state;
 
-        console.warn(userGroups, projects);
+        const pending = projectPending || userGroupPending || informationPending;
 
         return (
             <div className={styles.profile}>
+                {pending && <LoadingAnimation />}
                 <header className={styles.header}>
                     <h2>Profile</h2>
                 </header>
@@ -157,8 +166,6 @@ export class Profile extends React.PureComponent<Props, States> {
 
 const mapStateToProps = (state: RootState) => ({
     information: userInformationSelector(state),
-    userGroups: userUserGroupsSelector(state),
-    projects: userProjectsSelector(state),
     userId: userIdFromRoute(state),
 });
 

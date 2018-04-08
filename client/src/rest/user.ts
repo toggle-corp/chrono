@@ -3,13 +3,10 @@ import {
     Rest,
     commonHeaderForPost,
 } from '../config/rest';
-import {
-    UserIdFromRoute,
-} from '../redux/interface';
 import { RestPostBody } from './interface';
 
 export const urlForUsers: string = `${wsEndpoint}/users/`;
-export const createUrlForUsers = (userId: UserIdFromRoute): string => (
+export const createUrlForUsers = (userId: number): string => (
     `${wsEndpoint}/users/${userId}`
 );
 

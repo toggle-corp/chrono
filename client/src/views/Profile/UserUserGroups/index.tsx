@@ -14,7 +14,6 @@ import {
     RootState,
     UserUserGroup,
     UnsetUserUserGroupAction,
-    UserIdFromRoute,
 } from '../../../redux/interface';
 import {
     userUserGroupsSelector,
@@ -29,7 +28,7 @@ import * as styles from './styles.scss';
 
 interface OwnProps {}
 interface PropsFromState {
-    userId: UserIdFromRoute;
+    userId: number;
     userGroups: UserUserGroup[];
 }
 interface PropsFromDispatch {

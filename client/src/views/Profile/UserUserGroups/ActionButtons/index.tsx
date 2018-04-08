@@ -34,8 +34,7 @@ export class ActionButtons extends React.PureComponent<Props, States> {
 
         const edit = {
             pathname: reverseRoute(
-                // FIXME: define this
-                pathNames.userGroup || '',
+                pathNames.userGroup,
                 {
                     userGroupId: row.id,
                 },
@@ -58,11 +57,10 @@ export class ActionButtons extends React.PureComponent<Props, States> {
                 <DangerButton
                     title="Remove UserGroup"
                     onClick={this.onRemove}
+                    iconName={iconNames.delete}
                     smallVerticalPadding
                     transparent
-                >
-                    <i className={iconNames.delete} />
-                </DangerButton>
+                />
                 <Link
                     className={styles.editLink}
                     title="Edit UserGroup"

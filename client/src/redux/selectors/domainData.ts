@@ -8,7 +8,6 @@ import {
     Task,
     TimeslotViews,
     Users,
-    UserIdFromRoute,
 } from '../interface';
 
 const emptyObject = {};
@@ -20,7 +19,7 @@ const emptyFormState: object = {
 };
 
 // FIXME: removet this with actual id from route
-export const userIdFromRoute = ({}: RootState): UserIdFromRoute => 1;
+export const userIdFromRoute = ({}: RootState): number => 1;
 
 export const usersSelector = ({ domainData }: RootState): Users => (
     domainData.users || emptyObject
