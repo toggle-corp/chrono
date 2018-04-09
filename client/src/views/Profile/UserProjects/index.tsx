@@ -18,7 +18,7 @@ import {
 import {
     userProjectsSelector,
     unsetUserProjectAction,
-    userIdFromRoute,
+    userIdFromRouteSelector,
 } from '../../../redux';
 
 import ProjectDeleteRequest from '../requests/ProjectDeleteRequest';
@@ -28,7 +28,7 @@ import * as styles from './styles.scss';
 
 interface OwnProps {}
 interface PropsFromState {
-    userId: number;
+    userId?: number;
     projects: UserProject[];
 }
 interface PropsFromDispatch {
@@ -96,15 +96,18 @@ export class UserProjects extends React.PureComponent<Props, States> {
         if (this.projectDeleteRequest) {
             this.projectDeleteRequest.stop();
         }
-        const projectDeleteRequest = new ProjectDeleteRequest({
-            unsetProject: this.props.unsetProject,
-            setState: states => this.setState(states),
-        });
-        this.projectDeleteRequest = projectDeleteRequest.create({
-            userId: this.props.userId,
-            project: row,
-        });
-        this.projectDeleteRequest.start();
+        if (this.props.userId) {
+            const projectDeleteRequest = new ProjectDeleteRequest({
+                unsetProject: this.props.unsetProject,
+                setState: states => this.setState(states),
+            });
+
+            this.projectDeleteRequest = projectDeleteRequest.create({
+                userId: this.props.userId,
+                project: row,
+            });
+            this.projectDeleteRequest.start();
+        }
     }
 
     onRemove = (row: UserProject) => {
@@ -156,7 +159,7 @@ export class UserProjects extends React.PureComponent<Props, States> {
 }
 
 const mapStateToProps = (state: RootState) => ({
-    userId: userIdFromRoute(state),
+    userId: userIdFromRouteSelector(state),
     projects: userProjectsSelector(state),
 });
 
