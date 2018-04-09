@@ -39,5 +39,15 @@ const projectSchema: SchemaGroup = [];
     };
     projectSchema.push({ name, schema });
 }
+{
+    const name = 'projectsPostResponse';
+    const schema = {
+        doc: {
+            name: 'Projects',
+        },
+        extend: 'project',
+    };
+    projectSchema.push({ name, schema });
+}
 
 export default projectSchema;

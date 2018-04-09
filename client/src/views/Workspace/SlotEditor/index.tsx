@@ -159,7 +159,7 @@ export class SlotEditor extends React.PureComponent<Props, States> {
         const {
             pending,
         } = this.state;
-        const { 
+        const {
             userGroups,
             slotView,
             tasks,

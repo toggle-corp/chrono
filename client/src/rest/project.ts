@@ -1,10 +1,15 @@
 import {
     Rest,
     commonHeaderForGet,
+    commonHeaderForPost,
     p,
     wsEndpoint,
 } from '../config/rest';
-import { RestGetBody } from './interface';
+import {
+    RestGetBody,
+    RestPostBody,
+    PostProjectBody,
+} from './interface';
 export type ProjectUrlParams = {
     fields?: string[];
     user?: number;
@@ -21,4 +26,16 @@ export const createUrlForProject = (projectId: number): string =>
 export const createParamsForGetProjects = (): RestGetBody => ({
     method: Rest.GET,
     headers: commonHeaderForGet,
+});
+
+export const createParamsForPostProject = (
+    { title, description, userGroup }: PostProjectBody,
+): RestPostBody => ({
+    method: Rest.POST,
+    headers: commonHeaderForPost,
+    body: JSON.stringify({
+        title,
+        description ,
+        userGroup,
+    }),
 });

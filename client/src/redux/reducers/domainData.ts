@@ -10,13 +10,17 @@ import {
     Task,
     TimeslotView,
 
+    Users,
     UnsetUserUserGroupAction,
     UnsetUserProjectAction,
     SetUserAction,
+    SetProjectAction,
+    SetUserGroupAction,
 } from '../interface';
 import initialDominDataState from '../initial-state/domainData';
 
 const emptyArray: object[] = [];
+
 // ACTION-TYPE
 
 export const enum SLOT_DATA_ACTION {
@@ -26,10 +30,12 @@ export const enum SLOT_DATA_ACTION {
 
 export const enum USERGROUP_ACTION {
     setUserGroups = 'domainData/SET_USERGROUPS',
+    setUserGroup = 'domainData/SET_USERGROUP',
 }
 
 export const enum PROJECTS_ACTION {
     setUserProjects = 'domainData/SET_USER_PROJECTS',
+    setProject =  'domainData/SET_PROJECT',
 }
 
 export const enum TASKS_ACTION {
@@ -60,10 +66,22 @@ export const setProjectsAction = (projects: Project[]) => ({
     type: PROJECTS_ACTION.setUserProjects,
 });
 
+export const setProjectAction = ({ userId, project }: SetProjectAction) => ({
+    userId,
+    project,
+    type: PROJECTS_ACTION.setProject,
+});
+
 // USER-GROUP
 export const setUserGroupsAction = (userGroups: UserGroup[]) => ({
     userGroups,
     type: USERGROUP_ACTION.setUserGroups,
+});
+
+export const setUserGroupAction = ({ userId, userGroup }: SetUserGroupAction) => ({
+    userId,
+    userGroup,
+    type: USERGROUP_ACTION.setUserGroup,
 });
 
 // TASKS
@@ -100,6 +118,32 @@ export const unsetUserProjectAction = (
 
 // HELPER
 
+const getObjectChildren = (
+    object: object, childrens: (string | number | undefined)[], defaultValue: any,
+): any => {
+    const child = childrens[0];
+    if (!object || !child || object[child]) {
+        return defaultValue;
+    }
+    if (childrens.length === 1) {
+        return object[child];
+    }
+    return getObjectChildren(object[child], childrens.slice(1), defaultValue);
+};
+
+const findIndexOfUserGroupOfUser = (
+    users: Users, userId: number | undefined, userGroupId: number,
+) => {
+    const userGroups: UserGroup[] = getObjectChildren(users, [userId, 'userGroups'], []);
+    return userGroups.findIndex(userGroup => userGroup.id === userGroupId);
+};
+
+const findIndexOfProjectOfUser = (
+    users: Users, userId: number | undefined, projectId: number,
+) => {
+    const projects: UserGroup[] = getObjectChildren(users, [userId, 'projects'], []);
+    return projects.findIndex(project => project.id === projectId);
+};
 // REDUCER
 
 // Slot
@@ -144,6 +188,37 @@ const setUserGroups = (state: DomainData, action: { userGroups: UserGroup[] }) =
     return update(state, settings);
 };
 
+const setUserGroup = (state: DomainData, action: SetUserGroupAction) => {
+    const { userId, userGroup } = action;
+    const { users, userGroups } = state;
+    const userGroupIndex = userGroups.findIndex(uG => uG.id === userGroup.id);
+
+    const userUserGroupIndex = findIndexOfUserGroupOfUser(users, userId, userGroup.id);
+
+    const settings = {
+        userGroups: { $autoArray: {
+            $if: [
+                userGroupIndex === -1,
+                { $push: [userGroup] },
+                { [userGroupIndex]: { $set: userGroup } },
+            ],
+        } },
+        users: {
+            // NOTE: $if will handle the userId undefined
+            [userId || 0]: { $auto: {
+                userGroups: { $autoArray: {
+                    $if: [
+                        userUserGroupIndex === -1,
+                        { $push: [userGroup] },
+                        { [userUserGroupIndex]: { $set: userGroup } },
+                    ],
+                } },
+            } },
+        },
+    };
+    return update(state, settings);
+};
+
 // Projects
 const setProjects = (state: DomainData, action: { projects: Project[] }) => {
     const { projects } = action;
@@ -152,6 +227,37 @@ const setProjects = (state: DomainData, action: { projects: Project[] }) => {
             $auto: {
                 $set: projects,
             },
+        },
+    };
+    return update(state, settings);
+};
+
+const setProject = (state: DomainData, action: SetProjectAction) => {
+    const { userId, project } = action;
+    const { users, projects } = state;
+    const projectIndex = projects.findIndex(p => p.id === project.id);
+
+    const userProjectIndex = findIndexOfProjectOfUser(users, userId, project.id);
+
+    const settings = {
+        projects: { $autoArray: {
+            $if: [
+                projectIndex === -1,
+                { $push: [project] },
+                { [projectIndex]: { $set: project } },
+            ],
+        } },
+        users: {
+            // NOTE: $if will handle the userId undefined
+            [userId || 0]: { $auto: {
+                projects: { $autoArray: {
+                    $if: [
+                        userProjectIndex === -1,
+                        { $push: [project] },
+                        { [userProjectIndex]: { $set: project } },
+                    ],
+                } },
+            } },
         },
     };
     return update(state, settings);
@@ -241,9 +347,14 @@ const usetUserProject = (state: DomainData, action: UnsetUserProjectAction) => {
 
 export const domainDataReducer: ReducerGroup<DomainData> = {
     [USERGROUP_ACTION.setUserGroups]: setUserGroups,
+    [USERGROUP_ACTION.setUserGroup]: setUserGroup,
+
     [SLOT_DATA_ACTION.setSlot]: setSlotData,
     [SLOT_DATA_ACTION.setSlotView]: setSlotViewData,
+
     [PROJECTS_ACTION.setUserProjects]: setProjects,
+    [PROJECTS_ACTION.setProject]: setProject,
+
     [TASKS_ACTION.setUserTasks]: setTasks,
 
     [USER_PROFILE_ACTION.setUser]: setUser,

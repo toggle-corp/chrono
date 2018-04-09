@@ -68,7 +68,6 @@ export class Workspace extends React.PureComponent<Props, States> {
         this.startRequestForUserGroup();
         this.startRequestForProjects();
         this.startRequestForTasks();
-        
     }
 
     componentWillUnmount() {

@@ -169,3 +169,13 @@ export interface UnsetUserProjectAction {
     userId: number;
     project: UserProject;
 }
+
+export interface SetProjectAction {
+    userId?: number;
+    project: Project;
+}
+
+export interface SetUserGroupAction {
+    userId?: number;
+    userGroup: UserGroup;
+}

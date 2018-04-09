@@ -79,3 +79,14 @@ export type Schema = ArraySchema | ObjectSchema | ConditionFns;
 export interface Request<T> {
     create: (value: T) => RestRequest;
 }
+
+export interface PostProjectBody {
+    title: string;
+    description: string;
+    userGroup: number;
+}
+
+export interface PostUserGroupBody {
+    title: string;
+    description: string;
+}
