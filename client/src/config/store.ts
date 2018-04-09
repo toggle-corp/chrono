@@ -1,7 +1,7 @@
 import localforage from 'localforage';
 
 const storeConfig = {
-    blacklist: ['domainData', 'notify'],
+    blacklist: ['notify', 'route'],
     key: 'chrono',
     storage: localforage,
 };

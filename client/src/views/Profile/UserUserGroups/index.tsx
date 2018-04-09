@@ -18,7 +18,7 @@ import {
 import {
     userUserGroupsSelector,
     unsetUserUserGroupAction,
-    userIdFromRoute,
+    userIdFromRouteSelector,
 } from '../../../redux';
 
 import UserGroupDeleteRequest from '../requests/UserGroupDeleteRequest';
@@ -28,7 +28,7 @@ import * as styles from './styles.scss';
 
 interface OwnProps {}
 interface PropsFromState {
-    userId: number;
+    userId?: number;
     userGroups: UserUserGroup[];
 }
 interface PropsFromDispatch {
@@ -96,15 +96,17 @@ export class UserUserGroups extends React.PureComponent<Props, States> {
         if (this.userGroupDeleteRequest) {
             this.userGroupDeleteRequest.stop();
         }
-        const userGroupDeleteRequest = new UserGroupDeleteRequest({
-            unsetUserGroup: this.props.unsetUserGroup,
-            setState: states => this.setState(states),
-        });
-        this.userGroupDeleteRequest = userGroupDeleteRequest.create({
-            userId: this.props.userId,
-            userGroup: row,
-        });
-        this.userGroupDeleteRequest.start();
+        if (this.props.userId) {
+            const userGroupDeleteRequest = new UserGroupDeleteRequest({
+                unsetUserGroup: this.props.unsetUserGroup,
+                setState: states => this.setState(states),
+            });
+            this.userGroupDeleteRequest = userGroupDeleteRequest.create({
+                userId: this.props.userId,
+                userGroup: row,
+            });
+            this.userGroupDeleteRequest.start();
+        }
     }
 
     onRemove = (row: UserUserGroup) => {
@@ -156,7 +158,7 @@ export class UserUserGroups extends React.PureComponent<Props, States> {
 }
 
 const mapStateToProps = (state: RootState) => ({
-    userId: userIdFromRoute(state),
+    userId: userIdFromRouteSelector(state),
     userGroups: userUserGroupsSelector(state),
 });
 

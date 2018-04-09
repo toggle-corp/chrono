@@ -1,4 +1,6 @@
 import React from 'react';
+import { RouteComponentProps } from 'react-router-dom';
+
 import ViewManager from '../../components/ViewManager';
 import { mapObjectToArray, mapObjectToObject, Map } from '../../utils/map';
 import { allLinks, noLinks } from './links';
@@ -37,7 +39,7 @@ export const routes: Map<RouteSetting> = {
     profile: {
         order: 4,
         type: ROUTE.private,
-        path: '/profile',
+        path: '/profile/:userId/',
         loader: () => import('../../views/Profile'),
         links: allLinks,
     },
@@ -87,7 +89,7 @@ export const routesOrder: string[] = mapObjectToArray<RouteSetting, { key: strin
 
 export const views = mapObjectToObject<RouteSetting, (props: object) => JSX.Element>(
     routes,
-    route => (props: object) => (
+    route => (props: RouteComponentProps<{}>) => (
         <ViewManager
             {...props}
             load={route.loader}

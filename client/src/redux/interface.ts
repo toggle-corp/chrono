@@ -135,10 +135,21 @@ export interface Notify {
     notifications: Notification[];
 }
 
+export interface Route {
+    path?: string;
+    url?: string;
+    isExact?: boolean;
+    params?: {
+        userId?: number;
+    };
+    routeState?: object; // stricter rule here
+}
+
 export interface RootState {
     domainData: DomainData;
     auth: Auth;
     notify: Notify;
+    route: Route;
 }
 
 export interface ReducerGroup<T> {

@@ -1,8 +1,10 @@
 import { createSelector } from 'reselect';
+import { userIdFromRouteSelector } from './route';
 import {
     RootState,
     SlotData,
     UserGroup,
+    UserProject,
     Workspace,
     Project,
     Task,
@@ -17,9 +19,6 @@ const emptyFormState: object = {
     formErrors: {},
     formFieldErrors: {},
 };
-
-// FIXME: removet this with actual id from route
-export const userIdFromRoute = ({}: RootState): number => 1;
 
 export const usersSelector = ({ domainData }: RootState): Users => (
     domainData.users || emptyObject
@@ -95,24 +94,25 @@ export const timeslotActiveViewSelector = createSelector(
         }
     ),
 );
-// userIdFromRoute
+
+// userIdFromRouteSelector
 export const userSelector = createSelector(
-    userIdFromRoute,
+    userIdFromRouteSelector,
     usersSelector,
-    (userId, users) => (users[userId] || emptyObject),
+    (userId, users) => userId ? users[userId] : undefined,
 );
 
 export const userInformationSelector = createSelector(
     userSelector,
-    user => (user.information || emptyObject),
+    user => user ? user.information : undefined,
 );
 
 export const userUserGroupsSelector = createSelector(
     userSelector,
-    user => (user.userGroups || emptyArray),
+    user => (user ? user.userGroups : undefined) || (emptyArray as UserGroup[]),
 );
 
 export const userProjectsSelector = createSelector(
     userSelector,
-    user => (user.projects || emptyArray),
+    user => (user ? user.projects : undefined) || (emptyArray as UserProject[]),
 );

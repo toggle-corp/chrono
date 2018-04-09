@@ -11,7 +11,7 @@ import LoadingAnimation from '../../vendor/react-store/components/View/LoadingAn
 import { RestRequest } from '../../vendor/react-store/utils/rest';
 import {
     userInformationSelector,
-    userIdFromRoute,
+    userIdFromRouteSelector,
 
     setUserAction,
 } from '../../redux';
@@ -26,8 +26,8 @@ import * as styles from './styles.scss';
 
 interface OwnProps {}
 interface PropsFromState {
-    userId: number;
-    information: UserInformation;
+    userId?: number;
+    information?: UserInformation;
 }
 interface PropsFromDispatch {
     setUser(params: SetUserAction): void;
@@ -58,12 +58,14 @@ export class Profile extends React.PureComponent<Props, States> {
 
     componentWillMount() {
         const { userId } = this.props;
-        this.startRequestsForUser(userId);
+        if (userId) {
+            this.startRequestsForUser(userId);
+        }
     }
 
     componentWillReceiveProps(nextProps: Props) {
         const { userId } = nextProps;
-        if (this.props.userId !== userId) {
+        if (this.props.userId !== userId && userId) {
             this.startRequestsForUser(userId);
         }
     }
@@ -124,7 +126,12 @@ export class Profile extends React.PureComponent<Props, States> {
 
     render() {
         const {
-            information,
+            // FIXME: move this to default props later
+            information = {
+                firstName: 'N/a',
+                lastName: 'N/a',
+                email: 'N/a',
+            },
         } = this.props;
         const {
             projectPending,
@@ -166,7 +173,7 @@ export class Profile extends React.PureComponent<Props, States> {
 
 const mapStateToProps = (state: RootState) => ({
     information: userInformationSelector(state),
-    userId: userIdFromRoute(state),
+    userId: userIdFromRouteSelector(state),
 });
 
 const mapDispatchToProps = (dispatch: Redux.Dispatch<RootState>) => ({
