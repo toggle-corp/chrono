@@ -18,7 +18,6 @@ import Form, {
 import {
     FormErrors,
     FormFieldErrors,
-    ValuesFromForm,
     Schema,
 } from '../../../rest/interface';
 import {
@@ -66,11 +65,7 @@ interface PropsFromDispatch {
 type Props = OwnProps & PropsFromState & PropsFromDispatch;
 
 interface States {
-    formErrors: FormErrors;
-    formFieldErrors: FormFieldErrors;
-    formValues: ValuesFromForm;
     pending: boolean;
-    pristine: boolean;
 }
 
 type SlotParams = SlotData;
@@ -85,13 +80,8 @@ export class SlotEditor extends React.PureComponent<Props, States> {
     constructor(props: Props) {
         super(props);
 
-        const { slotView } = props;
         this.state = {
-            formErrors: {},
-            formFieldErrors: {},
-            formValues: slotView.data,
             pending: false,
-            pristine: slotView.pristine,
         };
 
         this.schema = {

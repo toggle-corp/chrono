@@ -1,5 +1,4 @@
-import update from '../../vendor/react-store/utils/immutable-update';
-import createReducerWithMap from '../../utils/createReducerWithMap';
+import update from '../../../vendor/react-store/utils/immutable-update';
 
 import {
     DomainData,
@@ -8,8 +7,7 @@ import {
     UnsetUserUserGroupAction,
     UnsetUserProjectAction,
     SetUserAction,
-} from '../interface';
-import initialDominDataState from '../initial-state/domainData';
+} from '../../interface';
 
 const emptyArray: object[] = [];
 
@@ -122,10 +120,10 @@ const usetUserProject = (state: DomainData, action: UnsetUserProjectAction) => {
     return update(state, settings);
 };
 
-export const userReducer: ReducerGroup<DomainData> = {
+const reducer: ReducerGroup<DomainData> = {
     [USER_PROFILE_ACTION.setUser]: setUser,
     [USER_PROFILE_ACTION.unsetUserGroup]: usetUserUserGroup,
     [USER_PROFILE_ACTION.unsetProject]: usetUserProject,
 };
 
-export default createReducerWithMap(userReducer, initialDominDataState);
+export default reducer;

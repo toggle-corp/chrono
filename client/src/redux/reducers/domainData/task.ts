@@ -1,13 +1,10 @@
-import update from '../../vendor/react-store/utils/immutable-update';
-import createReducerWithMap from '../../utils/createReducerWithMap';
+import update from '../../../vendor/react-store/utils/immutable-update';
 
 import {
     DomainData,
     ReducerGroup,
     Task,
-
-} from '../interface';
-import initialDominDataState from '../initial-state/domainData';
+} from '../../interface';
 
 // ACTION-TYPE
 
@@ -40,8 +37,8 @@ const setTasks = (state: DomainData, action: { tasks: Task[] }) => {
     return update(state, settings);
 };
 
-export const taskReducer: ReducerGroup<DomainData> = {
+const reducer: ReducerGroup<DomainData> = {
     [TASKS_ACTION.setUserTasks]: setTasks,
 };
 
-export default createReducerWithMap(taskReducer, initialDominDataState);
+export default reducer;

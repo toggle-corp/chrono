@@ -1,6 +1,5 @@
-import update from '../../vendor/react-store/utils/immutable-update';
-import { getObjectChildren } from '../../vendor/react-store/utils/common';
-import createReducerWithMap from '../../utils/createReducerWithMap';
+import update from '../../../vendor/react-store/utils/immutable-update';
+import { getObjectChildren } from '../../../vendor/react-store/utils/common';
 
 import {
     DomainData,
@@ -9,8 +8,7 @@ import {
     Users,
 
     SetUserGroupAction,
-} from '../interface';
-import initialDominDataState from '../initial-state/domainData';
+} from '../../interface';
 
 // ACTION-TYPE
 
@@ -86,9 +84,9 @@ const setUserGroup = (state: DomainData, action: SetUserGroupAction) => {
     return update(state, settings);
 };
 
-export const userGroupReducer: ReducerGroup<DomainData> = {
+const reducer: ReducerGroup<DomainData> = {
     [USERGROUP_ACTION.setUserGroups]: setUserGroups,
     [USERGROUP_ACTION.setUserGroup]: setUserGroup,
 };
 
-export default createReducerWithMap(userGroupReducer, initialDominDataState);
+export default reducer;

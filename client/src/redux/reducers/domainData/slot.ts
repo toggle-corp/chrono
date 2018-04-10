@@ -1,13 +1,11 @@
-import update from '../../vendor/react-store/utils/immutable-update';
-import createReducerWithMap from '../../utils/createReducerWithMap';
+import update from '../../../vendor/react-store/utils/immutable-update';
 
 import {
     DomainData,
     ReducerGroup,
     SlotData,
     TimeslotView,
-} from '../interface';
-import initialDominDataState from '../initial-state/domainData';
+} from '../../interface';
 
 // ACTION-TYPE
 
@@ -61,9 +59,9 @@ const setSlotViewData = (state: DomainData, action: { params: TimeslotView }) =>
     return update(state, settings);
 };
 
-export const slotReducer: ReducerGroup<DomainData> = {
+const reducer: ReducerGroup<DomainData> = {
     [SLOT_DATA_ACTION.setSlot]: setSlotData,
     [SLOT_DATA_ACTION.setSlotView]: setSlotViewData,
 };
 
-export default createReducerWithMap(slotReducer, initialDominDataState);
+export default reducer;
