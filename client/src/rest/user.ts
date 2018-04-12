@@ -3,10 +3,13 @@ import {
     Rest,
     commonHeaderForPost,
 } from '../config/rest';
-import { RestPostBody } from './interface';
+import {
+    RestPostBody,
+    PatchUserBody,
+} from './interface';
 
 export const urlForUsers: string = `${wsEndpoint}/users/`;
-export const createUrlForUsers = (userId: number): string => (
+export const createUrlForUser = (userId: number): string => (
     `${wsEndpoint}/users/${userId}/`
 );
 
@@ -21,5 +24,16 @@ export const createParamsForUserRegister = (
         lastName,
         username,
         password,
+    }),
+});
+
+export const createParamsForUserPatch = (
+    { firstName, lastName }: PatchUserBody,
+): RestPostBody => ({
+    method: Rest.PATCH,
+    headers: commonHeaderForPost,
+    body: JSON.stringify({
+        firstName,
+        lastName,
     }),
 });

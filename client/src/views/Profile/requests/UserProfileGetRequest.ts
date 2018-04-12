@@ -3,7 +3,7 @@ import {
     FgRestBuilder,
 } from '../../../vendor/react-store/utils/rest';
 import {
-    createUrlForUsers,
+    createUrlForUser,
     commonParamsForGet,
 } from '../../../rest';
 import {
@@ -63,7 +63,7 @@ export default class UserProfileRequest implements Request<number> {
 
     create = (userId: number): RestRequest => {
         const request = new FgRestBuilder()
-            .url(createUrlForUsers(userId))
+            .url(createUrlForUser(userId))
             .params(commonParamsForGet)
             .preLoad(() => { this.props.setState({ informationPending: true }); })
             .postLoad(() => { this.props.setState({ informationPending: false }); })
