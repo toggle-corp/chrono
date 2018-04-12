@@ -8,6 +8,10 @@ import {
 } from '../../redux/interface';
 
 import LoadingAnimation from '../../vendor/react-store/components/View/LoadingAnimation';
+import Modal from '../../vendor/react-store/components/View/Modal';
+import ModalBody from '../../vendor/react-store/components/View/Modal/Body';
+import ModalHeader from '../../vendor/react-store/components/View/Modal/Header';
+import PrimaryButton from '../../vendor/react-store/components/Action/Button/PrimaryButton';
 import { RestRequest } from '../../vendor/react-store/utils/rest';
 import {
     userInformationSelector,
@@ -16,11 +20,16 @@ import {
     setUserAction,
 } from '../../redux';
 
+import { iconNames } from '../../constants';
+
 import UserProjects from './UserProjects';
 import UserUserGroups from './UserUserGroups';
+import UserProjectAdd from './UserProjectAdd';
+import UserUserGroupAdd from './UserUserGroupAdd';
+
 import UserProfileGetRequest from './requests/UserProfileGetRequest';
-import UserGroupsGetRequest from './requests/UserGroupsGetRequest';
-import ProjectsGetRequest from './requests/ProjectsGetRequest';
+import UserUserGroupsGetRequest from './requests/UserUserGroupsGetRequest';
+import UserProjectsGetRequest from './requests/UserProjectsGetRequest';
 
 import * as styles from './styles.scss';
 
@@ -39,6 +48,8 @@ interface States {
     projectPending: boolean;
     userGroupPending: boolean;
     informationPending: boolean;
+    showAddProjectModal: boolean;
+    showAddUserGroupModal: boolean;
 }
 
 export class Profile extends React.PureComponent<Props, States> {
@@ -53,6 +64,8 @@ export class Profile extends React.PureComponent<Props, States> {
             projectPending: true,
             userGroupPending: true,
             informationPending: true,
+            showAddProjectModal: false,
+            showAddUserGroupModal: false,
         };
     }
 
@@ -104,7 +117,7 @@ export class Profile extends React.PureComponent<Props, States> {
         if (this.userGroupsRequest) {
             this.userGroupsRequest.stop();
         }
-        const userGroupsRequest = new UserGroupsGetRequest({
+        const userGroupsRequest = new UserUserGroupsGetRequest({
             setUser: this.props.setUser,
             setState: states => this.setState(states),
         });
@@ -116,13 +129,30 @@ export class Profile extends React.PureComponent<Props, States> {
         if (this.projectsRequest) {
             this.projectsRequest.stop();
         }
-        const projectsRequest = new ProjectsGetRequest({
+        const projectsRequest = new UserProjectsGetRequest({
             setUser: this.props.setUser,
             setState: states => this.setState(states),
         });
         this.projectsRequest = projectsRequest.create(userId);
         this.projectsRequest.start();
     }
+
+    handleAddProjectClick = () => {
+        this.setState({ showAddProjectModal: true });
+    }
+
+    handleAddUserGroupClick = () => {
+        this.setState({ showAddUserGroupModal: true });
+    }
+
+    handleAddProjectModalClose = () => {
+        this.setState({ showAddProjectModal: false });
+    }
+
+    handleAddUserGroupModalClose = () => {
+        this.setState({ showAddUserGroupModal: false });
+    }
+
 
     render() {
         const {
@@ -133,10 +163,14 @@ export class Profile extends React.PureComponent<Props, States> {
                 email: 'N/a',
             },
         } = this.props;
+
         const {
             projectPending,
             userGroupPending,
             informationPending,
+
+            showAddProjectModal,
+            showAddUserGroupModal,
         } = this.state;
 
         const pending = projectPending || userGroupPending || informationPending;
@@ -164,8 +198,70 @@ export class Profile extends React.PureComponent<Props, States> {
                         </p>
                     </div>
                 </div>
-                <UserUserGroups />
-                <UserProjects />
+                <div>
+                    <PrimaryButton
+                        onClick={this.handleAddUserGroupClick}
+                        iconName={iconNames.add}
+                    >
+                        Add User Group
+                    </PrimaryButton>
+                    <UserUserGroups />
+                    { showAddUserGroupModal &&
+                        <Modal
+                            closeOnEscape
+                            onClose={this.handleAddUserGroupModalClose}
+                        >
+                            <ModalHeader
+                                title="Add User Group"
+                                rightComponent={
+                                    <PrimaryButton
+                                        onClick={this.handleAddUserGroupModalClose}
+                                        transparent
+                                    >
+                                        <span className={iconNames.close} />
+                                    </PrimaryButton>
+                                }
+                            />
+                            <ModalBody>
+                                <UserUserGroupAdd
+                                    handleClose={this.handleAddUserGroupModalClose}
+                                />
+                            </ModalBody>
+                        </Modal>
+                    }
+                </div>
+                <div>
+                    <PrimaryButton
+                        onClick={this.handleAddProjectClick}
+                        iconName={iconNames.add}
+                    >
+                        Add Project
+                    </PrimaryButton>
+                    <UserProjects />
+                    { showAddProjectModal &&
+                        <Modal
+                            closeOnEscape
+                            onClose={this.handleAddProjectModalClose}
+                        >
+                            <ModalHeader
+                                title="Add Project"
+                                rightComponent={
+                                    <PrimaryButton
+                                        onClick={this.handleAddProjectModalClose}
+                                        transparent
+                                    >
+                                        <span className={iconNames.close} />
+                                    </PrimaryButton>
+                                }
+                            />
+                            <ModalBody>
+                                <UserProjectAdd
+                                    handleClose={this.handleAddProjectModalClose}
+                                />
+                            </ModalBody>
+                        </Modal>
+                    }
+                </div>
             </div>
         );
     }

@@ -2,9 +2,14 @@ import {
     wsEndpoint,
     Rest,
     commonHeaderForGet,
+    commonHeaderForPost,
     p,
 } from '../config/rest';
-import { RestGetBody } from './interface';
+import {
+    RestGetBody,
+    RestPostBody,
+    PostUserGroupBody,
+} from './interface';
 
 export type UserGroupUrlParams = {
     fields?: string[];
@@ -22,4 +27,15 @@ export const createUrlForUserGroup = (userGroupId: number): string =>
 export const createParamsForUserGroups = (): RestGetBody => ({
     method: Rest.GET,
     headers: commonHeaderForGet,
+});
+
+export const createParamsForPostUserGroup = (
+    { title, description }: PostUserGroupBody,
+): RestPostBody => ({
+    method: Rest.POST,
+    headers: commonHeaderForPost,
+    body: JSON.stringify({
+        title,
+        description ,
+    }),
 });

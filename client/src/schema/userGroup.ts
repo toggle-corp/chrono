@@ -33,4 +33,14 @@ const userGroupSchema: SchemaGroup = [];
     };
     userGroupSchema.push({ name, schema });
 }
+{
+    const name = 'userGroupPostResponse';
+    const schema = {
+        doc: {
+            name: 'User Group Post Response',
+        },
+        extends: 'userGroup',
+    };
+    userGroupSchema.push({ name, schema });
+}
 export default userGroupSchema;

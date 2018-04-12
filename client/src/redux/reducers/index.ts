@@ -13,4 +13,5 @@ const reducers = {
     notify: notifyReducer,
     route: routeReducer,
 };
+
 export default persistCombineReducers(storeConfig, reducers);

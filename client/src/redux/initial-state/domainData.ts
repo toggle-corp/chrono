@@ -42,19 +42,7 @@ const initialDomainDataState: DomainData = {
 
         },
     },
-    users: {
-        1: {
-            information: {
-                id: 1,
-                firstName: 'John',
-                lastName: 'Cena',
-                email: 'john@cena.com',
-                organization: 'WWF',
-            },
-            userGroups: [],
-            projects: [],
-        },
-    },
+    users: {},
     slotData: {
         // index should be day timestamp or FIXME
         startTime: '10:00',
