@@ -7,7 +7,7 @@ import { RestPostBody } from './interface';
 
 export const urlForUsers: string = `${wsEndpoint}/users/`;
 export const createUrlForUsers = (userId: number): string => (
-    `${wsEndpoint}/users/${userId}`
+    `${wsEndpoint}/users/${userId}/`
 );
 
 export const createParamsForUserRegister = (
