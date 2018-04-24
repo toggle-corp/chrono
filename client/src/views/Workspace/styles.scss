@@ -12,7 +12,7 @@ $color-text-on-primary: get-text-color($color-primary);
         display: flex;
         flex-shrink: 0;
         border-bottom: $width-separator-thin solid $color-separator-alt;
-        padding: $spacing-medium;
+        padding: $spacing-small;
 
         .list-view {
             display: flex;
@@ -29,8 +29,12 @@ $color-text-on-primary: get-text-color($color-primary);
 
         .datewrapper {
             border-bottom: $width-separator-thin solid $color-separator-alt;
-            padding: $spacing-medium;
+            padding: $spacing-small;
             width: 100%;
+
+            &.active {
+                @include background-color($color-foreground-alt);
+            }
         }
     }
 

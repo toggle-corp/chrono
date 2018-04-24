@@ -33,6 +33,7 @@ interface States {
     data: Data[];
     currentYear: number;
     currentMonth: number;
+    currentDay: number;
     pending: boolean;
 }
 
@@ -78,8 +79,12 @@ export class Workspace extends React.PureComponent<Props, States> {
     constructor(props: Props) {
         super(props);
 
-        const currentYear = 2018;
-        const currentMonth = 0; // starts with 0
+        const now = new Date();
+
+        const currentYear = now.getFullYear();
+        const currentMonth = now.getMonth(); // starts with 0
+        const currentDay = now.getDate();
+
         const numberOfDays: number = getNumDaysInMonthX(currentYear, currentMonth);
 
         const data: Data[] = [];
@@ -96,6 +101,7 @@ export class Workspace extends React.PureComponent<Props, States> {
             data,
             currentYear,
             currentMonth,
+            currentDay,
             pending: false,
         };
     }
@@ -148,21 +154,30 @@ export class Workspace extends React.PureComponent<Props, States> {
         this.userGroupRequest.start();
     }
 
-    renderDay = (key: string, date: Data) => (
-        <div
-            key={key}
-            className={styles.datewrapper}
-        >
-            {DAY[date.weekDay]} {date.day}
-        </div>
-    )
+    renderDay = (key: string, date: Data) => {
+        const classNames = [
+            styles.datewrapper,
+        ];
+        if (this.state.currentDay === date.day) {
+            classNames.push(styles.active);
+        }
+
+        return (
+            <div
+                key={key}
+                className={classNames.join(' ')}
+            >
+                {DAY[date.weekDay]}, {date.day}
+            </div>
+        );
+    }
 
     render() {
         const { data } = this.state;
         return (
             <div className={styles.workspace}>
                 <div className={styles.datebar}>
-                    {this.state.currentYear} {MONTH[this.state.currentMonth]}
+                    {MONTH[this.state.currentMonth]} {this.state.currentYear}
                 </div>
                 <div className={styles.information} >
                     <ListView
