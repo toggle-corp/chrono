@@ -16,6 +16,7 @@ export const routes: Map<RouteSetting> = {
         loader: () => import('../../views/Login'),
         links: noLinks,
         hideNavbar: true,
+        name: 'Login',
     },
 
     register: {
@@ -26,6 +27,7 @@ export const routes: Map<RouteSetting> = {
         loader: () => import('../../views/Register'),
         links: noLinks,
         hideNavbar: true,
+        name: 'Register',
     },
 
     workspace: {
@@ -34,6 +36,7 @@ export const routes: Map<RouteSetting> = {
         path: '/',
         loader: () => import('../../views/Workspace'),
         links: allLinks,
+        name: 'Workspace',
     },
 
     profile: {
@@ -42,6 +45,7 @@ export const routes: Map<RouteSetting> = {
         path: '/profile/:userId/',
         loader: () => import('../../views/Profile'),
         links: allLinks,
+        name: 'Profile',
     },
 
     userGroup: {
@@ -51,6 +55,7 @@ export const routes: Map<RouteSetting> = {
         // FIXME: create userGroup view
         loader: () => import('../../views/Dashboard'),
         links: allLinks,
+        name: 'User Group',
     },
 
     project: {
@@ -60,6 +65,7 @@ export const routes: Map<RouteSetting> = {
         // FIXME: create project view
         loader: () => import('../../views/Dashboard'),
         links: allLinks,
+        name: 'Project',
     },
 
     dashboard: {
@@ -68,6 +74,7 @@ export const routes: Map<RouteSetting> = {
         path: '/dashboard',
         loader: () => import('../../views/Dashboard'),
         links: allLinks,
+        name: 'Dashboard',
     },
 
     // NOTE: 404 page should always be at the end
@@ -77,6 +84,7 @@ export const routes: Map<RouteSetting> = {
         path: undefined,
         loader: () => import('../../views/NotFound'),
         links: allLinks,
+        name: '404',
     },
 };
 
@@ -93,6 +101,7 @@ export const views = mapObjectToObject<RouteSetting, (props: object) => JSX.Elem
         <ViewManager
             {...props}
             load={route.loader}
+            name={route.name}
         />
     ),
 );

@@ -13,6 +13,7 @@ import { setRouteParamsAction } from '../redux';
 
 interface OwnProps extends RouteComponentProps<{}> {
     load: () => any; // tslint:disable-line no-any
+    name: string;
 }
 interface PropsFromState { }
 interface PropsFromDispatch {
@@ -45,8 +46,7 @@ export class ViewManager extends React.PureComponent<Props, {}> {
                 <Helmet>
                     <meta charSet="utf-8" />
                     <title>
-                        {/* TODO: use dynamic strings here */}
-                        Chrono
+                        {this.props.name}
                     </title>
                 </Helmet>
                 <Bundle
