@@ -171,10 +171,11 @@ export class Profile extends React.PureComponent<Props, States> {
         this.setState({ showAddUserGroupModal: false });
     }
 
-    renderProfileEdit = (showEditProfileModal: boolean) => {
+    renderProfileEdit = () => {
         if (this.props.userId !== this.props.activeUser.userId) {
             return <div/>;
         }
+        const { showEditProfileModal } = this.state;
         return (
             <div>
                 <PrimaryButton
@@ -183,7 +184,6 @@ export class Profile extends React.PureComponent<Props, States> {
                 >
                     Edit Profile
                 </PrimaryButton>
-                <UserUserGroups />
                 { showEditProfileModal &&
                     <Modal
                         closeOnEscape
@@ -211,10 +211,11 @@ export class Profile extends React.PureComponent<Props, States> {
         );
     }
 
-    renderUserUserGroup = (showAddUserGroupModal: boolean) => {
+    renderUserUserGroup = () => {
         if (this.props.userId !== this.props.activeUser.userId) {
             return <div/>;
         }
+        const { showAddUserGroupModal } = this.state;
         return (
             <div>
                 <PrimaryButton
@@ -251,10 +252,11 @@ export class Profile extends React.PureComponent<Props, States> {
         );
     }
 
-    renderUserProject = (showAddProjectModal: boolean) => {
+    renderUserProject = () => {
         if (this.props.userId !== this.props.activeUser.userId) {
             return <div/>;
         }
+        const { showAddProjectModal } = this.state;
         return (
             <div>
                 <PrimaryButton
@@ -305,11 +307,13 @@ export class Profile extends React.PureComponent<Props, States> {
             projectPending,
             userGroupPending,
             informationPending,
-
-            showAddProjectModal,
-            showAddUserGroupModal,
-            showEditProfileModal,
         } = this.state;
+
+        /* tslint:disable:variable-name */
+        const ProfileEdit = this.renderProfileEdit;
+        const UserUserGroup = this.renderUserUserGroup;
+        const UserProject = this.renderUserProject;
+        /* tslint:enable:variable-name */
 
         const pending = projectPending || userGroupPending || informationPending;
 
@@ -336,9 +340,9 @@ export class Profile extends React.PureComponent<Props, States> {
                         </p>
                     </div>
                 </div>
-                {this.renderProfileEdit(showEditProfileModal)}
-                {this.renderUserUserGroup(showAddUserGroupModal)}
-                {this.renderUserProject(showAddProjectModal)}
+                <ProfileEdit />
+                <UserUserGroup />
+                <UserProject />
             </div>
         );
     }
