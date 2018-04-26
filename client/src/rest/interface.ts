@@ -90,8 +90,3 @@ export interface PostUserGroupBody {
     title: string;
     description: string;
 }
-
-export interface PatchUserBody {
-    firstName: string;
-    lastName: string;
-}
