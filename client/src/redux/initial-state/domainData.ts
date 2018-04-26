@@ -11,22 +11,21 @@ const initialDomainDataState: DomainData = {
             },
         },
         timeslot: {
-            '2017-10-10': { // index is date
-                1: { // index is slot id
-                    id: 1,
-                    user: 1,
-                    task: 1,
-                    startTime: '10:00',
-                    endTime: '05:00',
-                    date: '2017-10-10',
-                    remarks: 'some remark',
-                },
+            1: { // index is slot id
+                id: 1,
+                user: 1,
+                task: 1,
+                startTime: '10:00',
+                endTime: '05:00',
+                date: '2017-10-10',
+                remarks: 'some remark',
             },
         },
     },
 
     timeslotViews: {
         0: { // index is slot id NOTE: 0 is for new
+            id: 0,
             data: {
                 id: 0,
                 user: 1,
@@ -39,9 +38,9 @@ const initialDomainDataState: DomainData = {
             pristine: false,
             formErrors: {},
             formFieldErrors: {},
-
         },
     },
+
     users: {},
     slotData: {
         // index should be day timestamp or FIXME

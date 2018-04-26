@@ -12,14 +12,14 @@ import {
 import { SlotEditor } from '../SlotEditor';
 
 import {
-    urlForSlot,
-    createParamsForPostSlot,
+    createUrlForSlot,
+    createParamsForPatchSlot,
     transformResponseErrorToFormError,
 } from '../../../rest';
 import {
     SlotData,
 } from '../../../redux/interface';
-import schema from '../../../schema'; 
+import schema from '../../../schema';
 
 interface Props {
     setState: SlotEditor['setState'];
@@ -27,26 +27,16 @@ interface Props {
     handleFormError(formFieldErrors: FormFieldErrors, formErrors: FormErrors): void;
 }
 
-interface SlotPostResponse {
-    id: number;
-    date: string;
-    startTime: string;
-    endTime: string;
-    remarks: string;
-    task: number;
-    user: number;
-}
-
-export default class SlotPostRequest implements Request<{}> {
+export default class SlotPatchRequest implements Request<{}> {
     props: Props;
 
     constructor(props: Props) {
         this.props = props;
     }
 
-    success = (response: SlotPostResponse) => {
+    success = (response: SlotData) => {
         try {
-            schema.validate(response, 'slotPostResponse');
+            schema.validate(response, 'slotPatchResponse');
             this.props.setSlot(response);
         } catch (err) {
             console.error(err);
@@ -64,10 +54,10 @@ export default class SlotPostRequest implements Request<{}> {
         this.props.handleFormError({}, { errors: ['Some error occured.'] });
     }
 
-    create = (values: SlotData): RestRequest => {
+    create = ({ slotId, values  }: { slotId: number, values: SlotData }): RestRequest => {
         const request = new FgRestBuilder()
-            .url(urlForSlot)
-            .params(() => createParamsForPostSlot(values))
+            .url(createUrlForSlot(slotId))
+            .params(() => createParamsForPatchSlot(values))
             .preLoad(() => { this.props.setState({ pending: true }); })
             .postLoad(() => { this.props.setState({ pending: false }); })
             .success(this.success)

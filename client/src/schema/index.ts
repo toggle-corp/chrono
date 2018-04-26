@@ -4,6 +4,7 @@ import attachValidator from '../vendor/ravl/attachValidator';
 import token from './token';
 import user from './user';
 import userGroup from './userGroup';
+import slot from './slot';
 import projectSchema from './project';
 import taskSchema from './task';
 import { SchemaGroup } from './interface';
@@ -67,6 +68,7 @@ const userDefinedSchemas: SchemaGroup  = [];
     ...token,
     ...user,
     ...userGroup,
+    ...slot,
     ...projectSchema,
     ...taskSchema,
 ].forEach(

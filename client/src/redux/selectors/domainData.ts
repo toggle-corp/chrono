@@ -13,6 +13,10 @@ import {
 } from '../interface';
 
 const emptyObject = {};
+const emptyWorkspace = {
+    active: {},
+    timeslot: {},
+};
 const emptyArray: object[] = [];
 const emptyFormState: object = {
     pristine: false,
@@ -37,7 +41,7 @@ export const userGroupsSelector = ({ domainData }: RootState): UserGroup[] => (
 );
 
 export const workspaceSelector = ({ domainData }: RootState): Workspace => (
-    domainData.workspace || emptyObject
+    domainData.workspace || emptyWorkspace
 );
 
 export const timeslotViewSelector = ({ domainData }: RootState): TimeslotViews => (
@@ -76,11 +80,8 @@ export const workspaceActiveTimeslotIdSelector = createSelector(
 
 export const workspaceActiveTimeslotSelector = createSelector(
     workspaceSelector,
-    workspaceActiveDateSelector,
     workspaceActiveTimeslotIdSelector,
-    (workspace, date, id) => (
-        workspace.timeslot[date] || emptyObject
-    )[id] || emptyObject,
+    (workspace, id) => workspace.timeslot[id] || emptyObject,
 );
 
 export const timeslotActiveViewSelector = createSelector(
@@ -88,10 +89,8 @@ export const timeslotActiveViewSelector = createSelector(
     workspaceActiveTimeslotIdSelector,
     workspaceActiveTimeslotSelector,
     (timeslotView, id, original) => (
-        timeslotView[id] || {
-            data: original,
-            ...emptyFormState,
-        }
+        timeslotView[id] ||
+        { data: original, id: original.id, ...emptyFormState }
     ),
 );
 
