@@ -5,6 +5,7 @@ import {
 import { SlotData } from './slot';
 
 export interface TimeslotView {
+    id: number;
     data: SlotData;
     pristine: boolean;
     formErrors: FormErrors;
@@ -23,8 +24,6 @@ export interface Workspace {
         };
     };
     timeslot: {
-        [key: string]: {
-            [key: number]: SlotData;
-        };
+        [key: number]: SlotData;
     };
 }

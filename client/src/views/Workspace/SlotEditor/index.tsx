@@ -9,7 +9,6 @@ import SelectInput from '../../../vendor/react-store/components/Input/SelectInpu
 import PrimaryButton from '../../../vendor/react-store/components/Action/Button/PrimaryButton';
 import DangerButton from '../../../vendor/react-store/components/Action/Button/DangerButton';
 import { RestRequest } from '../../../vendor/react-store/utils/rest';
-import SlotPostRequest from '../requests/SlotPostRequest';
 
 import Form, {
     requiredCondition,
@@ -28,6 +27,7 @@ import {
     projectsSelector,
     tasksSelector,
     setSlotAction,
+    unsetSlotAction,
     setSlotViewAction,
 } from '../../../redux';
 import {
@@ -38,6 +38,10 @@ import {
     Task,
     TimeslotView,
 } from '../../../redux/interface';
+
+import SlotGetRequest from '../requests/SlotGetRequest';
+import SlotPostRequest from '../requests/SlotPostRequest';
+import SlotPatchRequest from '../requests/SlotPatchRequest';
 
 import * as styles from './styles.scss';
 
@@ -59,6 +63,7 @@ interface PropsFromState {
 
 interface PropsFromDispatch {
     setSlot(params: SlotParams): void;
+    unsetSlot(slotId: number): void;
     setSlotView(params: TimeslotView): void;
 }
 
@@ -66,13 +71,18 @@ type Props = OwnProps & PropsFromState & PropsFromDispatch;
 
 interface States {
     pending: boolean;
+    userGroups: UserGroup[];
+    projects: Project[];
+    tasks: Task[];
 }
 
 type SlotParams = SlotData;
 
 export class SlotEditor extends React.PureComponent<Props, States> {
     schema: Schema;
-    submitSlotRequest: RestRequest;
+    slotGetRequest: RestRequest;
+    slotPostRequest: RestRequest;
+    slotPatchRequest: RestRequest;
 
     static keySelector = (d: WithIdAndTitle) => d.id;
     static labelSelector = (d: WithIdAndTitle) => d.title;
@@ -82,6 +92,9 @@ export class SlotEditor extends React.PureComponent<Props, States> {
 
         this.state = {
             pending: false,
+            userGroups: props.userGroups,
+            projects: props.projects,
+            tasks: props.tasks,
         };
 
         this.schema = {
@@ -96,16 +109,93 @@ export class SlotEditor extends React.PureComponent<Props, States> {
         };
     }
 
-    startSubmitSlotRequest = (value: SlotParams) => {
-        if (this.submitSlotRequest) {
-            this.submitSlotRequest.stop();
+    componentWillMount() {
+        const { id: slotId } = this.props.slotView.data;
+        this.startSlotGetRequest(slotId);
+    }
+
+    componentWillReceiveProps(nextProps: Props) {
+        const {
+            userGroups: oldUserGroups,
+            projects: oldProjects,
+            tasks: oldTasks,
+        } = this.props;
+        const {
+            userGroups,
+            projects,
+            tasks,
+        } = nextProps;
+
+        if (oldUserGroups !== userGroups) {
+            this.setState({ userGroups });
+        }
+        if (oldProjects !== projects) {
+            this.setState({ projects });
+        }
+        if (oldTasks !== tasks) {
+            this.setState({ tasks });
+        }
+    }
+
+    componentWillUnmount() {
+        if (this.slotGetRequest) {
+            this.slotGetRequest.stop();
+        }
+        if (this.slotPostRequest) {
+            this.slotPostRequest.stop();
+        }
+        if (this.slotPatchRequest) {
+            this.slotPatchRequest.stop();
+        }
+    }
+
+    startSlotGetRequest = (slotId: number) => {
+        if (!slotId) { return; }
+        if (this.slotGetRequest) {
+            this.slotGetRequest.stop();
+        }
+        const request = new SlotGetRequest({
+            setState: v => this.setState(v),
+            setSlot: this.props.setSlot,
+            unsetSlot: this.props.unsetSlot,
+        });
+        this.slotGetRequest = request.create(slotId);
+        this.slotGetRequest.start();
+    }
+
+    startSlotPostRequest = (value: SlotParams) => {
+        if (this.slotPostRequest) {
+            this.slotPostRequest.stop();
         }
         const request = new SlotPostRequest({
-            setState: params => this.setState(params),
+            setState: v => this.setState(v),
             setSlot: this.props.setSlot,
+            handleFormError: this.handleFormError,
         });
-        this.submitSlotRequest = request.create(value);
-        this.submitSlotRequest.start();
+        this.slotPostRequest = request.create(value);
+        this.slotPostRequest.start();
+    }
+
+    startSlotPatchRequest = (params: { slotId: number, values: SlotParams }) => {
+        if (this.slotPatchRequest) {
+            this.slotPatchRequest.stop();
+        }
+        const request = new SlotPatchRequest({
+            setState: v => this.setState(v),
+            setSlot: this.props.setSlot,
+            handleFormError: this.handleFormError,
+        });
+        this.slotPatchRequest = request.create(params);
+        this.slotPatchRequest.start();
+    }
+
+    startSubmitSlotRequest = (values: SlotParams) => {
+        const { id: slotId } = this.props.slotView.data;
+        if (!slotId) {
+            this.startSlotPostRequest(values);
+        } else {
+            this.startSlotPatchRequest({ slotId, values });
+        }
     }
 
     // FORM RELATED
@@ -113,6 +203,7 @@ export class SlotEditor extends React.PureComponent<Props, States> {
         values: SlotParams, formFieldErrors: FormFieldErrors, formErrors: FormErrors,
     ) => {
         this.props.setSlotView({
+            ...this.props.slotView,
             formErrors,
             formFieldErrors,
             data: values,
@@ -137,8 +228,10 @@ export class SlotEditor extends React.PureComponent<Props, States> {
     }
 
     handleDiscard = () => {
+        const { slotData } = this.props;
         this.props.setSlotView({
-            data: this.props.slotData,
+            id: slotData.id,
+            data: slotData,
             pristine: false,
             formErrors: {},
             formFieldErrors: {},
@@ -148,12 +241,13 @@ export class SlotEditor extends React.PureComponent<Props, States> {
     render() {
         const {
             pending,
+            userGroups,
+            projects,
+            tasks,
         } = this.state;
         const {
-            userGroups,
             slotView,
-            tasks,
-            projects,
+            slotData,
         } = this.props;
         const {
             formErrors,
@@ -236,7 +330,7 @@ export class SlotEditor extends React.PureComponent<Props, States> {
                         </PrimaryButton>
                         <DangerButton
                             onClick={this.handleDiscard}
-                            disabled={!pristine || pending}
+                            disabled={!pristine || pending || !slotData.id}
                         >
                             Discard
                         </DangerButton>
@@ -258,6 +352,7 @@ const mapStateToProps = (state: RootState) => ({
 
 const mapDispatchToProps = (dispatch: Redux.Dispatch<RootState>) => ({
     setSlot: (params: SlotParams) => dispatch(setSlotAction(params)),
+    unsetSlot: (slotId: number) => dispatch(unsetSlotAction(slotId)),
     setSlotView: (params: TimeslotView) => dispatch(setSlotViewAction(params)),
 });
 

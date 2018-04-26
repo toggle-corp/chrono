@@ -56,6 +56,11 @@ export interface ErrorsFromServer {
     nonFieldErrors: string[];
 }
 
+export interface FailureResponseFromServer {
+    errors: ErrorsFromServer;
+    errorCode: number;
+    timestamp: string;
+}
 // tslint:disable-next-line no-any
 type ConditionFn = (value: any) => { ok: boolean, message?: string };
 type ConditionFns = ConditionFn[];
@@ -90,3 +95,19 @@ export interface PostUserGroupBody {
     title: string;
     description: string;
 }
+
+export interface PatchUserBody {
+    firstName: string;
+    lastName: string;
+}
+
+export interface PostSlotBody {
+    date: string;
+    startTime: string;
+    endTime: string;
+    task: number;
+    user: number;
+    remarks: string;
+}
+
+export type PatchSlotBody = Partial<PostSlotBody>;
