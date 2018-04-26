@@ -4,8 +4,9 @@ import { connect } from 'react-redux';
 
 import ListView from '../../vendor/react-store/components/View/List/ListView';
 import { RestRequest } from '../../vendor/react-store/utils/rest';
+import { getNumDaysInMonthX } from '../../vendor/react-store/utils/common';
 
-import { 
+import {
     setUserGroupsAction,
     setProjectsAction,
     setTasksAction,
@@ -30,36 +31,77 @@ type Props = OwnProps & PropsFromState & PropsFromDispatch;
 
 interface States {
     data: Data[];
+    currentYear: number;
+    currentMonth: number;
+    currentDay: number;
     pending: boolean;
 }
 
 interface Data {
-    timestamp: number;
+    day: number;
     month: number;
     year: number;
+    weekDay: number;
 }
+
+const DAY = [
+    'Sun',
+    'Mon',
+    'Tue',
+    'Wed',
+    'Thu',
+    'Fri',
+    'Sat',
+];
+
+const MONTH = [
+    'Jan',
+    'Feb',
+    'Mar',
+    'Apr',
+    'May',
+    'Jun',
+    'Jul',
+    'Aug',
+    'Sep',
+    'Oct',
+    'Nov',
+    'Dec',
+];
 
 export class Workspace extends React.PureComponent<Props, States> {
     userGroupRequest: RestRequest;
     projectsRequest: RestRequest;
     tasksRequest: RestRequest;
 
-    static keyExtractor = (data: Data) => String(data.timestamp);
+    static keyExtractor = (data: Data) => String(data.day);
 
     constructor(props: Props) {
         super(props);
 
-        const date = new Date();
-        const data: Data[] = [
-            {
-                timestamp: + date,
-                month: date.getMonth(),
-                year: date.getFullYear(),
-            },
-        ];
+        const now = new Date();
+
+        const currentYear = now.getFullYear();
+        const currentMonth = now.getMonth(); // starts with 0
+        const currentDay = now.getDate();
+
+        const numberOfDays: number = getNumDaysInMonthX(currentYear, currentMonth);
+
+        const data: Data[] = [];
+        for (let i = 1; i <= numberOfDays; i += 1) {
+            data.push({
+                year: currentYear,
+                month: currentMonth,
+                day: i,
+                weekDay: new Date(currentYear, currentMonth, i).getDay(),
+            });
+        }
 
         this.state = {
             data,
+            currentYear,
+            currentMonth,
+            currentDay,
             pending: false,
         };
     }
@@ -112,30 +154,38 @@ export class Workspace extends React.PureComponent<Props, States> {
         this.userGroupRequest.start();
     }
 
-    renderDay = (key: string, date: Data) => (
-        <div key={key}>
-            {date.year} / {date.month}
-        </div>
-    )
+    renderDay = (key: string, date: Data) => {
+        const classNames = [
+            styles.datewrapper,
+        ];
+        if (this.state.currentDay === date.day) {
+            classNames.push(styles.active);
+        }
+
+        return (
+            <div
+                key={key}
+                className={classNames.join(' ')}
+            >
+                {DAY[date.weekDay]}, {date.day}
+            </div>
+        );
+    }
 
     render() {
         const { data } = this.state;
         return (
             <div className={styles.workspace}>
                 <div className={styles.datebar}>
+                    {MONTH[this.state.currentMonth]} {this.state.currentYear}
+                </div>
+                <div className={styles.information} >
                     <ListView
                         className={styles.listView}
                         data={data}
                         modifier={this.renderDay}
+                        keyExtractor={Workspace.keyExtractor}
                     />
-                </div>
-                <div className={styles.information} >
-                    <div className={styles.datewrapper}>
-                        01, Wednesday
-                    </div>
-                    <div className={styles.datewrapper}>
-                        02, Thursday
-                    </div>
                 </div>
                 <SlotEditor />
                 <div className={styles.bottom} >

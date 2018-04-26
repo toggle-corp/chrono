@@ -211,7 +211,7 @@ export class UserProjectAdd extends React.PureComponent<Props, States> {
                     <DangerButton
                         onClick={handleClose}
                     >
-                        Cancle
+                        Cancel
                     </DangerButton>
                 </div>
             </Form>

@@ -170,7 +170,7 @@ export class UserUserGroupAdd extends React.PureComponent<Props, States> {
                     <DangerButton
                         onClick={handleClose}
                     >
-                        Cancle
+                        Cancel
                     </DangerButton>
                 </div>
             </Form>

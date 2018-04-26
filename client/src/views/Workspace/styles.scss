@@ -8,10 +8,11 @@ $color-text-on-primary: get-text-color($color-primary);
     flex-direction: column;
 
     .datebar {
+        @include background-color($color-foreground);
         display: flex;
         flex-shrink: 0;
         border-bottom: $width-separator-thin solid $color-separator-alt;
-        padding: $spacing-medium;
+        padding: $spacing-small;
 
         .list-view {
             display: flex;
@@ -22,18 +23,23 @@ $color-text-on-primary: get-text-color($color-primary);
 
     .information {
         display: flex;
-        flex-grow: 1;
         flex-direction: column;
+        flex-grow: 1;
         border-bottom: $width-separator-thin solid $color-separator-alt;
 
         .datewrapper {
-            padding: $spacing-medium;
-            width: 100%;
             border-bottom: $width-separator-thin solid $color-separator-alt;
+            padding: $spacing-small;
+            width: 100%;
+
+            &.active {
+                @include background-color($color-foreground-alt);
+            }
         }
     }
 
     .bottom {
+        @include background-color($color-foreground);
         display: flex;
         flex-shrink: 0;
         border-top: $width-separator-thin solid $color-separator-alt;
