@@ -184,6 +184,7 @@ export class Workspace extends React.PureComponent<Props, States> {
                         className={styles.listView}
                         data={data}
                         modifier={this.renderDay}
+                        keyExtractor={Workspace.keyExtractor}
                     />
                 </div>
                 <SlotEditor />
