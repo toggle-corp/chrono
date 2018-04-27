@@ -11,7 +11,7 @@ import { Workspace } from '../index';
 
 import {
     urlForUserGroups,
-    createParamsForUserGroups,
+    commonParamsForGet,
 } from '../../../rest';
 import { UserGroup } from '../../../redux/interface';
 import schema from '../../../schema'; 
@@ -38,7 +38,7 @@ export default class GetUserGroupsRequest implements Request<{}> {
     create = (): RestRequest => {
         const userGroupsRequest = new FgRestBuilder()
             .url(urlForUserGroups)
-            .params(createParamsForUserGroups)
+            .params(commonParamsForGet)
             .preLoad(() => { this.props.setState({ pending: true }); })
             .postLoad(() => { this.props.setState({ pending: false }); })
             .success((response: UserGroupsGetResponse) => {

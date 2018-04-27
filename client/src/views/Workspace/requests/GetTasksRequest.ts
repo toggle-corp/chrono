@@ -8,7 +8,7 @@ import { Workspace } from '../index';
 
 import {
     urlForTasks,
-    createParamsForGetTasks,
+    commonParamsForGet,
 } from '../../../rest';
 import { Task } from '../../../redux/interface';
 import schema from '../../../schema'; 
@@ -40,7 +40,7 @@ export default class GetTasksRequest implements Request<{}> {
     create = (): RestRequest => {
         const request = new FgRestBuilder()
             .url(urlForTasks)
-            .params(createParamsForGetTasks)
+            .params(commonParamsForGet)
             .preLoad(() => { this.props.setState({ pending: true }); })
             .postLoad(() => { this.props.setState({ pending: false }); })
             .success((response: TasksGetResponse) => {

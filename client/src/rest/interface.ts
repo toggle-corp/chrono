@@ -1,8 +1,6 @@
 // FIXME: move form related parts outside
+import { RestRequest } from '../vendor/react-store/utils/rest';
 
-import {
-    RestRequest,
-} from '../vendor/react-store/utils/rest';
 export interface RestPostBody {
     method: string;
     headers: object;
@@ -35,6 +33,7 @@ export interface FormConditionFnRules {
 export interface FormFieldErrors {
     [key: string]: string | undefined | FormFieldErrors;
 }
+
 export type FormErrors = {
     errors?: (string | undefined)[] | undefined,
     fields?: {

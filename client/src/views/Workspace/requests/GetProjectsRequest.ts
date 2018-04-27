@@ -8,7 +8,7 @@ import { Workspace } from '../index';
 
 import {
     urlForProjects,
-    createParamsForGetProjects,
+    commonParamsForGet,
 } from '../../../rest';
 import { Project } from '../../../redux/interface';
 import schema from '../../../schema'; 
@@ -40,7 +40,7 @@ export default class GetUserProjectsRequest implements Request<{}> {
     create = (): RestRequest => {
         const request = new FgRestBuilder()
             .url(urlForProjects)
-            .params(createParamsForGetProjects)
+            .params(commonParamsForGet)
             .preLoad(() => { this.props.setState({ pending: true }); })
             .postLoad(() => { this.props.setState({ pending: false }); })
             .success((response: ProjectsGetResponse) => {

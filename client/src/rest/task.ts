@@ -1,14 +1,3 @@
-import {
-    wsEndpoint,
-    Rest,
-    commonHeaderForGet,
-} from '../config/rest';
-import { RestGetBody } from './interface';
+import { wsEndpoint } from '../config/rest';
 
 export const urlForTasks: string = `${wsEndpoint}/tasks/`;
-
-
-export const createParamsForGetTasks = (): RestGetBody => ({
-    method: Rest.GET,
-    headers: commonHeaderForGet,
-});
