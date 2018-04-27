@@ -1,12 +1,9 @@
-import { SchemaGroup } from './interface';
+import { Schema } from './interface';
 
-const tokenSchema: SchemaGroup = [];
-
-{
-    const name = 'accessToken';
-    const schema = {
+const tokenSchemas: Schema[] = [
+    {
         doc: {
-            name: 'Access Token',
+            name: 'accessToken',
             description: 'Data decoded from access token',
         },
         fields: {
@@ -17,34 +14,26 @@ const tokenSchema: SchemaGroup = [];
             exp: { type: 'uint', required: 'true' },
             isSuperuser: { type: 'boolean', required: true },
         },
-    };
-    tokenSchema.push({ name, schema });
-}
-{
-    const name = 'tokenGetResponse';
-    const schema = {
+    },
+    {
         doc: {
-            name: 'Token Get Response',
+            name: 'tokenGetResponse',
             description: 'Response for POST /token/',
         },
         fields: {
             access: { type: 'string', required: 'true' },
             refresh: { type: 'string', required: 'true' },
         },
-    };
-    tokenSchema.push({ name, schema });
-}
-{
-    const name = 'tokenRefreshResponse';
-    const schema = {
+    },
+    {
         doc: {
-            name: 'Token Refresh Response',
+            name: 'tokenRefreshResponse',
             description: 'Response for POST /token/refresh/',
         },
         fields: {
             access: { type: 'string', required: 'true' },
         },
-    };
-    tokenSchema.push({ name, schema });
-}
-export default tokenSchema;
+    },
+];
+
+export default tokenSchemas;

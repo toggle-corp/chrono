@@ -1,13 +1,8 @@
-import { SchemaGroup } from './interface';
+import { Schema } from './interface';
 
-const userSchema: SchemaGroup = [];
-
-{
-    const name = 'user';
-    const schema = {
-        doc: {
-            name: 'User Create',
-        },
+const userSchema: Schema[] = [
+    {
+        doc: { name: 'user' },
         fields: {
             id: { type: 'uint', required: 'true' },
             username: { type: 'email', required: 'true' },
@@ -16,28 +11,14 @@ const userSchema: SchemaGroup = [];
             lastName: { type: 'string' },
             displayName: { type: 'string' },
         },
-    };
-    userSchema.push({ name, schema });
-}
-{
-    const name = 'userPostResponse';
-    const schema = {
-        doc: {
-            name: 'User Create',
-        },
+    },
+    {
+        doc: { name: 'userPostResponse' },
         extends: 'user',
-    };
-    userSchema.push({ name, schema });
-}
-{
-    const name = 'userGetResponse';
-    const schema = {
-        doc: {
-            name: 'User Get Reponse',
-        },
+    },
+    {
+        doc: { name: 'userGetResponse' },
         extends: 'user',
-    };
-    userSchema.push({ name, schema });
-}
-
+    },
+];
 export default userSchema;
