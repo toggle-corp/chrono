@@ -1,25 +1,27 @@
 import React, { Fragment } from 'react';
 import Redux from 'redux';
+import { connect } from 'react-redux';
 import {
     Switch,
     Route,
     withRouter,
     RouteComponentProps,
 } from 'react-router-dom';
-import { connect } from 'react-redux';
 
-import Navbar from './components/Navbar';
 import PrivateRoute from './vendor/react-store/components/General/PrivateRoute';
 import ExclusivelyPublicRoute from './vendor/react-store/components/General/ExclusivelyPublicRoute';
 import Toast from './vendor/react-store/components/View/Toast';
 
-import { RootState, Notification } from './redux/interface';
 import {
     authenticatedSelector,
     lastNotifySelector,
     notifyHideAction,
 } from './redux';
 import { pathNames, views, routes, routesOrder } from './constants';
+
+import Navbar from './components/Navbar';
+
+import { RootState, Notification } from './redux/interface';
 import { ROUTE } from './constants/routes/interface';
 
 interface OwnProps extends RouteComponentProps<{}> {}
@@ -32,6 +34,7 @@ interface PropsFromState {
 }
 type Props = OwnProps & PropsFromState & PropsFromDispatch;
 
+// NOTE: switches to correct route, adds navbar and notification
 class Multiplexer extends React.PureComponent<Props, {}> {
 
     handleToastClose = () => {
@@ -43,7 +46,7 @@ class Multiplexer extends React.PureComponent<Props, {}> {
 
         const viewComponent = views[routeId];
         if (!viewComponent) {
-            console.error(`View not associated with ${routeId}`);
+            console.error(`View not found for routeId '${routeId}'`);
             return null;
         }
 
@@ -87,7 +90,7 @@ class Multiplexer extends React.PureComponent<Props, {}> {
                     />
                 );
             default:
-                console.error(`Invalid route type ${routes[routeId].type}`);
+                console.error(`Invalid route type '${routes[routeId].type}'`);
                 return null;
         }
     }

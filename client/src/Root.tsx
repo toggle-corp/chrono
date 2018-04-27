@@ -10,7 +10,7 @@ interface State {
     rehydrated: boolean;
 }
 
-// NOTE: handles loading of redux
+// NOTE: loads redux
 export default class Root extends React.Component<object, State> {
     // tslint:disable-next-line no-any
     store: Store<any>;
@@ -23,7 +23,6 @@ export default class Root extends React.Component<object, State> {
     }
 
     componentWillMount() {
-        // console.log('Mounting Root');
         const afterRehydrateCallback = () => this.setState({ rehydrated: true });
         persistStore(this.store, undefined, afterRehydrateCallback);
         startActionsSync(this.store);
@@ -31,12 +30,8 @@ export default class Root extends React.Component<object, State> {
 
     render() {
         if (!this.state.rehydrated) {
-            // NOTE: showing empty div, this lasts for a fraction of a second
-            return (
-                <div>
-                    Loading state
-                </div>
-            );
+            // NOTE: showing empty div as it lasts for a jiffy
+            return (<div />);
         }
 
         return (
