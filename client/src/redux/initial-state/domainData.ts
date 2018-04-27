@@ -1,8 +1,10 @@
 import { DomainData } from '../interface';
 
 const initialDomainDataState: DomainData = {
+
+    // SILODOMAIN
+
     activeDay: '2017-10-10',
-    userGroups: [],
 
     workspace: {
         active: {
@@ -46,6 +48,7 @@ const initialDomainDataState: DomainData = {
     },
 
     users: {},
+
     slotData: {
         // index should be day timestamp or FIXME
         startTime: '10:00',
@@ -57,9 +60,16 @@ const initialDomainDataState: DomainData = {
         remarks: 'some remark',
     },
 
+    // DOMAIN DATA
+
+    // all user groups
+    userGroups: [],
+
+    // all user projects
     projects: [
     ],
 
+    // all user tasks
     tasks: [
     ],
 };

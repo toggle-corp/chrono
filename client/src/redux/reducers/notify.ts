@@ -22,7 +22,10 @@ export const notifyHideAction = () => ({
 
 // REDUCER
 
-const notifySend = (state: Notify, action: { type: string, notification: Notification}): Notify => {
+const notifySend = (
+    state: Notify,
+    action: { type: string, notification: Notification },
+): Notify => {
     const newState = {
         ...state,
         notifications: [action.notification],

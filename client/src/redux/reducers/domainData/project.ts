@@ -4,7 +4,6 @@ import { getObjectChildren } from '../../../vendor/react-store/utils/common';
 import {
     DomainData,
     ReducerGroup,
-    UserGroup,
     Project,
     Users,
 
@@ -14,8 +13,8 @@ import {
 // ACTION-TYPE
 
 export const enum PROJECTS_ACTION {
-    setUserProjects = 'domainData/SET_USER_PROJECTS',
-    setProject =  'domainData/SET_PROJECT',
+    setUserProjects = 'domainData/PROJECT/SET_USER_PROJECTS',
+    setProject =  'domainData/PROJECT/SET_PROJECT',
 }
 
 // ACTION-CREATOR
@@ -34,28 +33,34 @@ export const setProjectAction = ({ userId, project }: SetProjectAction) => ({
 // HELPER
 
 const findIndexOfProjectOfUser = (
-    users: Users, userId: number | undefined, projectId: number,
+    users: Users,
+    userId: number | undefined,
+    projectId: number,
 ) => {
-    const projects: UserGroup[] = getObjectChildren(users, [userId, 'projects'], []);
+    // XXX: getObjectChildren is unsafe
+    const projects: Project[] = getObjectChildren(users, [userId, 'projects'], []);
     return projects.findIndex(project => project.id === projectId);
 };
 // REDUCER
 
-const setProjects = (state: DomainData, action: { projects: Project[] }) => {
+const setProjects = (
+    state: DomainData,
+    action: { projects: Project[] },
+) => {
     const { projects } = action;
     const settings = {
-        projects: {
-            $auto: {
-                $set: projects,
-            },
-        },
+        projects: { $auto: {
+            $set: projects,
+        } },
     };
     return update(state, settings);
 };
 
+// FIXME: write documentation
 const setProject = (state: DomainData, action: SetProjectAction) => {
     const { userId, project } = action;
     const { users, projects } = state;
+
     const projectIndex = projects.findIndex(p => p.id === project.id);
 
     const userProjectIndex = findIndexOfProjectOfUser(users, userId, project.id);
@@ -70,6 +75,7 @@ const setProject = (state: DomainData, action: SetProjectAction) => {
         } },
         users: {
             // NOTE: $if will handle the userId undefined
+            // FIXME: how?
             [userId || 0]: { $auto: {
                 projects: { $autoArray: {
                     $if: [

@@ -10,8 +10,8 @@ import {
 // ACTION-TYPE
 
 export const enum SLOT_DATA_ACTION {
-    setSlot = 'domainData/SET_SLOT',
-    setSlotView = 'domainData/SET_SLOT_VIEW',
+    setSlot = 'domainData/SLOT/SET_SLOT',
+    setSlotView = 'domainData/SLOT/SET_SLOT_VIEW',
 }
 
 // ACTION-CREATOR
@@ -26,20 +26,15 @@ export const setSlotViewAction = (params: TimeslotView) => ({
     type: SLOT_DATA_ACTION.setSlotView,
 });
 
-// HELPER
-
 // REDUCER
 
-// Slot
 const setSlotData = (state: DomainData, action: { data: SlotData }) => {
     const { data } = action;
     const settings = {
         workspace: {
             timeslot: {
                 [data.date]: { $auto: {
-                    [data.id]: {
-                        $set: data,
-                    },
+                    [data.id]: { $set: data },
                 } },
             },
         },
@@ -51,9 +46,8 @@ const setSlotViewData = (state: DomainData, action: { params: TimeslotView }) =>
     const { params } = action;
     const settings = {
         timeslotViews: {
-            [params.data.id]: {
-                $set: params,
-            },
+            // FIXME: no need to use $auto here?
+            [params.data.id]: { $set: params },
         },
     };
     return update(state, settings);
