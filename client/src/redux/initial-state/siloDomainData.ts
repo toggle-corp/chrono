@@ -10,7 +10,7 @@ const initialState: SiloDomainData = {
         activeTimeslotId: undefined,
 
         wipTimeSlots: {
-            '2018-4-1': {
+            '2018-04-01': {
                 2: {
                     id: 2,
                     tid: 'wip-2',
@@ -46,7 +46,7 @@ const initialState: SiloDomainData = {
                     hasServerError: false,
                 },
             },
-            '2018-4-27': {
+            '2018-04-27': {
                 0: {
                     id: undefined,
                     tid: 'wip-0',
@@ -84,11 +84,11 @@ const initialState: SiloDomainData = {
             },
         },
         timeSlots: {
-            '2018-3-1': {
+            '2018-03-01': {
                 1: {
                     id: 1,
                     versionId: 1,
-                    date: '2018-3-1',
+                    date: '2018-03-01',
                     startTime: '10:00',
                     endTime: '17:30',
                     user: 1,
@@ -96,11 +96,11 @@ const initialState: SiloDomainData = {
                     remarks: 'Raining outside.',
                 },
             },
-            '2018-4-1': {
+            '2018-04-01': {
                 2: {
                     id: 2,
                     versionId: 2,
-                    date: '2018-4-1',
+                    date: '2018-04-01',
                     startTime: '10:00',
                     endTime: '17:30',
                     user: 1,
@@ -110,7 +110,7 @@ const initialState: SiloDomainData = {
                 3: {
                     id: 3,
                     versionId: 1,
-                    date: '2018-4-1',
+                    date: '2018-04-01',
                     startTime: '17:30',
                     endTime: '19:00',
                     user: 1,
@@ -118,11 +118,11 @@ const initialState: SiloDomainData = {
                     remarks: 'All cleared up',
                 },
             },
-            '2018-4-27': {
+            '2018-04-27': {
                 4: {
                     id: 4,
                     versionId: 1,
-                    date: '2018-4-27',
+                    date: '2018-04-27',
                     startTime: '10:30',
                     endTime: '15:30',
                     user: 1,

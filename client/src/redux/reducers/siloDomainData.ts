@@ -1,14 +1,16 @@
 import update from '../../vendor/react-store/utils/immutable-update';
 import { isFalsy, randomString } from '../../vendor/react-store/utils/common';
 import createReducerWithMap from '../../utils/createReducerWithMap';
+import { getCanonicalDate } from '../../utils/map';
 
 import initialSiloDomainData from '../initial-state/siloDomainData';
-import { SiloDomainData, ReducerGroup } from '../interface';
+import { SiloDomainData, TimeSlot, ReducerGroup } from '../interface';
 
 // ACTION-TYPE
 
 export const enum TIME_SLOT_ACTION {
     setActiveSlot = 'siloDomainData/SET_ACTIVE_SLOT',
+    setTimeSlots = 'siloDomainData/SET_TIME_SLOTS',
 }
 
 export interface SetActiveSlotAction  {
@@ -16,6 +18,10 @@ export interface SetActiveSlotAction  {
     month: number;
     day: number;
     timeSlotId?: number;
+}
+
+export interface SetTimeSlotsAction {
+    timeSlots: TimeSlot[];
 }
 
 // ACTION-CREATOR
@@ -26,6 +32,11 @@ export const setActiveSlotAction = ({ year, month, day, timeSlotId } : SetActive
     day,
     timeSlotId,
     type: TIME_SLOT_ACTION.setActiveSlot,
+});
+
+export const setTimeSlotsAction = ({ timeSlots } : SetTimeSlotsAction) => ({
+    timeSlots,
+    type: TIME_SLOT_ACTION.setTimeSlots,
 });
 
 // REDUCER
@@ -49,7 +60,7 @@ const setActiveSlot = (
                 $if: [
                     isFalsy(timeSlotId),
                     {
-                        [`${year}-${month}-${day}`] : { $auto: {
+                        [getCanonicalDate(year, month, day)] : { $auto: {
                             0: { $auto: {
                                 $set: {
                                     tid: randomString(),
@@ -69,7 +80,39 @@ const setActiveSlot = (
     return update(state, settings);
 };
 
+const setTimeSlots = (
+    state: SiloDomainData,
+    action: SetTimeSlotsAction & { type: string },
+) => {
+    const { timeSlots } = action;
+
+    const newTimeSlots = timeSlots.reduce(
+        (acc, value) => {
+            const groupOneKey = value.date;
+            const groupTwoKey = value.id;
+
+            if (acc[groupOneKey]) {
+                acc[groupOneKey][groupTwoKey] = value;
+            } else {
+                acc[groupOneKey] = { [groupTwoKey]: value };
+            }
+            return acc;
+        },
+        {},
+    );
+
+    const settings = {
+        workspace: {
+            timeSlots: {
+                $set: newTimeSlots,
+            },
+        },
+    };
+    return update(state, settings);
+};
+
 export const siloDomainDataReducers: ReducerGroup<SiloDomainData> = {
     [TIME_SLOT_ACTION.setActiveSlot]: setActiveSlot,
+    [TIME_SLOT_ACTION.setTimeSlots]: setTimeSlots,
 };
 export default createReducerWithMap(siloDomainDataReducers, initialSiloDomainData);

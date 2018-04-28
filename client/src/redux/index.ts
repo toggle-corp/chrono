@@ -12,5 +12,4 @@ export * from './reducers/siloDomainData';
 export * from './reducers/domainData/user';
 export * from './reducers/domainData/userGroup';
 export * from './reducers/domainData/project';
-export * from './reducers/domainData/slot';
 export * from './reducers/domainData/task';

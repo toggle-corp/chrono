@@ -1,9 +1,12 @@
 import { createSelector } from 'reselect';
-import { filterObject } from '../../utils/map';
+import {
+    getCanonicalDate,
+    matchesCanonicalDate,
+    filterObject,
+} from '../../utils/map';
 import {
     RootState,
     WorkspaceView,
-
 } from '../interface';
 
 const createPropsSelector = <T>(name: string) => (
@@ -62,9 +65,9 @@ export const activeTimeSlotsSelector = createSelector(
     (timeSlots, activeDate) => (
         filterObject(
             timeSlots,
-            (val, key) => key.startsWith(`${activeDate.year}-${activeDate.month}`))
-    ),
-);
+            (val, key) => matchesCanonicalDate(key, activeDate.year, activeDate.month),
+    )
+));
 
 export const activeWipTimeSlotSelector = createSelector(
     wipTimeSlotsSelector,
@@ -73,7 +76,7 @@ export const activeWipTimeSlotSelector = createSelector(
     dayFromProps,
     timeSlotIdFromProps,
     (wipTimeSlots, year, month, day, timeSlotId = 0) => {
-        const timeSlots = wipTimeSlots[`${year}-${month}-${day}`];
+        const timeSlots = wipTimeSlots[getCanonicalDate(year, month, day)];
         if (timeSlots) {
             return timeSlots[timeSlotId];
         }

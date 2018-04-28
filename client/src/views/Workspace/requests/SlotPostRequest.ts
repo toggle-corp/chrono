@@ -3,20 +3,18 @@ import {
     FgRestBuilder,
 } from '../../../vendor/react-store/utils/rest';
 
-import { SlotData } from '../../../redux/interface';
+import { Request } from '../../../rest/interface';
 import schema from '../../../schema'; 
 import {
     urlForSlot,
     createParamsForPostSlot,
 } from '../../../rest';
 
-import { Request } from '../../../rest/interface';
-
 import { SlotEditor } from '../SlotEditor';
 
 interface Props {
     setState: SlotEditor['setState'];
-    setSlot(params: SlotData): void;
+    // setSlot(params: SlotData): void;
 }
 
 interface SlotPostResponse {
@@ -25,6 +23,14 @@ interface SlotPostResponse {
     startTime: string;
     endTime: string;
     remarks: string;
+    task: number;
+    user: number;
+}
+
+interface SlotData {
+    date: string;
+    startTime: string;
+    endTime: string;
     task: number;
     user: number;
 }
@@ -45,7 +51,8 @@ export default class SlotPostRequest implements Request<{}> {
             .success((response: SlotPostResponse) => {
                 try {
                     schema.validate(response, 'slotPostResponse');
-                    this.props.setSlot(response);
+                    console.log(response);
+                    // this.props.setSlot(response);
                 } catch (err) {
                     console.error(err);
                 }

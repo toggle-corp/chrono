@@ -6,6 +6,7 @@ import project from './project';
 import task from './task';
 import token from './token';
 import user from './user';
+import slot from './slot';
 import userGroup from './userGroup';
 
 // Validator mixin
@@ -19,6 +20,7 @@ attachValidator(dict);
     ...token,
     ...user,
     ...userGroup,
+    ...slot,
 ].forEach(schema => dict.put(schema.doc.name, schema));
 
 export default dict;

@@ -3,20 +3,15 @@ import {
     FgRestBuilder,
 } from '../../../vendor/react-store/utils/rest';
 
-import { ErrorsFromServer } from '../../../rest/interface';
-import { Workspace } from '../index';
-
+import { Request } from '../../../rest/interface';
+import { Task } from '../../../redux/interface';
+import schema from '../../../schema'; 
 import {
     urlForTasks,
     commonParamsForGet,
 } from '../../../rest';
-import { Task } from '../../../redux/interface';
-import schema from '../../../schema'; 
 
-// FIXME: reuse this interface
-interface Request<T> {
-    create: (value: T) => RestRequest;
-}
+import { Workspace } from '../index';
 
 interface Props {
     setState: Workspace['setState'];
@@ -41,8 +36,8 @@ export default class GetTasksRequest implements Request<{}> {
         const request = new FgRestBuilder()
             .url(urlForTasks)
             .params(commonParamsForGet)
-            .preLoad(() => { this.props.setState({ pending: true }); })
-            .postLoad(() => { this.props.setState({ pending: false }); })
+            .preLoad(() => { this.props.setState({ pendingTasks: true }); })
+            .postLoad(() => { this.props.setState({ pendingTasks: false }); })
             .success((response: TasksGetResponse) => {
                 try {
                     schema.validate(response, 'tasksGetResponse');
@@ -50,14 +45,6 @@ export default class GetTasksRequest implements Request<{}> {
                 } catch (err) {
                     console.error(err);
                 }
-            })
-            .failure((response: { errors: ErrorsFromServer }) => {
-                // FIXME: notify user
-                console.warn('Failure: ', response);
-            })
-            .fatal((response: object) => {
-                // FIXME: notify user
-                console.warn('Fatal: ', response);
             })
             .build();
         return request;

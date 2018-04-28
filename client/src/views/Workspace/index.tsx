@@ -6,6 +6,7 @@ import Button from '../../vendor/react-store/components/Action/Button';
 import ListView from '../../vendor/react-store/components/View/List/ListView';
 import { RestRequest } from '../../vendor/react-store/utils/rest';
 import { getNumDaysInMonthX } from '../../vendor/react-store/utils/common';
+import { getCanonicalDate } from '../../utils/map';
 
 import {
     setUserGroupsAction,
@@ -16,8 +17,10 @@ import {
     activeDateSelector,
     activeTimeSlotsSelector,
     setActiveSlotAction,
+    setTimeSlotsAction,
 
     SetActiveSlotAction,
+    SetTimeSlotsAction,
 } from '../../redux';
 import {
     RootState,
@@ -32,6 +35,7 @@ import * as styles from './styles.scss';
 
 import GetUserGroupsRequest from './requests/GetUserGroupsRequest';
 import GetProjectsRequest from './requests/GetProjectsRequest';
+import GetSlotsRequest from './requests/GetSlotsRequest';
 import GetTasksRequest from './requests/GetTasksRequest';
 
 interface Ymd {
@@ -51,6 +55,7 @@ interface PropsFromDispatch {
     setUserProjects(params: Project[]): void;
     setUserTasks(params: Task[]): void;
     setActiveSlot(params: SetActiveSlotAction): void;
+    setTimeSlots(param: SetTimeSlotsAction): void;
 }
 
 type Props = OwnProps & PropsFromState & PropsFromDispatch;
@@ -62,7 +67,10 @@ interface States {
         month: number;
         day: number;
     };
-    pending: boolean;
+    pendingProjects: boolean;
+    pendingTasks: boolean;
+    pendingUsergroups: boolean;
+    pendingSlots: boolean;
 }
 
 interface ListData {
@@ -73,34 +81,19 @@ interface ListData {
 }
 
 const DAY = [
-    'Sun',
-    'Mon',
-    'Tue',
-    'Wed',
-    'Thu',
-    'Fri',
-    'Sat',
+    'Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat',
 ];
 
 const MONTH = [
-    'Jan',
-    'Feb',
-    'Mar',
-    'Apr',
-    'May',
-    'Jun',
-    'Jul',
-    'Aug',
-    'Sep',
-    'Oct',
-    'Nov',
-    'Dec',
+    'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+    'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
 ];
 
 export class Workspace extends React.PureComponent<Props, States> {
     userGroupRequest: RestRequest;
     projectsRequest: RestRequest;
     tasksRequest: RestRequest;
+    slotsRequest: RestRequest;
 
     static keyExtractor = (listData: ListData) => String(listData.day);
 
@@ -135,7 +128,10 @@ export class Workspace extends React.PureComponent<Props, States> {
         this.state = {
             listData,
             today,
-            pending: false,
+            pendingProjects: true,
+            pendingTasks: true,
+            pendingUsergroups: true,
+            pendingSlots: true,
         };
     }
 
@@ -150,12 +146,25 @@ export class Workspace extends React.PureComponent<Props, States> {
         this.startRequestForUserGroup();
         this.startRequestForProjects();
         this.startRequestForTasks();
+        this.startRequestForSlots();
     }
 
     componentWillUnmount() {
         if (this.userGroupRequest) {
             this.userGroupRequest.stop();
         }
+    }
+
+    startRequestForSlots = () => {
+        if (this.slotsRequest) {
+            this.slotsRequest.stop();
+        }
+        const request = new GetSlotsRequest({
+            setState: params => this.setState(params),
+            setTimeSlots: this.props.setTimeSlots,
+        });
+        this.slotsRequest = request.create();
+        this.slotsRequest.start();
     }
 
     startRequestForProjects = () => {
@@ -214,7 +223,7 @@ export class Workspace extends React.PureComponent<Props, States> {
 
         const { activeTimeSlots } = this.props;
 
-        const timeSlots = activeTimeSlots[`${date.year}-${date.month}-${date.day}`];
+        const timeSlots = activeTimeSlots[getCanonicalDate(date.year, date.month, date.day)];
         const handleSlotClick = (
             year: number, month: number, day: number, timeSlotId: number | undefined,
         ) => () => {
@@ -266,8 +275,19 @@ export class Workspace extends React.PureComponent<Props, States> {
     }
 
     render() {
-        const { listData } = this.state;
-        console.log(this.props.activeTimeSlots);
+        const {
+            listData,
+            pendingProjects,
+            pendingTasks,
+            pendingUsergroups,
+            pendingSlots,
+        } = this.state;
+
+        if (pendingProjects || pendingTasks || pendingUsergroups || pendingSlots) {
+            // TODO: proper loading message
+            return (<div className={styles.workspace} />);
+        }
+
         return (
             <div className={styles.workspace}>
                 <div className={styles.datebar}>
@@ -308,6 +328,7 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<RootState>) => ({
     setUserTasks: (params: Task[]) => dispatch(setTasksAction(params)),
 
     setActiveSlot: (params: SetActiveSlotAction) => dispatch(setActiveSlotAction(params)),
+    setTimeSlots: (params: SetTimeSlotsAction) => dispatch(setTimeSlotsAction(params)),
 });
 
 export default connect<PropsFromState, PropsFromDispatch, OwnProps>(
