@@ -2,6 +2,7 @@ import {
     ErrorsFromServer,
     ErrorsFromForm,
     RestGetBody,
+    FaramErrors,
 } from './interface';
 import {
     Rest,
@@ -27,6 +28,20 @@ export const transformResponseErrorToFormError = (errors: ErrorsFromServer): Err
         {},
     );
     return { formFieldErrors, formErrors };
+};
+
+export const alterResponseErrorToFaramError = (errors: ErrorsFromServer): FaramErrors => {
+    const { nonFieldErrors = [], ...formFieldErrorList } = errors;
+
+    return Object.keys(formFieldErrorList).reduce(
+        (acc, key) => {
+            acc[key] = formFieldErrorList[key].join(' ');
+            return acc;
+        },
+        {
+            $internal: nonFieldErrors,
+        },
+    );
 };
 
 export const commonParamsForGet = (): RestGetBody => ({

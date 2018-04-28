@@ -1,7 +1,8 @@
 import localforage from 'localforage';
 
 const storeConfig = {
-    blacklist: ['notify', 'route'],
+    // FIXME: siloDomainData is blacklisted for dev
+    blacklist: ['notify', 'route', 'siloDomainData'],
     key: 'chrono',
     storage: localforage,
 };

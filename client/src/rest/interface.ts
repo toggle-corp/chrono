@@ -30,10 +30,21 @@ export interface FormConditionFnRules {
     [key: string]: FormConditionFnRule[];
 }
 
+export interface FaramErrors {
+    $internal?: undefined | string[];
+    [key: string]: string | string[] | undefined | FaramErrors;
+}
+
+export interface FaramValues {
+    [key: string]: any; // tslint:disable-line no-any
+}
+
+// FIXME: remove
 export interface FormFieldErrors {
     [key: string]: string | undefined | FormFieldErrors;
 }
 
+// FIXME: remove
 export type FormErrors = {
     errors?: (string | undefined)[] | undefined,
     fields?: {
@@ -41,15 +52,18 @@ export type FormErrors = {
     },
 };
 
+// FIXME: remove
 export interface ErrorsFromForm {
     formFieldErrors: FormFieldErrors;
     formErrors: FormErrors;
 }
 
+// FIXME: remove
 export interface ValuesFromForm {
     [key: string]: any; // tslint:disable-line no-any
 }
 
+// FIXME: remove
 export interface ErrorsFromServer {
     [key: string]: string[];
     nonFieldErrors: string[];

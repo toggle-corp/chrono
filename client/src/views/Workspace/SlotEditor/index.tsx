@@ -1,5 +1,5 @@
 import React from 'react';
-import Redux from 'redux';
+// import Redux from 'redux';
 import { connect } from 'react-redux';
 
 import LoadingAnimation from '../../../vendor/react-store/components/View/LoadingAnimation';
@@ -9,34 +9,28 @@ import SelectInput from '../../../vendor/react-store/components/Input/SelectInpu
 import PrimaryButton from '../../../vendor/react-store/components/Action/Button/PrimaryButton';
 import DangerButton from '../../../vendor/react-store/components/Action/Button/DangerButton';
 import { RestRequest } from '../../../vendor/react-store/utils/rest';
-import SlotPostRequest from '../requests/SlotPostRequest';
+// import SlotPostRequest from '../requests/SlotPostRequest';
 
-import Form, {
+import Faram, {
     requiredCondition,
-} from '../../../vendor/react-store/components/Input/Form';
+} from '../../../vendor/react-store/components/Input/Faram';
 
 import {
-    FormErrors,
-    FormFieldErrors,
+    // FaramErrors,
     Schema,
 } from '../../../rest/interface';
 import {
-    workspaceActiveTimeslotSelector,
-    timeslotActiveViewSelector,
-    activeDaySelector,
+    activeWipTimeSlotSelector,
     userGroupsSelector,
     projectsSelector,
     tasksSelector,
-    setSlotAction,
-    setSlotViewAction,
 } from '../../../redux';
 import {
     RootState,
     UserGroup,
-    SlotData,
     Project,
     Task,
-    TimeslotView,
+    WipTimeSlot,
 } from '../../../redux/interface';
 
 import * as styles from './styles.scss';
@@ -46,20 +40,21 @@ interface WithIdAndTitle {
     title: string;
 }
 
-interface OwnProps {}
+interface OwnProps {
+    year: number;
+    month: number;
+    day?: number;
+    timeSlotId?: number;
+}
 
 interface PropsFromState {
-    slotData: SlotParams;
-    activeDay: string;
-    slotView: TimeslotView;
     userGroups: UserGroup[];
     projects: Project[];
     tasks: Task[];
+    activeWipTimeSlot: WipTimeSlot | undefined;
 }
 
 interface PropsFromDispatch {
-    setSlot(params: SlotParams): void;
-    setSlotView(params: TimeslotView): void;
 }
 
 type Props = OwnProps & PropsFromState & PropsFromDispatch;
@@ -67,8 +62,6 @@ type Props = OwnProps & PropsFromState & PropsFromDispatch;
 interface States {
     pending: boolean;
 }
-
-type SlotParams = SlotData;
 
 export class SlotEditor extends React.PureComponent<Props, States> {
     schema: Schema;
@@ -96,6 +89,7 @@ export class SlotEditor extends React.PureComponent<Props, States> {
         };
     }
 
+    /*
     startSubmitSlotRequest = (value: SlotParams) => {
         if (this.submitSlotRequest) {
             this.submitSlotRequest.stop();
@@ -107,29 +101,27 @@ export class SlotEditor extends React.PureComponent<Props, States> {
         this.submitSlotRequest = request.create(value);
         this.submitSlotRequest.start();
     }
+    */
 
-    // FORM RELATED
-    handleFormChange = (
-        values: SlotParams, formFieldErrors: FormFieldErrors, formErrors: FormErrors,
+    /*
+    handleFaramChange = (
+        faramValues: SlotParams, faramErrors: FaramErrors,
     ) => {
         this.props.setSlotView({
-            formErrors,
-            formFieldErrors,
-            data: values,
+            faramErrors,
+            faramValues,
             pristine: true,
         });
     }
 
-    handleFormError = (formFieldErrors: FormFieldErrors, formErrors: FormErrors) => {
+    handleFaramFailure = (faramErrors: FaramErrors) => {
+        // FIXME: use another reducer
         this.props.setSlotView({
-            ...this.props.slotView,
-            formErrors,
-            formFieldErrors,
-            pristine: true,
+            faramErrors,
         });
     }
 
-    handleFormSuccess = (value: SlotParams) => {
+    handleFaramSuccess = (value: SlotParams) => {
         this.startSubmitSlotRequest({
             ...value,
             date: this.props.activeDay,
@@ -137,55 +129,56 @@ export class SlotEditor extends React.PureComponent<Props, States> {
     }
 
     handleDiscard = () => {
+        // FIXME: use another reducer
         this.props.setSlotView({
             data: this.props.slotData,
-            pristine: false,
-            formErrors: {},
-            formFieldErrors: {},
         });
     }
+    */
 
     render() {
+        const { pending } = this.state;
         const {
-            pending,
-        } = this.state;
-        const {
+            activeWipTimeSlot,
             userGroups,
-            slotView,
-            tasks,
             projects,
+            tasks,
         } = this.props;
+
+        // If there is no activeWipTimeSlot then we cannot continue
+        if (!activeWipTimeSlot) {
+            return null;
+        }
+
         const {
-            formErrors,
-            formFieldErrors,
-            data: formValues,
+            faramErrors,
+            faramValues,
             pristine,
-        } = slotView;
+        } = activeWipTimeSlot;
 
         return (
             <div className={styles.dayEditor}>
-                <Form
+                <Faram
                     className={styles.dayEditorForm}
                     schema={this.schema}
-                    value={formValues}
-                    formErrors={formErrors}
-                    fieldErrors={formFieldErrors}
-                    changeCallback={this.handleFormChange}
-                    successCallback={this.handleFormSuccess}
-                    failureCallback={this.handleFormError}
+                    value={faramValues}
+                    error={faramErrors}
                     disabled={pending}
+                    // onChange={this.handleFaramChange}
+                    // onValidationSuccess={this.handleFaramSuccess}
+                    // onValidationFailure={this.handleFaramFailure}
                 >
                     {pending && <LoadingAnimation />}
-                    <NonFieldErrors formerror="" />
+                    <NonFieldErrors faramElement />
                     <div className={styles.timewrapper} >
                          <TextInput
-                            formname="startTime"
+                            faramElementName="startTime"
                             label="Start"
                             placeholder="10:00"
                             type="time"
                          />
                         <TextInput
-                            formname="endTime"
+                            faramElementName="endTime"
                             label="End"
                             placeholder="5:00"
                             type="time"
@@ -193,7 +186,7 @@ export class SlotEditor extends React.PureComponent<Props, States> {
                     </div>
                     <div className={styles.infowrapper} >
                     <SelectInput
-                        formname="userGroup"
+                        faramElementName="userGroup"
                         className={styles.usergroup}
                         label="User Group"
                         options={userGroups}
@@ -202,7 +195,7 @@ export class SlotEditor extends React.PureComponent<Props, States> {
                         labelSelector={SlotEditor.labelSelector}
                     />
                     <SelectInput
-                        formname="project"
+                        faramElementName="project"
                         label="Project"
                         className={styles.project}
                         options={projects}
@@ -211,9 +204,9 @@ export class SlotEditor extends React.PureComponent<Props, States> {
                         labelSelector={SlotEditor.labelSelector}
                     />
                     <SelectInput
-                        formname="task"
-                        label="Task"
                         className={styles.task}
+                        faramElementName="task"
+                        label="Task"
                         options={tasks}
                         placeholder="Select a task"
                         keySelector={SlotEditor.keySelector}
@@ -221,44 +214,39 @@ export class SlotEditor extends React.PureComponent<Props, States> {
                     />
                     </div>
                     <TextInput
-                        formname="remarks"
-                        label="Remarks"
                         className={styles.remarks}
-                        options={tasks}
+                        faramElementName="remarks"
+                        label="Remarks"
                         placeholder="Remarks"
                     />
                     <div className={styles.actionButtons}>
                         <PrimaryButton
                             type="submit"
-                            disabled={!pristine || pending}
+                            disabled={pristine || pending}
                         >
                             Save
                         </PrimaryButton>
                         <DangerButton
-                            onClick={this.handleDiscard}
-                            disabled={!pristine || pending}
+                            // onClick={this.handleDiscard}
+                            disabled={pristine || pending}
                         >
                             Discard
                         </DangerButton>
                     </div>
-                </Form>
+                </Faram>
             </div>
         );
     }
 }
 
-const mapStateToProps = (state: RootState) => ({
-    activeDay: activeDaySelector(state),
+const mapStateToProps = (state: RootState, props: OwnProps) => ({
+    activeWipTimeSlot: activeWipTimeSlotSelector(state, props),
     userGroups: userGroupsSelector(state),
     projects: projectsSelector(state),
     tasks: tasksSelector(state),
-    slotData: workspaceActiveTimeslotSelector(state),
-    slotView: timeslotActiveViewSelector(state),
 });
 
-const mapDispatchToProps = (dispatch: Redux.Dispatch<RootState>) => ({
-    setSlot: (params: SlotParams) => dispatch(setSlotAction(params)),
-    setSlotView: (params: TimeslotView) => dispatch(setSlotViewAction(params)),
+const mapDispatchToProps = (/* dispatch: Redux.Dispatch<RootState> */) => ({
 });
 
 export default connect<PropsFromState, PropsFromDispatch, OwnProps>(

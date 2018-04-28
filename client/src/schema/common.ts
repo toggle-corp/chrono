@@ -11,7 +11,7 @@ const commonSchemas: Schema[] = [
             modifiedAt: { type: 'string', required: true }, // date
             modifiedBy: { type: 'uint' },
             modifiedByName: { type: 'string' },
-            versionId: { type: 'uint', required: true },
+            versionId: { type: 'uint' }, // Fixme: should be required
         },
     },
     {

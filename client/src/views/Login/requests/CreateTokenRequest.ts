@@ -7,7 +7,7 @@ import { Login } from '../index';
 import { Token } from '../../../redux/interface';
 import {
     createParamsForTokenCreate,
-    transformResponseErrorToFormError,
+    alterResponseErrorToFaramError,
     urlForTokenCreate,
 } from '../../../rest';
 import {
@@ -62,19 +62,15 @@ export default class CreateTokenRequest implements Request<AuthParams> {
                 }
             })
             .failure((response: { errors: ErrorsFromServer }) => {
-                const {
-                    formFieldErrors,
-                    formErrors,
-                } = transformResponseErrorToFormError(response.errors);
+                const faramErrors = alterResponseErrorToFaramError(response.errors);
                 this.props.setState({
-                    formErrors,
-                    formFieldErrors,
+                    faramErrors,
                     pending: false,
                 });
             })
             .fatal(() => {
                 this.props.setState({
-                    formErrors: { errors: ['Some error occured.'] },
+                    faramErrors: { $internal: ['Some error occured.'] },
                     pending: false,
                 });
             })

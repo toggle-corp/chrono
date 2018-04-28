@@ -14,10 +14,8 @@ $color-text-on-primary: get-text-color($color-primary);
         border-bottom: $width-separator-thin solid $color-separator-alt;
         padding: $spacing-small;
 
-        .list-view {
-            display: flex;
-            flex-direction: column;
-            flex-shrink: 0;
+        .date {
+            font-family: $font-family-monospace;
         }
     }
 
@@ -28,12 +26,35 @@ $color-text-on-primary: get-text-color($color-primary);
         border-bottom: $width-separator-thin solid $color-separator-alt;
 
         .datewrapper {
+            display: flex;
             border-bottom: $width-separator-thin solid $color-separator-alt;
+            border-left: $width-separator-thick solid transparent;
             padding: $spacing-small;
             width: 100%;
 
             &.active {
                 @include background-color($color-foreground-alt);
+            }
+
+            &.today {
+                border-left: $width-separator-thick solid $color-success;
+            }
+
+            .left {
+                display: flex;
+                flex-basis: 10%;
+
+                .date {
+                    padding: $spacing-extra-small $spacing-small;
+                    font-family: $font-family-monospace;
+                }
+            }
+
+            .right {
+                display: flex;
+                .button {
+                    margin-left: $spacing-small;
+                }
             }
         }
     }

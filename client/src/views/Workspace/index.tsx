@@ -2,6 +2,7 @@ import React from 'react';
 import Redux from 'redux';
 import { connect } from 'react-redux';
 
+import Button from '../../vendor/react-store/components/Action/Button';
 import ListView from '../../vendor/react-store/components/View/List/ListView';
 import { RestRequest } from '../../vendor/react-store/utils/rest';
 import { getNumDaysInMonthX } from '../../vendor/react-store/utils/common';
@@ -10,8 +11,22 @@ import {
     setUserGroupsAction,
     setProjectsAction,
     setTasksAction,
+
+    activeTimeslotIdSelector,
+    activeDateSelector,
+    activeTimeSlotsSelector,
+    setActiveSlotAction,
+
+    SetActiveSlotAction,
 } from '../../redux';
-import { RootState, UserGroup, Project, Task } from '../../redux/interface';
+import {
+    RootState,
+    UserGroup,
+    Project,
+    Task,
+    TimeSlots,
+    TimeSlot,
+} from '../../redux/interface';
 import SlotEditor from './SlotEditor';
 import * as styles from './styles.scss';
 
@@ -19,28 +34,41 @@ import GetUserGroupsRequest from './requests/GetUserGroupsRequest';
 import GetProjectsRequest from './requests/GetProjectsRequest';
 import GetTasksRequest from './requests/GetTasksRequest';
 
+interface Ymd {
+    year: number;
+    month: number;
+    day?: number;
+}
+
 interface OwnProps {}
-interface PropsFromState { }
+interface PropsFromState {
+    activeDate: Ymd;
+    activeTimeSlots: TimeSlots<TimeSlot>; // FIXME
+    activeTimeSlotId?: number;
+}
 interface PropsFromDispatch {
     setUserGroups(params: UserGroup[]): void;
     setUserProjects(params: Project[]): void;
     setUserTasks(params: Task[]): void;
+    setActiveSlot(params: SetActiveSlotAction): void;
 }
 
 type Props = OwnProps & PropsFromState & PropsFromDispatch;
 
 interface States {
-    data: Data[];
-    currentYear: number;
-    currentMonth: number;
-    currentDay: number;
+    listData: ListData[];
+    today: {
+        year: number;
+        month: number;
+        day: number;
+    };
     pending: boolean;
 }
 
-interface Data {
-    day: number;
-    month: number;
+interface ListData {
     year: number;
+    month: number;
+    day: number;
     weekDay: number;
 }
 
@@ -74,36 +102,48 @@ export class Workspace extends React.PureComponent<Props, States> {
     projectsRequest: RestRequest;
     tasksRequest: RestRequest;
 
-    static keyExtractor = (data: Data) => String(data.day);
+    static keyExtractor = (listData: ListData) => String(listData.day);
+
+    static calculateListData = (activeDate: Ymd) => {
+        const { year, month } = activeDate;
+        const numberOfDays: number = getNumDaysInMonthX(year, month - 1);
+
+        const listData: ListData[] = [];
+        for (let i = 1; i <= numberOfDays; i += 1) {
+            listData.push({
+                year,
+                month,
+                day: i,
+                weekDay: new Date(year, month - 1, i).getDay(),
+            });
+        }
+        return listData;
+    }
 
     constructor(props: Props) {
         super(props);
 
+        const listData = Workspace.calculateListData(this.props.activeDate);
+
         const now = new Date();
-
-        const currentYear = now.getFullYear();
-        const currentMonth = now.getMonth(); // starts with 0
-        const currentDay = now.getDate();
-
-        const numberOfDays: number = getNumDaysInMonthX(currentYear, currentMonth);
-
-        const data: Data[] = [];
-        for (let i = 1; i <= numberOfDays; i += 1) {
-            data.push({
-                year: currentYear,
-                month: currentMonth,
-                day: i,
-                weekDay: new Date(currentYear, currentMonth, i).getDay(),
-            });
-        }
+        const today = {
+            year: now.getFullYear(),
+            month: now.getMonth() + 1,
+            day: now.getDate(),
+        };
 
         this.state = {
-            data,
-            currentYear,
-            currentMonth,
-            currentDay,
+            listData,
+            today,
             pending: false,
         };
+    }
+
+    componentWillReceiveProps(nextProps: Props) {
+        if (this.props.activeDate !== nextProps.activeDate) {
+            const listData = Workspace.calculateListData(this.props.activeDate);
+            this.setState({ listData });
+        }
     }
 
     componentWillMount() {
@@ -154,54 +194,122 @@ export class Workspace extends React.PureComponent<Props, States> {
         this.userGroupRequest.start();
     }
 
-    renderDay = (key: string, date: Data) => {
+    renderDay = (key: string, date: ListData) => {
         const classNames = [
             styles.datewrapper,
         ];
-        if (this.state.currentDay === date.day) {
+
+        if (this.props.activeDate.day === date.day) {
             classNames.push(styles.active);
         }
+
+        const isToday = (
+            date.year === this.state.today.year &&
+            date.month === this.state.today.month &&
+            date.day === this.state.today.day
+        );
+        if (isToday) {
+            classNames.push(styles.today);
+        }
+
+        const { activeTimeSlots } = this.props;
+
+        const timeSlots = activeTimeSlots[`${date.year}-${date.month}-${date.day}`];
+        const handleSlotClick = (
+            year: number, month: number, day: number, timeSlotId: number | undefined,
+        ) => () => {
+            this.props.setActiveSlot({
+                year,
+                month,
+                day,
+                timeSlotId,
+            });
+        };
 
         return (
             <div
                 key={key}
                 className={classNames.join(' ')}
             >
-                {DAY[date.weekDay]}, {date.day}
+                <div className={styles.left}>
+                    <div className={styles.date}>
+                        {DAY[date.weekDay]},{date.day}
+                    </div>
+                </div>
+                <div className={styles.right}>
+                    <Button
+                        className={styles.button}
+                        title="Add a new timeslot"
+                        onClick={
+                            handleSlotClick(date.year, date.month, date.day, undefined)
+                        }
+                    >
+                        +
+                    </Button>
+                    {
+                        timeSlots && Object.values(timeSlots).map(timeSlot => (
+                            <Button
+                                key={timeSlot.id}
+                                className={styles.button}
+                                title={timeSlot.remarks}
+                                onClick={
+                                    handleSlotClick(date.year, date.month, date.day, timeSlot.id)
+                                }
+                            >
+                                {timeSlot.startTime}-{timeSlot.endTime}
+                            </Button>
+                        ))
+                    }
+                </div>
             </div>
         );
     }
 
     render() {
-        const { data } = this.state;
+        const { listData } = this.state;
+        console.log(this.props.activeTimeSlots);
         return (
             <div className={styles.workspace}>
                 <div className={styles.datebar}>
-                    {MONTH[this.state.currentMonth]} {this.state.currentYear}
+                    <span className={styles.date}>
+                        {MONTH[this.props.activeDate.month - 1]}, {this.props.activeDate.year}
+                    </span>
                 </div>
-                <div className={styles.information} >
+                <div className={styles.information}>
                     <ListView
-                        className={styles.listView}
-                        data={data}
+                        data={listData}
                         modifier={this.renderDay}
                         keyExtractor={Workspace.keyExtractor}
                     />
                 </div>
-                <SlotEditor />
-                <div className={styles.bottom} >
-                    Bottom Part
+                <SlotEditor
+                    timeSlotId={this.props.activeTimeSlotId}
+                    year={this.props.activeDate.year}
+                    month={this.props.activeDate.month}
+                    day={this.props.activeDate.day}
+                />
+                <div className={styles.bottom}>
+                    Timeslot Graph
                 </div>
             </div>
         );
     }
 }
 
+const mapStateToProps = (state: RootState) => ({
+    activeDate: activeDateSelector(state),
+    activeTimeSlots: activeTimeSlotsSelector(state),
+    activeTimeSlotId: activeTimeslotIdSelector(state),
+});
+
 const mapDispatchToProps = (dispatch: Redux.Dispatch<RootState>) => ({
     setUserGroups: (params: UserGroup[]) => dispatch(setUserGroupsAction(params)),
     setUserProjects: (params: Project[]) => dispatch(setProjectsAction(params)),
     setUserTasks: (params: Task[]) => dispatch(setTasksAction(params)),
+
+    setActiveSlot: (params: SetActiveSlotAction) => dispatch(setActiveSlotAction(params)),
 });
 
 export default connect<PropsFromState, PropsFromDispatch, OwnProps>(
-    undefined, mapDispatchToProps,
+    mapStateToProps, mapDispatchToProps,
 )(Workspace);

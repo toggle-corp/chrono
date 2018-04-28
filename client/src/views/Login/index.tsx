@@ -9,16 +9,15 @@ import NonFieldErrors from '../../vendor/react-store/components/Input/NonFieldEr
 import TextInput from '../../vendor/react-store/components/Input/TextInput';
 import PrimaryButton from '../../vendor/react-store/components/Action/Button/PrimaryButton';
 import { RestRequest } from '../../vendor/react-store/utils/rest';
-import Form, {
+import Faram, {
     emailCondition,
     lengthGreaterThanCondition,
     requiredCondition,
-} from '../../vendor/react-store/components/Input/Form';
+} from '../../vendor/react-store/components/Input/Faram';
 
 import {
-    FormErrors,
-    FormFieldErrors,
-    ValuesFromForm,
+    FaramErrors,
+    FaramValues,
     Schema,
 } from '../../rest/interface';
 import { startTasksAction } from '../../redux/middlewares/taskManager';
@@ -42,9 +41,8 @@ interface PropsFromDispatch {
 type Props = OwnProps & PropsFromState & PropsFromDispatch;
 
 interface States {
-    formErrors: FormErrors;
-    formFieldErrors: FormFieldErrors;
-    formValues: ValuesFromForm;
+    faramErrors: FaramErrors;
+    faramValues: FaramValues;
     pending: boolean;
     pristine: boolean;
 }
@@ -62,9 +60,8 @@ export class Login extends React.PureComponent<Props, States> {
         super(props);
 
         this.state = {
-            formErrors: {},
-            formFieldErrors: {},
-            formValues: {},
+            faramErrors: {},
+            faramValues: {},
             pending: false,
             pristine: false,
         };
@@ -89,28 +86,24 @@ export class Login extends React.PureComponent<Props, States> {
         }
     }
 
-    // FORM RELATED
-
-    handleFormChange = (
-        values: AuthParams, formFieldErrors: FormFieldErrors, formErrors: FormErrors,
+    handleFaramChange = (
+        faramValues: AuthParams, faramErrors: FaramErrors,
     ) => {
         this.setState({
-            formErrors,
-            formFieldErrors,
-            formValues: values,
+            faramValues,
+            faramErrors,
             pristine: true,
         });
     }
 
-    handleFormError = (formFieldErrors: FormFieldErrors, formErrors: FormErrors) => {
+    handleFaramFailure = (faramErrors: FaramErrors) => {
         this.setState({
-            formErrors,
-            formFieldErrors,
+            faramErrors,
             pristine: true,
         });
     }
 
-    handleFormSubmit = (value: AuthParams) => {
+    handleFaramSuccess = (value: AuthParams) => {
         if (this.userLoginRequest) {
             this.userLoginRequest.stop();
         }
@@ -127,9 +120,8 @@ export class Login extends React.PureComponent<Props, States> {
 
     render() {
         const {
-            formErrors,
-            formFieldErrors,
-            formValues,
+            faramValues,
+            faramErrors,
             pending,
         } = this.state;
 
@@ -141,27 +133,27 @@ export class Login extends React.PureComponent<Props, States> {
                     </h1>
                 </div>
                 <div className={styles.loginFormContainer}>
-                    <Form
+                    <Faram
                         className={styles.loginForm}
                         schema={this.schema}
-                        value={formValues}
-                        formErrors={formErrors}
-                        fieldErrors={formFieldErrors}
-                        changeCallback={this.handleFormChange}
-                        successCallback={this.handleFormSubmit}
-                        failureCallback={this.handleFormError}
                         disabled={pending}
+
+                        value={faramValues}
+                        error={faramErrors}
+                        onChange={this.handleFaramChange}
+                        onValidationSuccess={this.handleFaramSuccess}
+                        onValidationFailure={this.handleFaramFailure}
                     >
                         {pending && <LoadingAnimation />}
-                        <NonFieldErrors formerror="" />
+                        <NonFieldErrors faramElement />
                         <TextInput
-                            formname="email"
+                            faramElementName="email"
                             label="Email"
                             placeholder="john.doe@mail.com"
                             autoFocus
                         />
                         <TextInput
-                            formname="password"
+                            faramElementName="password"
                             label="Password"
                             placeholder="****"
                             type="password"
@@ -171,7 +163,7 @@ export class Login extends React.PureComponent<Props, States> {
                                 Login
                             </PrimaryButton>
                         </div>
-                    </Form>
+                    </Faram>
                     <div className={styles.registerLinkContainer}>
                         <p>
                             No account yet ?

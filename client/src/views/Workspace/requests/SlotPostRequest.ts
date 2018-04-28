@@ -3,18 +3,16 @@ import {
     FgRestBuilder,
 } from '../../../vendor/react-store/utils/rest';
 
-import {
-    ErrorsFromServer,
-    Request,
-} from '../../../rest/interface';
-import { SlotEditor } from '../SlotEditor';
-
+import { SlotData } from '../../../redux/interface';
+import schema from '../../../schema'; 
 import {
     urlForSlot,
     createParamsForPostSlot,
 } from '../../../rest';
-import { SlotData } from '../../../redux/interface';
-import schema from '../../../schema'; 
+
+import { Request } from '../../../rest/interface';
+
+import { SlotEditor } from '../SlotEditor';
 
 interface Props {
     setState: SlotEditor['setState'];
@@ -52,16 +50,7 @@ export default class SlotPostRequest implements Request<{}> {
                     console.error(err);
                 }
             })
-            .failure((response: { errors: ErrorsFromServer }) => {
-                // FIXME: notify user
-                console.warn('Failure: ', response);
-            })
-            .fatal((response: object) => {
-                // FIXME: notify user
-                console.warn('Fatal: ', response);
-            })
             .build();
         return request;
-
     }
 }

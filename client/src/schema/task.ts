@@ -3,6 +3,7 @@ import { Schema } from './interface';
 const taskSchemas: Schema[] = [
     {
         doc: { name: 'task' },
+        extends: 'dbentity',
         fields: {
             title: { type: 'string', required: true },
             description: { type: 'string' },
