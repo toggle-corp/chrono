@@ -3,13 +3,16 @@ import { SiloDomainData } from '../interface';
 const initialState: SiloDomainData = {
     workspace: {
         activeDate: {
+            /*
             year: 2018,
             month: 4,
             day: 27,
+            */
         },
         activeTimeslotId: undefined,
 
         wipTimeSlots: {
+            /*
             '2018-04-01': {
                 2: {
                     id: 2,
@@ -82,8 +85,10 @@ const initialState: SiloDomainData = {
                     hasServerError: false,
                 },
             },
+            */
         },
         timeSlots: {
+            /*
             '2018-03-01': {
                 1: {
                     id: 1,
@@ -130,6 +135,7 @@ const initialState: SiloDomainData = {
                     remarks: 'Sunny side up.',
                 },
             },
+             */
         },
     },
 };

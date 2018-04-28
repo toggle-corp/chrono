@@ -6,7 +6,12 @@ import Button from '../../vendor/react-store/components/Action/Button';
 import ListView from '../../vendor/react-store/components/View/List/ListView';
 import { RestRequest } from '../../vendor/react-store/utils/rest';
 import { getNumDaysInMonthX } from '../../vendor/react-store/utils/common';
-import { getCanonicalDate } from '../../utils/map';
+import {
+    getCanonicalDate,
+    getMonthName,
+    getWeekDayName,
+    getWeekDayNumber,
+} from '../../utils/map';
 
 import {
     setUserGroupsAction,
@@ -42,6 +47,7 @@ interface Ymd {
     year: number;
     month: number;
     day?: number;
+    weekDay?: number;
 }
 
 interface OwnProps {}
@@ -80,14 +86,6 @@ interface ListData {
     weekDay: number;
 }
 
-const DAY = [
-    'Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat',
-];
-
-const MONTH = [
-    'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-    'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
-];
 
 export class Workspace extends React.PureComponent<Props, States> {
     userGroupRequest: RestRequest;
@@ -107,7 +105,7 @@ export class Workspace extends React.PureComponent<Props, States> {
                 year,
                 month,
                 day: i,
-                weekDay: new Date(year, month - 1, i).getDay(),
+                weekDay: getWeekDayNumber(year, month, i),
             });
         }
         return listData;
@@ -203,6 +201,38 @@ export class Workspace extends React.PureComponent<Props, States> {
         this.userGroupRequest.start();
     }
 
+
+    handleSlotClick = (
+        year: number, month: number, day: number, timeSlotId: number | undefined,
+    ) => () => {
+        this.props.setActiveSlot({
+            year,
+            month,
+            day,
+            timeSlotId,
+        });
+    }
+
+    renderTimeSlot = (date: ListData) => (timeSlot: TimeSlot) => {
+        const { activeTimeSlotId } = this.props;
+        const classNames = [
+            styles.button,
+        ];
+        if (timeSlot.id === activeTimeSlotId) {
+            classNames.push(styles.activeSlot);
+        }
+        return (
+            <Button
+                key={timeSlot.id}
+                className={classNames.join(' ')}
+                title={timeSlot.remarks}
+                onClick={this.handleSlotClick(date.year, date.month, date.day, timeSlot.id)}
+            >
+                {timeSlot.startTime}-{timeSlot.endTime}
+            </Button>
+        );
+    }
+
     renderDay = (key: string, date: ListData) => {
         const classNames = [
             styles.datewrapper,
@@ -223,17 +253,8 @@ export class Workspace extends React.PureComponent<Props, States> {
 
         const { activeTimeSlots } = this.props;
 
-        const timeSlots = activeTimeSlots[getCanonicalDate(date.year, date.month, date.day)];
-        const handleSlotClick = (
-            year: number, month: number, day: number, timeSlotId: number | undefined,
-        ) => () => {
-            this.props.setActiveSlot({
-                year,
-                month,
-                day,
-                timeSlotId,
-            });
-        };
+        const canonicalDate = getCanonicalDate(date.year, date.month, date.day);
+        const timeSlots = activeTimeSlots[canonicalDate];
 
         return (
             <div
@@ -242,33 +263,18 @@ export class Workspace extends React.PureComponent<Props, States> {
             >
                 <div className={styles.left}>
                     <div className={styles.date}>
-                        {DAY[date.weekDay]},{date.day}
+                        {getWeekDayName(date.weekDay)},{date.day}
                     </div>
                 </div>
                 <div className={styles.right}>
                     <Button
                         className={styles.button}
                         title="Add a new timeslot"
-                        onClick={
-                            handleSlotClick(date.year, date.month, date.day, undefined)
-                        }
+                        onClick={this.handleSlotClick(date.year, date.month, date.day, undefined)}
                     >
                         +
                     </Button>
-                    {
-                        timeSlots && Object.values(timeSlots).map(timeSlot => (
-                            <Button
-                                key={timeSlot.id}
-                                className={styles.button}
-                                title={timeSlot.remarks}
-                                onClick={
-                                    handleSlotClick(date.year, date.month, date.day, timeSlot.id)
-                                }
-                            >
-                                {timeSlot.startTime}-{timeSlot.endTime}
-                            </Button>
-                        ))
-                    }
+                    {timeSlots && Object.values(timeSlots).map(this.renderTimeSlot(date))}
                 </div>
             </div>
         );
@@ -292,7 +298,7 @@ export class Workspace extends React.PureComponent<Props, States> {
             <div className={styles.workspace}>
                 <div className={styles.datebar}>
                     <span className={styles.date}>
-                        {MONTH[this.props.activeDate.month - 1]}, {this.props.activeDate.year}
+                        {getMonthName(this.props.activeDate.month)}, {this.props.activeDate.year}
                     </span>
                 </div>
                 <div className={styles.information}>
@@ -307,10 +313,8 @@ export class Workspace extends React.PureComponent<Props, States> {
                     year={this.props.activeDate.year}
                     month={this.props.activeDate.month}
                     day={this.props.activeDate.day}
+                    weekDay={this.props.activeDate.weekDay}
                 />
-                <div className={styles.bottom}>
-                    Timeslot Graph
-                </div>
             </div>
         );
     }

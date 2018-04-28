@@ -9,12 +9,12 @@ import SelectInput from '../../../vendor/react-store/components/Input/SelectInpu
 import PrimaryButton from '../../../vendor/react-store/components/Action/Button/PrimaryButton';
 import DangerButton from '../../../vendor/react-store/components/Action/Button/DangerButton';
 import { RestRequest } from '../../../vendor/react-store/utils/rest';
-// import SlotPostRequest from '../requests/SlotPostRequest';
-
 import Faram, {
     requiredCondition,
 } from '../../../vendor/react-store/components/Input/Faram';
+// import SlotPostRequest from '../requests/SlotPostRequest';
 
+import { getWeekDayName } from '../../../utils/map';
 import {
     // FaramErrors,
     Schema,
@@ -44,6 +44,7 @@ interface OwnProps {
     year: number;
     month: number;
     day?: number;
+    weekDay?: number;
     timeSlotId?: number;
 }
 
@@ -169,69 +170,78 @@ export class SlotEditor extends React.PureComponent<Props, States> {
                     // onValidationFailure={this.handleFaramFailure}
                 >
                     {pending && <LoadingAnimation />}
-                    <NonFieldErrors faramElement />
-                    <div className={styles.timewrapper} >
-                         <TextInput
-                            faramElementName="startTime"
-                            label="Start"
-                            placeholder="10:00"
-                            type="time"
-                         />
-                        <TextInput
-                            faramElementName="endTime"
-                            label="End"
-                            placeholder="5:00"
-                            type="time"
+                    <div className={styles.mainForm}>
+                        <NonFieldErrors faramElement />
+                        <div className={styles.timewrapper} >
+                             <TextInput
+                                faramElementName="startTime"
+                                label="Start"
+                                placeholder="10:00"
+                                type="time"
+                             />
+                            <TextInput
+                                faramElementName="endTime"
+                                label="End"
+                                placeholder="5:00"
+                                type="time"
+                            />
+                        </div>
+                        <div className={styles.infowrapper} >
+                        <SelectInput
+                            faramElementName="userGroup"
+                            className={styles.usergroup}
+                            label="User Group"
+                            options={userGroups}
+                            placeholder="Select a user group"
+                            keySelector={SlotEditor.keySelector}
+                            labelSelector={SlotEditor.labelSelector}
                         />
+                        <SelectInput
+                            faramElementName="project"
+                            label="Project"
+                            className={styles.project}
+                            options={projects}
+                            placeholder="Select a project"
+                            keySelector={SlotEditor.keySelector}
+                            labelSelector={SlotEditor.labelSelector}
+                        />
+                        <SelectInput
+                            className={styles.task}
+                            faramElementName="task"
+                            label="Task"
+                            options={tasks}
+                            placeholder="Select a task"
+                            keySelector={SlotEditor.keySelector}
+                            labelSelector={SlotEditor.labelSelector}
+                        />
+                        </div>
+                        <TextInput
+                            className={styles.remarks}
+                            faramElementName="remarks"
+                            label="Remarks"
+                            placeholder="Remarks"
+                        />
+                        <div className={styles.actionButtons}>
+                            <PrimaryButton
+                                type="submit"
+                                disabled={pristine || pending}
+                            >
+                                Save
+                            </PrimaryButton>
+                            <DangerButton
+                                // onClick={this.handleDiscard}
+                                disabled={pristine || pending}
+                            >
+                                Discard
+                            </DangerButton>
+                        </div>
                     </div>
-                    <div className={styles.infowrapper} >
-                    <SelectInput
-                        faramElementName="userGroup"
-                        className={styles.usergroup}
-                        label="User Group"
-                        options={userGroups}
-                        placeholder="Select a user group"
-                        keySelector={SlotEditor.keySelector}
-                        labelSelector={SlotEditor.labelSelector}
-                    />
-                    <SelectInput
-                        faramElementName="project"
-                        label="Project"
-                        className={styles.project}
-                        options={projects}
-                        placeholder="Select a project"
-                        keySelector={SlotEditor.keySelector}
-                        labelSelector={SlotEditor.labelSelector}
-                    />
-                    <SelectInput
-                        className={styles.task}
-                        faramElementName="task"
-                        label="Task"
-                        options={tasks}
-                        placeholder="Select a task"
-                        keySelector={SlotEditor.keySelector}
-                        labelSelector={SlotEditor.labelSelector}
-                    />
-                    </div>
-                    <TextInput
-                        className={styles.remarks}
-                        faramElementName="remarks"
-                        label="Remarks"
-                        placeholder="Remarks"
-                    />
-                    <div className={styles.actionButtons}>
-                        <PrimaryButton
-                            type="submit"
-                            disabled={pristine || pending}
-                        >
-                            Save
-                        </PrimaryButton>
-                        <DangerButton
-                            // onClick={this.handleDiscard}
-                            disabled={pristine || pending}
-                        >
-                            Discard
-                        </DangerButton>
+                    <div className={styles.bottom}>
+                        { this.props.weekDay !== undefined &&
+                            <div className={styles.date}>
+                                {getWeekDayName(this.props.weekDay)},{this.props.day}
+                            </div>
+                        }
                     </div>
                 </Faram>
             </div>

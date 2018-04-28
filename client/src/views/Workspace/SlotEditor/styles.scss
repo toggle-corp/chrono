@@ -2,47 +2,66 @@
 
 .day-editor {
     @include background-color($color-foreground);
+    position: relative;
 
     .day-editor-form {
         display: flex;
+        flex-direction: column;
         padding: $spacing-small 0;
 
-        .timewrapper {
+        .main-form {
             display: flex;
-            flex-direction: column;
-            margin-right: $spacing-large;
-            width: 150px;
-        }
+            padding: $spacing-small 0;
 
-        .infowrapper {
-            display: flex;
-            align-items: flex-start;
-
-            .usergroup,
-            .project,
-            .task {
+            .timewrapper {
+                display: flex;
+                flex-direction: column;
                 margin-right: $spacing-large;
+                width: 150px;
             }
 
+            .infowrapper {
+                display: flex;
+                align-items: flex-start;
+
+                .usergroup,
+                .project,
+                .task {
+                    margin-right: $spacing-large;
+                }
+            }
+
+            .remarks {
+                flex-grow: 1;
+            }
+
+            .action-buttons {
+                display: flex;
+                align-items: flex-end;
+
+                button {
+                    margin-right: $spacing-medium;
+                }
+
+
+
+                .forgot-password-link {
+                    color: $color-text-label;
+                    font-size: $font-size-extra-small;
+                }
+            }
         }
 
-        .remarks {
-            flex-grow: 1;
-        }
-
-        .action-buttons {
+        .bottom {
+            @include background-color($color-foreground);
             display: flex;
-            align-items: flex-end;
+            flex-shrink: 0;
+            border-top: $width-separator-thin solid $color-separator-alt;
+            padding: $spacing-small;
 
-            button {
-                margin-right: $spacing-medium;
-            }
-
-
-
-            .forgot-password-link {
-                color: $color-text-label;
-                font-size: $font-size-extra-small;
+            .date {
+                padding: $spacing-extra-small $spacing-small;
+                font-family: $font-family-monospace;
             }
         }
     }

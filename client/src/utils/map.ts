@@ -72,3 +72,21 @@ export const matchesCanonicalDate = (
     }
     return date === getCanonicalDate(year, month, day);
 };
+
+const DAY = [
+    'Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat',
+];
+
+const MONTH = [
+    'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+    'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
+];
+export const getMonthName = (month: number) => (
+    MONTH[month - 1]
+);
+export const getWeekDayName = (week: number) => (
+    DAY[week]
+);
+export const getWeekDayNumber = (year: number, month: number, day: number) => (
+    new Date(year, month - 1, day).getDay()
+);

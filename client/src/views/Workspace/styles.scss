@@ -54,16 +54,12 @@ $color-text-on-primary: get-text-color($color-primary);
                 display: flex;
                 .button {
                     margin-left: $spacing-small;
+
+                    &.active-slot {
+                        border-right: $width-separator-thin solid $color-success;
+                    }
                 }
             }
         }
-    }
-
-    .bottom {
-        @include background-color($color-foreground);
-        display: flex;
-        flex-shrink: 0;
-        border-top: $width-separator-thin solid $color-separator-alt;
-        padding: $spacing-small;
     }
 }

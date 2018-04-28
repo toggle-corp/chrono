@@ -1,7 +1,7 @@
 import update from '../../vendor/react-store/utils/immutable-update';
-import { isFalsy, randomString } from '../../vendor/react-store/utils/common';
+import { randomString } from '../../vendor/react-store/utils/common';
 import createReducerWithMap from '../../utils/createReducerWithMap';
-import { getCanonicalDate } from '../../utils/map';
+import { getCanonicalDate, getWeekDayNumber } from '../../utils/map';
 
 import initialSiloDomainData from '../initial-state/siloDomainData';
 import { SiloDomainData, TimeSlot, ReducerGroup } from '../interface';
@@ -46,34 +46,50 @@ const setActiveSlot = (
     action: SetActiveSlotAction & { type: string },
 ) => {
     const { year, month, day, timeSlotId } = action;
+    const { workspace: { timeSlots } } = state;
+
+    const canonicalDate = getCanonicalDate(year, month, day);
+    let faramValues = {};
+    if (timeSlotId && timeSlots[canonicalDate] && timeSlots[canonicalDate][timeSlotId]) {
+        const timeSlot = timeSlots[canonicalDate][timeSlotId];
+        faramValues = {
+            /*
+            // TODO: get these values from server
+            userGroup:
+            project:
+            task:
+            */
+            startTime: timeSlot.startTime,
+            endTime: timeSlot.endTime,
+            remarks: timeSlot.remarks,
+        };
+    }
+
+    const weekDay = year && month && day ? getWeekDayNumber(year, month, day) : undefined;
+
     const settings = {
         workspace: {
             activeDate: {
                 year: { $set: year },
                 month: { $set: month },
                 day: { $set: day },
+                weekDay: { $set: weekDay },
             },
             activeTimeslotId: { $set: timeSlotId },
             wipTimeSlots: {
                 // TODO: no action if a wip already exists
-                // else copy from timeslot or create a fresh
-                $if: [
-                    isFalsy(timeSlotId),
-                    {
-                        [getCanonicalDate(year, month, day)] : { $auto: {
-                            0: { $auto: {
-                                $set: {
-                                    tid: randomString(),
-                                    faramValues: {},
-                                    faramErrors:{},
-                                    pristine: true,
-                                    hasError: false,
-                                    hasServerError: false,
-                                },
-                            } },
-                        } },
-                    },
-                ],
+                [canonicalDate] : { $auto: {
+                    [timeSlotId || 0]: { $auto: {
+                        $set: {
+                            faramValues,
+                            tid: randomString(),
+                            faramErrors:{},
+                            pristine: true,
+                            hasError: false,
+                            hasServerError: false,
+                        },
+                    } },
+                } },
             },
         },
     };

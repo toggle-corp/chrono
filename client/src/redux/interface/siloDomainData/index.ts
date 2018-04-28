@@ -31,6 +31,7 @@ export interface Ymd {
     year?: number;
     month?: number;
     day?: number;
+    weekDay?: number;
 }
 
 export interface WorkspaceView {
