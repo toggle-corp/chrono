@@ -24,6 +24,7 @@ import {
     tasksSelector,
     changeTimeSlotAction,
     ChangeTimeSlotAction,
+    discardTimeSlotAction,
     saveTimeSlotAction,
     SaveTimeSlotAction,
 } from '../../../redux';
@@ -61,6 +62,7 @@ interface PropsFromState {
 
 interface PropsFromDispatch {
     changeTimeSlot(params: ChangeTimeSlotAction): void;
+    discardTimeSlot(): void;
     saveTimeSlot(params: SaveTimeSlotAction): void;
 }
 
@@ -140,8 +142,7 @@ export class SlotEditor extends React.PureComponent<Props, States> {
     }
 
     handleDiscard = () => {
-        // TODO:
-        console.warn('Should discard data');
+        this.props.discardTimeSlot();
     }
 
     render() {
@@ -268,6 +269,7 @@ const mapStateToProps = (state: RootState, props: OwnProps) => ({
 
 const mapDispatchToProps = (dispatch: Redux.Dispatch<RootState>) => ({
     changeTimeSlot: (params: ChangeTimeSlotAction) => dispatch(changeTimeSlotAction(params)),
+    discardTimeSlot: () => dispatch(discardTimeSlotAction()),
     saveTimeSlot: (params: SaveTimeSlotAction) => dispatch(saveTimeSlotAction(params)),
 });
 

@@ -2,6 +2,7 @@ import React from 'react';
 import Redux from 'redux';
 import { connect } from 'react-redux';
 
+import LoadingAnimation from '../../vendor/react-store/components/View/LoadingAnimation';
 import Button from '../../vendor/react-store/components/Action/Button';
 import ListView from '../../vendor/react-store/components/View/List/ListView';
 import { RestRequest } from '../../vendor/react-store/utils/rest';
@@ -288,10 +289,12 @@ export class Workspace extends React.PureComponent<Props, States> {
             pendingUsergroups,
             pendingSlots,
         } = this.state;
-
         if (pendingProjects || pendingTasks || pendingUsergroups || pendingSlots) {
-            // TODO: proper loading message
-            return (<div className={styles.workspace} />);
+            return (
+                <div className={styles.workspace}>
+                    <LoadingAnimation />
+                </div>
+            );
         }
 
         return (

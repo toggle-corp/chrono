@@ -14,7 +14,16 @@ export const enum TIME_SLOT_ACTION {
     setTimeSlots = 'siloDomainData/SET_TIME_SLOTS',
     changeTimeSlot = 'siloDomainData/CHANGE_TIME_SLOT',
     saveTimeSlot = 'siloDomainData/SAVE_TIME_SLOT',
+    discardTimeSlot = 'siloDomainData/DISCARD_TIME_SLOT',
 }
+
+// HELPER
+
+const getFaramValuesFromTimeSlot = (timeSlot: TimeSlot): WipTimeSlot['faramValues'] => ({
+    startTime: timeSlot.startTime,
+    endTime: timeSlot.endTime,
+    remarks: timeSlot.remarks,
+});
 
 // ACTION-CREATOR INTERFACE
 
@@ -64,45 +73,39 @@ export const saveTimeSlotAction = ({ timeSlot }: SaveTimeSlotAction) => ({
     type: TIME_SLOT_ACTION.saveTimeSlot,
 });
 
+export const discardTimeSlotAction = () => ({
+    type: TIME_SLOT_ACTION.discardTimeSlot,
+});
+
 // REDUCER
 
 const setActiveSlot = (
     state: SiloDomainData,
     action: SetActiveSlotAction & { type: string },
 ) => {
-    const { year, month, day, timeSlotId } = action;
     const { workspace: { timeSlots, wipTimeSlots } } = state;
+    const { year, month, day, timeSlotId } = action;
 
     const canonicalDate = getCanonicalDate(year, month, day);
 
-    let faramValues: WipTimeSlot['faramValues'] = {};
-    if (
+    const wipTimeSlotExists = !!(
+        wipTimeSlots[canonicalDate] &&
+        wipTimeSlots[canonicalDate][timeSlotId || 0]
+    );
+
+    const timeSlotExists = !!(
         timeSlotId &&
         timeSlots[canonicalDate] &&
         timeSlots[canonicalDate][timeSlotId]
-    ) {
-        const timeSlot = timeSlots[canonicalDate][timeSlotId];
-        faramValues = {
-            /*
-            // TODO: get these values from server
-            userGroup:
-            project:
-            task:
-            */
-            startTime: timeSlot.startTime,
-            endTime: timeSlot.endTime,
-            remarks: timeSlot.remarks,
-        };
-    }
+    );
+
+    const faramValues = timeSlotExists
+        ? getFaramValuesFromTimeSlot(timeSlots[canonicalDate][timeSlotId as number])
+        : {};
 
     const weekDay = year && month && day
         ? getWeekDayNumber(year, month, day)
         : undefined;
-
-    const wipExists = !!(
-        wipTimeSlots[canonicalDate] &&
-        wipTimeSlots[canonicalDate][timeSlotId || 0]
-    );
 
     const settings = {
         workspace: {
@@ -114,7 +117,7 @@ const setActiveSlot = (
             },
             activeTimeSlotId: { $set: timeSlotId },
             $if: [
-                !wipExists,
+                !wipTimeSlotExists,
                 {
                     wipTimeSlots: {
                         [canonicalDate] : { $auto: {
@@ -194,7 +197,7 @@ const changeTimeSlot = (
                         ],
                         faramErrors: { $set: action.faramErrors },
                         pristine: { $set: false },
-                        // hasServerError: false,
+                        hasServerError: { $set: false }, // NOTE: set false for now
                     } },
                 } },
             },
@@ -209,17 +212,7 @@ const saveTimeSlot = (
 ) => {
     const { timeSlot } = action;
 
-    const faramValues: WipTimeSlot['faramValues'] = {
-        /*
-        // TODO: get these values from server
-        userGroup:
-        project:
-        task:
-        */
-        startTime: timeSlot.startTime,
-        endTime: timeSlot.endTime,
-        remarks: timeSlot.remarks,
-    };
+    const faramValues = getFaramValuesFromTimeSlot(timeSlot);
 
     const settings = {
         workspace: {
@@ -251,10 +244,51 @@ const saveTimeSlot = (
     return update(state, settings);
 };
 
+const discardTimeSlot = (
+    state: SiloDomainData,
+    action: { type: string },
+) => {
+    const { workspace: { timeSlots, activeDate, activeTimeSlotId } } = state;
+    const { year, month, day } = activeDate;
+
+    const canonicalDate = getCanonicalDate(year as number, month as number, day as number);
+
+    const timeSlotExists = !!(
+        activeTimeSlotId &&
+        timeSlots[canonicalDate] &&
+        timeSlots[canonicalDate][activeTimeSlotId]
+    );
+
+    const faramValues = timeSlotExists
+        ? getFaramValuesFromTimeSlot(timeSlots[canonicalDate][activeTimeSlotId as number])
+        : {};
+
+    const settings = {
+        workspace: {
+            wipTimeSlots: {
+                [canonicalDate] : { $auto: {
+                    [activeTimeSlotId || 0]: { $auto: {
+                        $set: {
+                            faramValues,
+                            tid: randomString(),
+                            faramErrors:{},
+                            pristine: true,
+                            hasError: false,
+                            hasServerError: false,
+                        },
+                    } },
+                } },
+            },
+        },
+    };
+    return update(state, settings);
+};
+
 export const siloDomainDataReducers: ReducerGroup<SiloDomainData> = {
     [TIME_SLOT_ACTION.setActiveSlot]: setActiveSlot,
     [TIME_SLOT_ACTION.setTimeSlots]: setTimeSlots,
     [TIME_SLOT_ACTION.changeTimeSlot]: changeTimeSlot,
     [TIME_SLOT_ACTION.saveTimeSlot]: saveTimeSlot,
+    [TIME_SLOT_ACTION.discardTimeSlot]: discardTimeSlot,
 };
 export default createReducerWithMap(siloDomainDataReducers, initialSiloDomainData);
