@@ -3,13 +3,14 @@ import {
     FgRestBuilder,
 } from '../../../vendor/react-store/utils/rest';
 
-import { SaveTimeSlotAction } from '../../../redux';
+import { SaveTimeSlotAction, ChangeTimeSlotAction } from '../../../redux';
 import { WipTimeSlot, TimeSlot } from '../../../redux/interface';
-import { Request } from '../../../rest/interface';
-import schema from '../../../schema'; 
+import { Request, ErrorsFromServer } from '../../../rest/interface';
+import schema from '../../../schema';
 import {
     urlForSlot,
     createParamsForPostSlot,
+    alterResponseErrorToFaramError,
 } from '../../../rest';
 
 import { SlotEditor } from '../SlotEditor';
@@ -17,6 +18,7 @@ import { SlotEditor } from '../SlotEditor';
 interface Props {
     setState: SlotEditor['setState'];
     saveTimeSlot(params: SaveTimeSlotAction): void;
+    changeTimeSlot(params: ChangeTimeSlotAction): void;
 }
 
 type SlotData = WipTimeSlot['faramValues'] & { date: string };
@@ -29,7 +31,6 @@ export default class SlotPostRequest implements Request<{}> {
     }
 
     create = (values: SlotData): RestRequest => {
-        // TODO: handle error while saving
         const request = new FgRestBuilder()
             .url(urlForSlot)
             .params(() => createParamsForPostSlot(values))
@@ -45,6 +46,14 @@ export default class SlotPostRequest implements Request<{}> {
                 } catch (err) {
                     console.error(err);
                 }
+            })
+            .failure((response: ErrorsFromServer) => {
+                const faramErrors = alterResponseErrorToFaramError(response);
+                this.props.changeTimeSlot({ faramErrors });
+            })
+            .fatal(() => {
+                const faramErrors = { $internal: ['Some error occured.'] };
+                this.props.changeTimeSlot({ faramErrors });
             })
             .build();
         return request;

@@ -110,6 +110,7 @@ export class SlotEditor extends React.PureComponent<Props, States> {
         const request = new SlotPostRequest({
             setState: params => this.setState(params),
             saveTimeSlot: this.props.saveTimeSlot,
+            changeTimeSlot: this.props.changeTimeSlot,
         });
         this.submitSlotRequest = request.create(value);
         this.submitSlotRequest.start();
@@ -179,57 +180,57 @@ export class SlotEditor extends React.PureComponent<Props, States> {
                     onValidationFailure={this.handleFaramFailure}
                 >
                     {pendingSave && <LoadingAnimation />}
+                    <NonFieldErrors faramElement />
                     <div className={styles.mainForm}>
-                        <NonFieldErrors faramElement />
-                        <div className={styles.timewrapper} >
+                        <div className={styles.infowrapper} >
                              <TextInput
                                 faramElementName="startTime"
+                                className={styles.startTime}
                                 label="Start"
                                 placeholder="10:00"
                                 type="time"
                              />
                             <TextInput
                                 faramElementName="endTime"
+                                className={styles.endTime}
                                 label="End"
                                 placeholder="5:00"
                                 type="time"
                             />
+                            <SelectInput
+                                faramElementName="userGroup"
+                                className={styles.usergroup}
+                                label="User Group"
+                                options={userGroups}
+                                placeholder="Select a user group"
+                                keySelector={SlotEditor.keySelector}
+                                labelSelector={SlotEditor.labelSelector}
+                            />
+                            <SelectInput
+                                faramElementName="project"
+                                label="Project"
+                                className={styles.project}
+                                options={projects}
+                                placeholder="Select a project"
+                                keySelector={SlotEditor.keySelector}
+                                labelSelector={SlotEditor.labelSelector}
+                            />
+                            <SelectInput
+                                className={styles.task}
+                                faramElementName="task"
+                                label="Task"
+                                options={tasks}
+                                placeholder="Select a task"
+                                keySelector={SlotEditor.keySelector}
+                                labelSelector={SlotEditor.labelSelector}
+                            />
+                            <TextInput
+                                className={styles.remarks}
+                                faramElementName="remarks"
+                                label="Remarks"
+                                placeholder="Remarks"
+                            />
                         </div>
-                        <div className={styles.infowrapper} >
-                        <SelectInput
-                            faramElementName="userGroup"
-                            className={styles.usergroup}
-                            label="User Group"
-                            options={userGroups}
-                            placeholder="Select a user group"
-                            keySelector={SlotEditor.keySelector}
-                            labelSelector={SlotEditor.labelSelector}
-                        />
-                        <SelectInput
-                            faramElementName="project"
-                            label="Project"
-                            className={styles.project}
-                            options={projects}
-                            placeholder="Select a project"
-                            keySelector={SlotEditor.keySelector}
-                            labelSelector={SlotEditor.labelSelector}
-                        />
-                        <SelectInput
-                            className={styles.task}
-                            faramElementName="task"
-                            label="Task"
-                            options={tasks}
-                            placeholder="Select a task"
-                            keySelector={SlotEditor.keySelector}
-                            labelSelector={SlotEditor.labelSelector}
-                        />
-                        </div>
-                        <TextInput
-                            className={styles.remarks}
-                            faramElementName="remarks"
-                            label="Remarks"
-                            placeholder="Remarks"
-                        />
                         <div className={styles.actionButtons}>
                             <PrimaryButton
                                 type="submit"

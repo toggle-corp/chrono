@@ -11,39 +11,36 @@
 
         .main-form {
             display: flex;
+            justify-content: space-between;
             padding: $spacing-small 0;
-
-            .timewrapper {
-                display: flex;
-                flex-direction: column;
-                margin-right: $spacing-large;
-                width: 150px;
-            }
 
             .infowrapper {
                 display: flex;
                 align-items: flex-start;
+                flex-grow: 1;
 
+                .startTime,
+                .endTime,
                 .usergroup,
                 .project,
+                .remarks,
                 .task {
-                    margin-right: $spacing-large;
+                    margin-left: $spacing-large;
                 }
-            }
 
-            .remarks {
-                flex-grow: 1;
+                .remarks {
+                    flex-grow: 1;
+                }
             }
 
             .action-buttons {
                 display: flex;
-                align-items: flex-end;
+                align-items: flex-start;
+                margin-left: $spacing-medium;
 
                 button {
                     margin-right: $spacing-medium;
                 }
-
-
 
                 .forgot-password-link {
                     color: $color-text-label;
