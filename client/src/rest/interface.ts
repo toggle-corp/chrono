@@ -1,4 +1,3 @@
-// FIXME: move form related parts outside
 import { RestRequest } from '../vendor/react-store/utils/rest';
 
 export interface RestPostBody {
@@ -22,6 +21,7 @@ export interface RestAuthorizationHeader {
     Authorization?: string;
 }
 
+// FIXME: move form related parts outside
 export interface FormConditionFnRule {
     message: string;
     truth(value: any): boolean; // tslint:disable-line no-any

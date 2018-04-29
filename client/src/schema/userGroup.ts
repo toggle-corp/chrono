@@ -6,7 +6,7 @@ const userGroupSchema: Schema[] = [
         fields: {
             description: { type: 'string' },
             id: { type: 'uint' },
-            memberships: { type: 'array' }, // FIXME: complete this
+            memberships: { type: 'array' }, // TODO: complete this
             role: { type: 'string' },
             title: { type: 'string' },
         },

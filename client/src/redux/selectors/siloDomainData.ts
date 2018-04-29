@@ -44,9 +44,9 @@ export const activeDateSelector = createSelector(
     },
 );
 
-export const activeTimeslotIdSelector = createSelector(
+export const activeTimeSlotIdSelector = createSelector(
     workspaceViewSelector,
-    workspace => workspace.activeTimeslotId,
+    workspace => workspace.activeTimeSlotId,
 );
 
 const timeSlotsSelector = createSelector(

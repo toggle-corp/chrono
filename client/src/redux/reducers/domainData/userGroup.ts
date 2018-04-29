@@ -36,7 +36,7 @@ const findIndexOfUserGroupOfUser = (
     users: Users, userId: number | undefined, userGroupId: number,
 ) => {
     // XXX: getObjectChildren is unsafe
-    const userGroups: UserGroup[] = getObjectChildren(users, [userId, 'userGroups'], []);
+    const userGroups: UserGroup[] = getObjectChildren(users, [userId, 'userGroups']) || [];
     return userGroups.findIndex(userGroup => userGroup.id === userGroupId);
 };
 

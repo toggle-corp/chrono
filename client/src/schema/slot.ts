@@ -22,6 +22,10 @@ const slotSchemas: Schema[] = [
             previous: { type: 'string' },
         },
     },
+    {
+        doc: { name: 'slotPostResponse' },
+        extends: 'slot',
+    },
 ];
 export default slotSchemas;
 

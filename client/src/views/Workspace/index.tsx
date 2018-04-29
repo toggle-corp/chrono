@@ -18,7 +18,7 @@ import {
     setProjectsAction,
     setTasksAction,
 
-    activeTimeslotIdSelector,
+    activeTimeSlotIdSelector,
     activeDateSelector,
     activeTimeSlotsSelector,
     setActiveSlotAction,
@@ -53,7 +53,7 @@ interface Ymd {
 interface OwnProps {}
 interface PropsFromState {
     activeDate: Ymd;
-    activeTimeSlots: TimeSlots<TimeSlot>; // FIXME
+    activeTimeSlots: TimeSlots<TimeSlot>;
     activeTimeSlotId?: number;
 }
 interface PropsFromDispatch {
@@ -228,7 +228,7 @@ export class Workspace extends React.PureComponent<Props, States> {
                 title={timeSlot.remarks}
                 onClick={this.handleSlotClick(date.year, date.month, date.day, timeSlot.id)}
             >
-                {timeSlot.startTime}-{timeSlot.endTime}
+                {timeSlot.startTime} - {timeSlot.endTime}
             </Button>
         );
     }
@@ -323,7 +323,7 @@ export class Workspace extends React.PureComponent<Props, States> {
 const mapStateToProps = (state: RootState) => ({
     activeDate: activeDateSelector(state),
     activeTimeSlots: activeTimeSlotsSelector(state),
-    activeTimeSlotId: activeTimeslotIdSelector(state),
+    activeTimeSlotId: activeTimeSlotIdSelector(state),
 });
 
 const mapDispatchToProps = (dispatch: Redux.Dispatch<RootState>) => ({

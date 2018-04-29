@@ -1,5 +1,5 @@
 import React from 'react';
-// import Redux from 'redux';
+import Redux from 'redux';
 import { connect } from 'react-redux';
 
 import LoadingAnimation from '../../../vendor/react-store/components/View/LoadingAnimation';
@@ -12,11 +12,9 @@ import { RestRequest } from '../../../vendor/react-store/utils/rest';
 import Faram, {
     requiredCondition,
 } from '../../../vendor/react-store/components/Input/Faram';
-// import SlotPostRequest from '../requests/SlotPostRequest';
 
-import { getWeekDayName } from '../../../utils/map';
 import {
-    // FaramErrors,
+    FaramErrors,
     Schema,
 } from '../../../rest/interface';
 import {
@@ -24,6 +22,10 @@ import {
     userGroupsSelector,
     projectsSelector,
     tasksSelector,
+    changeTimeSlotAction,
+    ChangeTimeSlotAction,
+    saveTimeSlotAction,
+    SaveTimeSlotAction,
 } from '../../../redux';
 import {
     RootState,
@@ -32,7 +34,9 @@ import {
     Task,
     WipTimeSlot,
 } from '../../../redux/interface';
+import { getWeekDayName, getCanonicalDate } from '../../../utils/map';
 
+import SlotPostRequest from '../requests/SlotPostRequest';
 import * as styles from './styles.scss';
 
 interface WithIdAndTitle {
@@ -56,12 +60,14 @@ interface PropsFromState {
 }
 
 interface PropsFromDispatch {
+    changeTimeSlot(params: ChangeTimeSlotAction): void;
+    saveTimeSlot(params: SaveTimeSlotAction): void;
 }
 
 type Props = OwnProps & PropsFromState & PropsFromDispatch;
 
 interface States {
-    pending: boolean;
+    pendingSave: boolean;
 }
 
 export class SlotEditor extends React.PureComponent<Props, States> {
@@ -75,7 +81,7 @@ export class SlotEditor extends React.PureComponent<Props, States> {
         super(props);
 
         this.state = {
-            pending: false,
+            pendingSave: false,
         };
 
         this.schema = {
@@ -90,60 +96,62 @@ export class SlotEditor extends React.PureComponent<Props, States> {
         };
     }
 
-    /*
-    startSubmitSlotRequest = (value: SlotParams) => {
+    componentWillUnmount() {
         if (this.submitSlotRequest) {
             this.submitSlotRequest.stop();
         }
+    }
+
+    startSubmitSlotRequest = (value: WipTimeSlot['faramValues'] & { date: string }) => {
+        if (this.submitSlotRequest) {
+            this.submitSlotRequest.stop();
+        }
+        // TODO: check if id already exits, in which case PUT request is sent
         const request = new SlotPostRequest({
             setState: params => this.setState(params),
-            setSlot: this.props.setSlot,
+            saveTimeSlot: this.props.saveTimeSlot,
         });
         this.submitSlotRequest = request.create(value);
         this.submitSlotRequest.start();
     }
-    */
 
-    /*
     handleFaramChange = (
-        faramValues: SlotParams, faramErrors: FaramErrors,
+        faramValues: WipTimeSlot['faramValues'], faramErrors: FaramErrors,
     ) => {
-        this.props.setSlotView({
-            faramErrors,
+        this.props.changeTimeSlot({
             faramValues,
-            pristine: true,
+            faramErrors,
         });
     }
 
     handleFaramFailure = (faramErrors: FaramErrors) => {
-        // FIXME: use another reducer
-        this.props.setSlotView({
+        this.props.changeTimeSlot({
             faramErrors,
         });
     }
 
-    handleFaramSuccess = (value: SlotParams) => {
+    handleFaramSuccess = (faramValues: WipTimeSlot['faramValues']) => {
+        const { year, month, day } = this.props;
         this.startSubmitSlotRequest({
-            ...value,
-            date: this.props.activeDay,
+            ...faramValues,
+            date: getCanonicalDate(year, month, day as number),
         });
     }
 
     handleDiscard = () => {
-        // FIXME: use another reducer
-        this.props.setSlotView({
-            data: this.props.slotData,
-        });
+        // TODO:
+        console.warn('Should discard data');
     }
-    */
 
     render() {
-        const { pending } = this.state;
+        const { pendingSave } = this.state;
         const {
             activeWipTimeSlot,
             userGroups,
             projects,
             tasks,
+            weekDay,
+            day,
         } = this.props;
 
         // If there is no activeWipTimeSlot then we cannot continue
@@ -155,6 +163,7 @@ export class SlotEditor extends React.PureComponent<Props, States> {
             faramErrors,
             faramValues,
             pristine,
+            hasError,
         } = activeWipTimeSlot;
 
         return (
@@ -164,12 +173,12 @@ export class SlotEditor extends React.PureComponent<Props, States> {
                     schema={this.schema}
                     value={faramValues}
                     error={faramErrors}
-                    disabled={pending}
-                    // onChange={this.handleFaramChange}
-                    // onValidationSuccess={this.handleFaramSuccess}
-                    // onValidationFailure={this.handleFaramFailure}
+                    disabled={pendingSave}
+                    onChange={this.handleFaramChange}
+                    onValidationSuccess={this.handleFaramSuccess}
+                    onValidationFailure={this.handleFaramFailure}
                 >
-                    {pending && <LoadingAnimation />}
+                    {pendingSave && <LoadingAnimation />}
                     <div className={styles.mainForm}>
                         <NonFieldErrors faramElement />
                         <div className={styles.timewrapper} >
@@ -224,22 +233,22 @@ export class SlotEditor extends React.PureComponent<Props, States> {
                         <div className={styles.actionButtons}>
                             <PrimaryButton
                                 type="submit"
-                                disabled={pristine || pending}
+                                disabled={pristine || pendingSave || hasError}
                             >
                                 Save
                             </PrimaryButton>
                             <DangerButton
-                                // onClick={this.handleDiscard}
-                                disabled={pristine || pending}
+                                onClick={this.handleDiscard}
+                                disabled={pristine || pendingSave || hasError}
                             >
                                 Discard
                             </DangerButton>
                         </div>
                     </div>
                     <div className={styles.bottom}>
-                        { this.props.weekDay !== undefined &&
+                        { weekDay !== undefined &&
                             <div className={styles.date}>
-                                {getWeekDayName(this.props.weekDay)},{this.props.day}
+                                {getWeekDayName(weekDay)},{day}
                             </div>
                         }
                     </div>
@@ -256,7 +265,9 @@ const mapStateToProps = (state: RootState, props: OwnProps) => ({
     tasks: tasksSelector(state),
 });
 
-const mapDispatchToProps = (/* dispatch: Redux.Dispatch<RootState> */) => ({
+const mapDispatchToProps = (dispatch: Redux.Dispatch<RootState>) => ({
+    changeTimeSlot: (params: ChangeTimeSlotAction) => dispatch(changeTimeSlotAction(params)),
+    saveTimeSlot: (params: SaveTimeSlotAction) => dispatch(saveTimeSlotAction(params)),
 });
 
 export default connect<PropsFromState, PropsFromDispatch, OwnProps>(

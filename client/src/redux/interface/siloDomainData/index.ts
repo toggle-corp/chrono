@@ -1,7 +1,8 @@
+import { FaramErrors } from '../../../rest/interface';
+
 export interface TimeSlot {
-    // FIXME: unknown
     id: number;
-    versionId: number;
+    versionId?: number;
     date: string;
     startTime: string;
     endTime: string;
@@ -14,8 +15,15 @@ export interface WipTimeSlot {
     id?: number;
     versionId?: number;
     tid: string;
-    faramValues: object;
-    faramErrors: object;
+    faramValues: {
+        startTime?: string,
+        endTime?: string,
+        remarks?: string,
+        userGroup?: number,
+        project?: number,
+        task?: number,
+    };
+    faramErrors: FaramErrors;
     pristine: boolean;
     hasError: boolean;
     hasServerError: boolean;
@@ -36,7 +44,7 @@ export interface Ymd {
 
 export interface WorkspaceView {
     activeDate: Ymd;
-    activeTimeslotId?: number;
+    activeTimeSlotId?: number;
     wipTimeSlots: TimeSlots<WipTimeSlot>;
     timeSlots: TimeSlots<TimeSlot>;
 }

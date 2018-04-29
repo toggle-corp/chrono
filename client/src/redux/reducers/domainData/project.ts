@@ -38,7 +38,7 @@ const findIndexOfProjectOfUser = (
     projectId: number,
 ) => {
     // XXX: getObjectChildren is unsafe
-    const projects: Project[] = getObjectChildren(users, [userId, 'projects'], []);
+    const projects: Project[] = getObjectChildren(users, [userId, 'projects']) || [];
     return projects.findIndex(project => project.id === projectId);
 };
 // REDUCER
@@ -56,7 +56,6 @@ const setProjects = (
     return update(state, settings);
 };
 
-// FIXME: write documentation
 const setProject = (state: DomainData, action: SetProjectAction) => {
     const { userId, project } = action;
     const { users, projects } = state;
@@ -75,7 +74,7 @@ const setProject = (state: DomainData, action: SetProjectAction) => {
         } },
         users: {
             // NOTE: $if will handle the userId undefined
-            // FIXME: how?
+            // FIXME: how? write documentation here
             [userId || 0]: { $auto: {
                 projects: { $autoArray: {
                     $if: [

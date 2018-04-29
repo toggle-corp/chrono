@@ -42,7 +42,7 @@ $color-text-on-primary: get-text-color($color-primary);
 
             .left {
                 display: flex;
-                flex-basis: 10%;
+                width: 80px;
 
                 .date {
                     padding: $spacing-extra-small $spacing-small;

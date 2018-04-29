@@ -3,6 +3,8 @@ import {
     FgRestBuilder,
 } from '../../../vendor/react-store/utils/rest';
 
+import { SaveTimeSlotAction } from '../../../redux';
+import { WipTimeSlot, TimeSlot } from '../../../redux/interface';
 import { Request } from '../../../rest/interface';
 import schema from '../../../schema'; 
 import {
@@ -14,26 +16,10 @@ import { SlotEditor } from '../SlotEditor';
 
 interface Props {
     setState: SlotEditor['setState'];
-    // setSlot(params: SlotData): void;
+    saveTimeSlot(params: SaveTimeSlotAction): void;
 }
 
-interface SlotPostResponse {
-    id: number;
-    date: string;
-    startTime: string;
-    endTime: string;
-    remarks: string;
-    task: number;
-    user: number;
-}
-
-interface SlotData {
-    date: string;
-    startTime: string;
-    endTime: string;
-    task: number;
-    user: number;
-}
+type SlotData = WipTimeSlot['faramValues'] & { date: string };
 
 export default class SlotPostRequest implements Request<{}> {
     props: Props;
@@ -43,16 +29,19 @@ export default class SlotPostRequest implements Request<{}> {
     }
 
     create = (values: SlotData): RestRequest => {
+        // TODO: handle error while saving
         const request = new FgRestBuilder()
             .url(urlForSlot)
             .params(() => createParamsForPostSlot(values))
-            .preLoad(() => { this.props.setState({ pending: true }); })
-            .postLoad(() => { this.props.setState({ pending: false }); })
-            .success((response: SlotPostResponse) => {
+            .preLoad(() => { this.props.setState({ pendingSave: true }); })
+            .postLoad(() => { this.props.setState({ pendingSave: false }); })
+            .success((response: TimeSlot) => {
                 try {
                     schema.validate(response, 'slotPostResponse');
+                    this.props.saveTimeSlot({
+                        timeSlot: response,
+                    });
                     console.log(response);
-                    // this.props.setSlot(response);
                 } catch (err) {
                     console.error(err);
                 }

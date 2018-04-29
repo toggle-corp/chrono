@@ -9,7 +9,7 @@ const initialState: SiloDomainData = {
             day: 27,
             */
         },
-        activeTimeslotId: undefined,
+        activeTimeSlotId: undefined,
 
         wipTimeSlots: {
             /*

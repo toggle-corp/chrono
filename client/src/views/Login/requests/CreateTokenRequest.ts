@@ -51,7 +51,6 @@ export default class CreateTokenRequest implements Request<AuthParams> {
                     schema.validate(response, 'tokenGetResponse');
                     const { refresh, access } = response;
                     this.props.login({ refresh, access });
-                    // TODO: call refresher here
                     this.props.setState({ pending: false });
 
                     this.props.startTasks();
