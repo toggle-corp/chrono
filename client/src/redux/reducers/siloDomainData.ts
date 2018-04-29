@@ -71,12 +71,16 @@ const setActiveSlot = (
     action: SetActiveSlotAction & { type: string },
 ) => {
     const { year, month, day, timeSlotId } = action;
-    const { workspace: { timeSlots } } = state;
+    const { workspace: { timeSlots, wipTimeSlots } } = state;
 
     const canonicalDate = getCanonicalDate(year, month, day);
 
     let faramValues: WipTimeSlot['faramValues'] = {};
-    if (timeSlotId && timeSlots[canonicalDate] && timeSlots[canonicalDate][timeSlotId]) {
+    if (
+        timeSlotId &&
+        timeSlots[canonicalDate] &&
+        timeSlots[canonicalDate][timeSlotId]
+    ) {
         const timeSlot = timeSlots[canonicalDate][timeSlotId];
         faramValues = {
             /*
@@ -91,7 +95,14 @@ const setActiveSlot = (
         };
     }
 
-    const weekDay = year && month && day ? getWeekDayNumber(year, month, day) : undefined;
+    const weekDay = year && month && day
+        ? getWeekDayNumber(year, month, day)
+        : undefined;
+
+    const wipExists = !!(
+        wipTimeSlots[canonicalDate] &&
+        wipTimeSlots[canonicalDate][timeSlotId || 0]
+    );
 
     const settings = {
         workspace: {
@@ -102,21 +113,25 @@ const setActiveSlot = (
                 weekDay: { $set: weekDay },
             },
             activeTimeSlotId: { $set: timeSlotId },
-            wipTimeSlots: {
-                // TODO: no action if a wip already exists
-                [canonicalDate] : { $auto: {
-                    [timeSlotId || 0]: { $auto: {
-                        $set: {
-                            faramValues,
-                            tid: randomString(),
-                            faramErrors:{},
-                            pristine: true,
-                            hasError: false,
-                            hasServerError: false,
-                        },
-                    } },
-                } },
-            },
+            $if: [
+                !wipExists,
+                {
+                    wipTimeSlots: {
+                        [canonicalDate] : { $auto: {
+                            [timeSlotId || 0]: { $auto: {
+                                $set: {
+                                    faramValues,
+                                    tid: randomString(),
+                                    faramErrors:{},
+                                    pristine: true,
+                                    hasError: false,
+                                    hasServerError: false,
+                                },
+                            } },
+                        } },
+                    },
+                },
+            ],
         },
     };
     return update(state, settings);
