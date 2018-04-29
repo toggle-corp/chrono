@@ -124,6 +124,7 @@ const setActiveSlot = (
                             [timeSlotId || 0]: { $auto: {
                                 $set: {
                                     faramValues,
+                                    id: timeSlotId,
                                     tid: randomString(),
                                     faramErrors:{},
                                     pristine: true,
@@ -230,6 +231,7 @@ const saveTimeSlot = (
                     [timeSlot.id]: { $auto: {
                         $set: {
                             faramValues,
+                            id: timeSlot.id,
                             tid: randomString(),
                             faramErrors:{},
                             pristine: true,
@@ -270,6 +272,7 @@ const discardTimeSlot = (
                     [activeTimeSlotId || 0]: { $auto: {
                         $set: {
                             faramValues,
+                            id: activeTimeSlotId,
                             tid: randomString(),
                             faramErrors:{},
                             pristine: true,

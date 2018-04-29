@@ -31,3 +31,26 @@ export const createParamsForPostSlot = (
         remarks,
     }),
 });
+
+export const createParamsForPutSlot = (
+    { date, startTime, endTime, task, user, remarks }:
+    {
+        date?: string,
+        startTime?: string,
+        endTime?: string,
+        task?: number,
+        user?: number,
+        remarks?: string,
+    },
+): RestPostBody => ({
+    method: Rest.PUT,
+    headers: commonHeaderForPost,
+    body: JSON.stringify({
+        date,
+        startTime,
+        endTime,
+        task,
+        user,
+        remarks,
+    }),
+});

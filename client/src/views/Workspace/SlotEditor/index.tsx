@@ -104,7 +104,9 @@ export class SlotEditor extends React.PureComponent<Props, States> {
         }
     }
 
-    startSubmitSlotRequest = (value: WipTimeSlot['faramValues'] & { date: string }) => {
+    startSubmitSlotRequest = (
+        value: WipTimeSlot['faramValues'] & { date: string, id?: number },
+    ) => {
         if (this.submitSlotRequest) {
             this.submitSlotRequest.stop();
         }
@@ -114,6 +116,7 @@ export class SlotEditor extends React.PureComponent<Props, States> {
             saveTimeSlot: this.props.saveTimeSlot,
             changeTimeSlot: this.props.changeTimeSlot,
         });
+
         this.submitSlotRequest = request.create(value);
         this.submitSlotRequest.start();
     }
@@ -134,9 +137,11 @@ export class SlotEditor extends React.PureComponent<Props, States> {
     }
 
     handleFaramSuccess = (faramValues: WipTimeSlot['faramValues']) => {
-        const { year, month, day } = this.props;
+        const { year, month, day, activeWipTimeSlot } = this.props;
+
         this.startSubmitSlotRequest({
             ...faramValues,
+            id: activeWipTimeSlot ? activeWipTimeSlot.id : undefined,
             date: getCanonicalDate(year, month, day as number),
         });
     }

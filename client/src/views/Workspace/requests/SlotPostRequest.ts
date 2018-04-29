@@ -10,6 +10,7 @@ import schema from '../../../schema';
 import {
     urlForSlot,
     createParamsForPostSlot,
+    createParamsForPutSlot,
     alterResponseErrorToFaramError,
 } from '../../../rest';
 
@@ -21,7 +22,7 @@ interface Props {
     changeTimeSlot(params: ChangeTimeSlotAction): void;
 }
 
-type SlotData = WipTimeSlot['faramValues'] & { date: string };
+type SlotData = WipTimeSlot['faramValues'] & { date: string, id?: number };
 
 export default class SlotPostRequest implements Request<{}> {
     props: Props;
@@ -31,9 +32,13 @@ export default class SlotPostRequest implements Request<{}> {
     }
 
     create = (values: SlotData): RestRequest => {
+        const params = values.id
+            ? () => createParamsForPutSlot(values)
+            : () => createParamsForPostSlot(values);
+
         const request = new FgRestBuilder()
             .url(urlForSlot)
-            .params(() => createParamsForPostSlot(values))
+            .params(params)
             .preLoad(() => { this.props.setState({ pendingSave: true }); })
             .postLoad(() => { this.props.setState({ pendingSave: false }); })
             .success((response: TimeSlot) => {
@@ -47,8 +52,8 @@ export default class SlotPostRequest implements Request<{}> {
                     console.error(err);
                 }
             })
-            .failure((response: ErrorsFromServer) => {
-                const faramErrors = alterResponseErrorToFaramError(response);
+            .failure((response: { errors: ErrorsFromServer }) => {
+                const faramErrors = alterResponseErrorToFaramError(response.errors);
                 this.props.changeTimeSlot({ faramErrors });
             })
             .fatal(() => {
