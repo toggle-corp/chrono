@@ -18,7 +18,7 @@ const protocol: (string | undefined) = clientProtocol === 'https:'
     : serverProtocol || 'http';
 
 const serverEndpoint = process.env.REACT_APP_API_END;
-const url = serverEndpoint || 'localhost:8000';
+const url = serverEndpoint || 'localhost:8010';
 
 export const wsEndpoint: string  = `${protocol}://${url}/api/v1`;
 export const adminEndpoint: string = `${protocol}://${url}/admin/`;
