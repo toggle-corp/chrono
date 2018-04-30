@@ -32,17 +32,18 @@ interface PropsFromState {
 }
 type Props = OwnProps & PropsFromState & PropsFromDispatch;
 
-// NOTE: Handles loading of requests (eg: loading user info, etc)
+// NOTE: Refreshes user if user is already logged in
 export class App extends React.PureComponent<Props, State> {
     refreshRequest: RestRequest;
 
     constructor(props: Props) {
         super(props);
 
-        this.state = { pending: true };
+        // pending must be true only if user is already authenticated
+        this.state = { pending: this.props.authenticated };
     }
 
-    componentWillMount() {
+    componentDidMount() {
         if (this.props.authenticated) {
             this.refreshRequest = this.createRequestForRefresh();
             this.refreshRequest.start();
@@ -64,21 +65,16 @@ export class App extends React.PureComponent<Props, State> {
             .success((response: { access: string }) => {
                 try {
                     schema.validate(response, 'tokenRefreshResponse');
-                    const { access } = response;
+
                     this.props.startTasks();
+
+                    const { access } = response;
                     this.props.setAccessToken(access);
+
                     this.setState({ pending: false });
                 } catch (er) {
                     console.error(er);
                 }
-            })
-            .failure((response: object) => {
-                console.info('FAILURE:', response);
-                // TODO: logout
-            })
-            .fatal((response: object) => {
-                console.info('FATAL:', response);
-                // TODO: some error
             })
             .build();
         return refreshRequest;
@@ -87,8 +83,8 @@ export class App extends React.PureComponent<Props, State> {
     render() {
         if (this.props.authenticated && this.state.pending) {
             return (
-                <div>
-                    Authenticating...
+                <div className="full-screen-message">
+                    We have found your previous session...
                 </div>
             );
         }

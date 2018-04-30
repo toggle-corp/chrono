@@ -59,10 +59,20 @@ body {
         .chrono-main-content {
             @include background-color($color-background);
             position: relative;
+            perspective: 1000px;
             padding: $spacing-small-alt;
             height: calc(100vh - #{$height-navbar});
-            perspective: 1000px;
             overflow-y: auto;
+        }
+
+        .full-screen-message {
+            @include background-color($color-background);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            font-family: 'Source Sans Pro', sans-serif;
+            font-size: 26px;
         }
 
         .no-nav + .chrono-main-content {
@@ -87,9 +97,9 @@ body {
     // @frozenhelium
     @include background-color($color-background-alt);
     transform-origin: bottom;
-    animation: slide-in $duration-slow ease forwards;
     border: $width-separator-thin solid $color-separator-alt;
     height: 100%;
+    animation: slide-in $duration-slow ease forwards;
 }
 
 @keyframes slide-in {

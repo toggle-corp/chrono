@@ -9,14 +9,14 @@ import {
     SetUserAction,
 } from '../../interface';
 
-const emptyArray: object[] = [];
+const emptyObject = {};
 
 // ACTION-TYPE
 
 export const enum USER_PROFILE_ACTION {
-    setUser = 'domainData/SET_USER',
-    unsetUserGroup = 'domainData/USER_PROFILE/UNSET_USERGROUP',
-    unsetProject = 'domainData/USER_PROFILE/UNSET_PROJECT',
+    setUser = 'domainData/USER/SET_USER',
+    unsetUserGroup = 'domainData/USER/UNSET_USERGROUP',
+    unsetProject = 'domainData/USER/UNSET_PROJECT',
 }
 
 // ACTION-CREATOR
@@ -47,12 +47,11 @@ export const unsetUserProjectAction = (
     type: USER_PROFILE_ACTION.unsetProject,
 });
 
-// HELPER
-
 // REDUCER
 
 const setUser = (state: DomainData, action: SetUserAction) => {
     const { userId, information, userGroups, projects } = action;
+
     const settings = {
         users: {
             [userId]: { $auto: {
@@ -82,17 +81,20 @@ const setUser = (state: DomainData, action: SetUserAction) => {
 
 const usetUserUserGroup = (state: DomainData, action: UnsetUserUserGroupAction) => {
     const { userId, userGroup } = action;
-    const { userGroups } = state.users[userId] || emptyArray;
+
+    const { users } = state;
+    const { userGroups } = users[userId] || emptyObject;
+
     const userGroupIndex = userGroups.findIndex(userG => userG.id === userGroup.id);
+    if (userGroupIndex === -1) {
+        return state;
+    }
 
     const settings = {
         users: {
             [userId]: { $auto: {
                 userGroups: {
-                    $if: [
-                        userGroupIndex !== -1,
-                        { $splice: [[userGroupIndex, 1]] },
-                    ],
+                    $splice: [[userGroupIndex, 1]],
                 },
             } },
         },
@@ -102,17 +104,20 @@ const usetUserUserGroup = (state: DomainData, action: UnsetUserUserGroupAction) 
 
 const usetUserProject = (state: DomainData, action: UnsetUserProjectAction) => {
     const { userId, project } = action;
-    const { projects } = state.users[userId] || emptyArray;
+
+    const { users } = state;
+    const { projects } = users[userId] || emptyObject;
+
     const projectIndex = projects.findIndex(p => p.id === project.id);
+    if (projectIndex === -1) {
+        return state;
+    }
 
     const settings = {
         users: {
             [userId]: { $auto: {
                 projects: {
-                    $if: [
-                        projectIndex !== -1,
-                        { $splice: [[projectIndex, 1]] },
-                    ],
+                    $splice: [[projectIndex, 1]],
                 },
             } },
         },

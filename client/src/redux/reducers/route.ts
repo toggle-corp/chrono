@@ -27,7 +27,7 @@ export const clearRouteStateAction = () => ({
     type: ROUTE_ACTION.clearParams,
 });
 
-// REDUCER
+// HELPER
 
 const urlValues = [
     'userId',
@@ -42,6 +42,8 @@ const transform = (params: object) => {
     });
     return newParams;
 };
+
+// REDUCER
 
 const setRouteParams = (
     state: Route,

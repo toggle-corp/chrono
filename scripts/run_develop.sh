@@ -15,7 +15,7 @@ if [ "${PROG_TYPE}" == "server" ]; then
     cd server
     pip3 install -r requirements.txt
     python manage.py migrate --no-input
-    python manage.py runserver 0.0.0.0:8000
+    python manage.py runserver 0.0.0.0:8010
 fi
 
 if [ "${PROG_TYPE}" == "client" ]; then

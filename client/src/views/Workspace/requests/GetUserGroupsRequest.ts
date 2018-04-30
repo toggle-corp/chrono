@@ -3,18 +3,15 @@ import {
     FgRestBuilder,
 } from '../../../vendor/react-store/utils/rest';
 
-import {
-    ErrorsFromServer,
-    Request,
-} from '../../../rest/interface';
-import { Workspace } from '../index';
-
-import {
-    urlForUserGroups,
-    createParamsForUserGroups,
-} from '../../../rest';
+import { Request } from '../../../rest/interface';
 import { UserGroup } from '../../../redux/interface';
 import schema from '../../../schema'; 
+import {
+    urlForUserGroups,
+    commonParamsForGet,
+} from '../../../rest';
+
+import { Workspace } from '../index';
 
 interface Props {
     setState: Workspace['setState'];
@@ -38,9 +35,9 @@ export default class GetUserGroupsRequest implements Request<{}> {
     create = (): RestRequest => {
         const userGroupsRequest = new FgRestBuilder()
             .url(urlForUserGroups)
-            .params(createParamsForUserGroups)
-            .preLoad(() => { this.props.setState({ pending: true }); })
-            .postLoad(() => { this.props.setState({ pending: false }); })
+            .params(commonParamsForGet)
+            .preLoad(() => { this.props.setState({ pendingUsergroups: true }); })
+            .postLoad(() => { this.props.setState({ pendingUsergroups: false }); })
             .success((response: UserGroupsGetResponse) => {
                 try {
                     schema.validate(response, 'userGroupsResponse');
@@ -48,14 +45,6 @@ export default class GetUserGroupsRequest implements Request<{}> {
                 } catch (err) {
                     console.error(err);
                 }
-            })
-            .failure((response: { errors: ErrorsFromServer }) => {
-                // FIXME: notify user
-                console.warn('Failure: ', response);
-            })
-            .fatal((response: object) => {
-                // FIXME: notify user
-                console.warn('Fatal: ', response);
             })
             .build();
         return userGroupsRequest;

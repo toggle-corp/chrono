@@ -52,7 +52,7 @@ export const routes: Map<RouteSetting> = {
         order: 5,
         type: ROUTE.private,
         path: '/user-group/:userGroupId/',
-        // FIXME: create userGroup view
+        // TODO: create userGroup view
         loader: () => import('../../views/Dashboard'),
         links: allLinks,
         name: 'User Group',
@@ -62,7 +62,7 @@ export const routes: Map<RouteSetting> = {
         order: 6,
         type: ROUTE.private,
         path: '/project/:projectId/',
-        // FIXME: create project view
+        // TODO: create project view
         loader: () => import('../../views/Dashboard'),
         links: allLinks,
         name: 'Project',

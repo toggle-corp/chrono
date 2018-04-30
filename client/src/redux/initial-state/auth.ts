@@ -1,8 +1,10 @@
 import { Auth } from '../interface';
 
 const initialAuthState: Auth = {
+    // is user authenticated?
     authenticated: false,
 
+    // user token
     token: {
         access: undefined,
         refresh: undefined,

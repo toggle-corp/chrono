@@ -22,7 +22,8 @@ interface PropsFromDispatch {
 type Props = OwnProps & PropsFromState & PropsFromDispatch;
 
 export class ViewManager extends React.PureComponent<Props, {}> {
-    componentWillMount() {
+
+    componentDidMount() {
         const { match, location } = this.props;
         this.props.setRouteParams({ match, location });
     }

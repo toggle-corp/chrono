@@ -1,15 +1,13 @@
 import { RestRequest } from '../vendor/react-store/utils/rest';
 import { RestHeader, RestAuthorizationHeader } from '../rest/interface';
 
-// Just an alias for prepareQueryParams
 
 export interface PP {
     [key: string]: (undefined | string | number | (string | number)[]);
 }
 
-export const p: {
-    (value: PP): string;
-} = RestRequest.prepareUrlParams;
+// Just an alias for prepareQueryParams
+export const p: { (value: PP): string } = RestRequest.prepareUrlParams;
 
 // if client is secure, server must be secure
 // else use whatever server is using
@@ -20,13 +18,13 @@ const protocol: (string | undefined) = clientProtocol === 'https:'
     : serverProtocol || 'http';
 
 const serverEndpoint = process.env.REACT_APP_API_END;
-const url = serverEndpoint || 'localhost:8000';
+const url = serverEndpoint || 'localhost:8010';
 
 export const wsEndpoint: string  = `${protocol}://${url}/api/v1`;
 export const adminEndpoint: string = `${protocol}://${url}/admin/`;
 
 // Available rest methods
-export enum Rest {
+export const enum Rest {
     POST = 'POST',
     GET = 'GET',
     PUT = 'PUT',

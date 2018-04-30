@@ -1,46 +1,28 @@
-import { SchemaGroup } from './interface';
+import { Schema } from './interface';
 
-const userGroupSchema: SchemaGroup = [];
-
-{
-    const name = 'userGroup';
-    const schema = {
-        doc: {
-            name: 'User Group',
+const userGroupSchema: Schema[] = [
+    {
+        doc: { name: 'userGroup' },
+        fields: {
+            description: { type: 'string' },
+            id: { type: 'uint' },
+            memberships: { type: 'array' }, // TODO: complete this
+            role: { type: 'string' },
+            title: { type: 'string' },
         },
-        fields: {  
-            description: { type: 'string' } ,
-            id: { type: 'uint' } ,
-            memberships: { type: 'array' } , // FIXME: complete this
-            role: { type: 'string' } ,
-            title: { type: 'string' } ,
-        },
-    };
-    userGroupSchema.push({ name, schema });
-}
-{
-    const name = 'userGroupsResponse';
-    const schema = {
-        doc: {
-            name: 'User Group Response',
-        },
+    },
+    {
+        doc: { name: 'userGroupsResponse' },
         fields: {
             count: { type: 'number', required: 'true' },
             next: { type: 'number' },
             previous: { type: 'number' },
             results: { type: 'array.userGroup' },
         },
-    };
-    userGroupSchema.push({ name, schema });
-}
-{
-    const name = 'userGroupPostResponse';
-    const schema = {
-        doc: {
-            name: 'User Group Post Response',
-        },
+    },
+    {
+        doc: { name: 'userGroupPostResponse' },
         extends: 'userGroup',
-    };
-    userGroupSchema.push({ name, schema });
-}
+    },
+];
 export default userGroupSchema;

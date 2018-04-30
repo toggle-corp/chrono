@@ -24,17 +24,17 @@ export const loginAction = ({ access, refresh }: Token) => ({
     type: AUTH_ACTION.login,
 });
 
+export const setAccessTokenAction = (access: string) => ({
+    access,
+    type: AUTH_ACTION.setAccessToken,
+});
+
 export const authenticateAction = () => ({
     type: AUTH_ACTION.authenticate,
 });
 
 export const logoutAction = () => ({
     type: AUTH_ACTION.logout,
-});
-
-export const setAccessTokenAction = (access: string) => ({
-    access,
-    type: AUTH_ACTION.setAccessToken,
 });
 
 // HELPER
@@ -58,15 +58,33 @@ const decodeAccessToken = (access: string) => {
 
 // REDUCER
 
-const login = (state: Auth, action: { type: string, access: string, refresh: string}) => {
+const login = (
+    state: Auth,
+    action: { type: string, access: string, refresh: string },
+) => {
     const { access, refresh } = action;
-    const decodedToken = decodeAccessToken(access);
+    const activeUser = decodeAccessToken(access);
     const settings = {
-        token: { $set: {
-            access,
-            refresh,
-        } },
-        activeUser: { $set: decodedToken },
+        token: {
+            access: { $set: access },
+            refresh: { $set: refresh },
+        },
+        activeUser: { $set: activeUser },
+    };
+    return update(state, settings);
+};
+
+const setAccessToken = (
+    state: Auth,
+    action: { type: string, access: string },
+) => {
+    const { access } = action;
+    const activeUser = decodeAccessToken(access);
+    const settings = {
+        token: {
+            $merge: { access },
+        },
+        activeUser: { $set: activeUser },
     };
     return update(state, settings);
 };
@@ -79,18 +97,6 @@ const authenticate = (state: Auth) => {
 };
 
 const logout = () => initialAuthState;
-
-const setAccessToken = (state: Auth, action: { type: string, access: string }) => {
-    const { access } = action;
-    const decodedToken = decodeAccessToken(access);
-    const settings = {
-        token: { $merge: {
-            access,
-        } },
-        activeUser: { $set: decodedToken },
-    };
-    return update(state, settings);
-};
 
 export const authReducers: ReducerGroup<Auth> = {
     [AUTH_ACTION.login]: login,

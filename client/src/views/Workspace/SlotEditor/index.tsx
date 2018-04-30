@@ -9,36 +9,35 @@ import SelectInput from '../../../vendor/react-store/components/Input/SelectInpu
 import PrimaryButton from '../../../vendor/react-store/components/Action/Button/PrimaryButton';
 import DangerButton from '../../../vendor/react-store/components/Action/Button/DangerButton';
 import { RestRequest } from '../../../vendor/react-store/utils/rest';
-import SlotPostRequest from '../requests/SlotPostRequest';
-
-import Form, {
+import Faram, {
     requiredCondition,
-} from '../../../vendor/react-store/components/Input/Form';
+} from '../../../vendor/react-store/components/Input/Faram';
 
 import {
-    FormErrors,
-    FormFieldErrors,
+    FaramErrors,
     Schema,
 } from '../../../rest/interface';
 import {
-    workspaceActiveTimeslotSelector,
-    timeslotActiveViewSelector,
-    activeDaySelector,
+    activeWipTimeSlotSelector,
     userGroupsSelector,
     projectsSelector,
     tasksSelector,
-    setSlotAction,
-    setSlotViewAction,
+    changeTimeSlotAction,
+    ChangeTimeSlotAction,
+    discardTimeSlotAction,
+    saveTimeSlotAction,
+    SaveTimeSlotAction,
 } from '../../../redux';
 import {
     RootState,
     UserGroup,
-    SlotData,
     Project,
     Task,
-    TimeslotView,
+    WipTimeSlot,
 } from '../../../redux/interface';
+import { getWeekDayName, getCanonicalDate } from '../../../utils/map';
 
+import SlotPostRequest from '../requests/SlotPostRequest';
 import * as styles from './styles.scss';
 
 interface WithIdAndTitle {
@@ -46,29 +45,32 @@ interface WithIdAndTitle {
     title: string;
 }
 
-interface OwnProps {}
+interface OwnProps {
+    year: number;
+    month: number;
+    day?: number;
+    weekDay?: number;
+    timeSlotId?: number;
+}
 
 interface PropsFromState {
-    slotData: SlotParams;
-    activeDay: string;
-    slotView: TimeslotView;
     userGroups: UserGroup[];
     projects: Project[];
     tasks: Task[];
+    activeWipTimeSlot: WipTimeSlot | undefined;
 }
 
 interface PropsFromDispatch {
-    setSlot(params: SlotParams): void;
-    setSlotView(params: TimeslotView): void;
+    changeTimeSlot(params: ChangeTimeSlotAction): void;
+    discardTimeSlot(): void;
+    saveTimeSlot(params: SaveTimeSlotAction): void;
 }
 
 type Props = OwnProps & PropsFromState & PropsFromDispatch;
 
 interface States {
-    pending: boolean;
+    pendingSave: boolean;
 }
-
-type SlotParams = SlotData;
 
 export class SlotEditor extends React.PureComponent<Props, States> {
     schema: Schema;
@@ -81,7 +83,7 @@ export class SlotEditor extends React.PureComponent<Props, States> {
         super(props);
 
         this.state = {
-            pending: false,
+            pendingSave: false,
         };
 
         this.schema = {
@@ -96,169 +98,184 @@ export class SlotEditor extends React.PureComponent<Props, States> {
         };
     }
 
-    startSubmitSlotRequest = (value: SlotParams) => {
+    componentWillUnmount() {
         if (this.submitSlotRequest) {
             this.submitSlotRequest.stop();
         }
+    }
+
+    startSubmitSlotRequest = (
+        value: WipTimeSlot['faramValues'] & { date: string, id?: number },
+    ) => {
+        if (this.submitSlotRequest) {
+            this.submitSlotRequest.stop();
+        }
+        // TODO: check if id already exits, in which case PUT request is sent
         const request = new SlotPostRequest({
             setState: params => this.setState(params),
-            setSlot: this.props.setSlot,
+            saveTimeSlot: this.props.saveTimeSlot,
+            changeTimeSlot: this.props.changeTimeSlot,
         });
+
         this.submitSlotRequest = request.create(value);
         this.submitSlotRequest.start();
     }
 
-    // FORM RELATED
-    handleFormChange = (
-        values: SlotParams, formFieldErrors: FormFieldErrors, formErrors: FormErrors,
+    handleFaramChange = (
+        faramValues: WipTimeSlot['faramValues'], faramErrors: FaramErrors,
     ) => {
-        this.props.setSlotView({
-            formErrors,
-            formFieldErrors,
-            data: values,
-            pristine: true,
+        this.props.changeTimeSlot({
+            faramValues,
+            faramErrors,
         });
     }
 
-    handleFormError = (formFieldErrors: FormFieldErrors, formErrors: FormErrors) => {
-        this.props.setSlotView({
-            ...this.props.slotView,
-            formErrors,
-            formFieldErrors,
-            pristine: true,
+    handleFaramFailure = (faramErrors: FaramErrors) => {
+        this.props.changeTimeSlot({
+            faramErrors,
         });
     }
 
-    handleFormSuccess = (value: SlotParams) => {
+    handleFaramSuccess = (faramValues: WipTimeSlot['faramValues']) => {
+        const { year, month, day, activeWipTimeSlot } = this.props;
+
         this.startSubmitSlotRequest({
-            ...value,
-            date: this.props.activeDay,
+            ...faramValues,
+            id: activeWipTimeSlot ? activeWipTimeSlot.id : undefined,
+            date: getCanonicalDate(year, month, day as number),
         });
     }
 
     handleDiscard = () => {
-        this.props.setSlotView({
-            data: this.props.slotData,
-            pristine: false,
-            formErrors: {},
-            formFieldErrors: {},
-        });
+        this.props.discardTimeSlot();
     }
 
     render() {
+        const { pendingSave } = this.state;
         const {
-            pending,
-        } = this.state;
-        const {
+            activeWipTimeSlot,
             userGroups,
-            slotView,
-            tasks,
             projects,
+            tasks,
+            weekDay,
+            day,
         } = this.props;
+
+        // If there is no activeWipTimeSlot then we cannot continue
+        if (!activeWipTimeSlot) {
+            return null;
+        }
+
         const {
-            formErrors,
-            formFieldErrors,
-            data: formValues,
+            faramErrors,
+            faramValues,
             pristine,
-        } = slotView;
+            hasError,
+        } = activeWipTimeSlot;
 
         return (
             <div className={styles.dayEditor}>
-                <Form
+                <Faram
                     className={styles.dayEditorForm}
                     schema={this.schema}
-                    value={formValues}
-                    formErrors={formErrors}
-                    fieldErrors={formFieldErrors}
-                    changeCallback={this.handleFormChange}
-                    successCallback={this.handleFormSuccess}
-                    failureCallback={this.handleFormError}
-                    disabled={pending}
+                    value={faramValues}
+                    error={faramErrors}
+                    disabled={pendingSave}
+                    onChange={this.handleFaramChange}
+                    onValidationSuccess={this.handleFaramSuccess}
+                    onValidationFailure={this.handleFaramFailure}
                 >
-                    {pending && <LoadingAnimation />}
-                    <NonFieldErrors formerror="" />
-                    <div className={styles.timewrapper} >
-                         <TextInput
-                            formname="startTime"
-                            label="Start"
-                            placeholder="10:00"
-                            type="time"
-                         />
-                        <TextInput
-                            formname="endTime"
-                            label="End"
-                            placeholder="5:00"
-                            type="time"
-                        />
+                    {pendingSave && <LoadingAnimation />}
+                    <NonFieldErrors faramElement />
+                    <div className={styles.mainForm}>
+                        <div className={styles.infowrapper} >
+                             <TextInput
+                                faramElementName="startTime"
+                                className={styles.startTime}
+                                label="Start"
+                                placeholder="10:00"
+                                type="time"
+                             />
+                            <TextInput
+                                faramElementName="endTime"
+                                className={styles.endTime}
+                                label="End"
+                                placeholder="5:00"
+                                type="time"
+                            />
+                            <SelectInput
+                                faramElementName="userGroup"
+                                className={styles.usergroup}
+                                label="User Group"
+                                options={userGroups}
+                                placeholder="Select a user group"
+                                keySelector={SlotEditor.keySelector}
+                                labelSelector={SlotEditor.labelSelector}
+                            />
+                            <SelectInput
+                                faramElementName="project"
+                                label="Project"
+                                className={styles.project}
+                                options={projects}
+                                placeholder="Select a project"
+                                keySelector={SlotEditor.keySelector}
+                                labelSelector={SlotEditor.labelSelector}
+                            />
+                            <SelectInput
+                                className={styles.task}
+                                faramElementName="task"
+                                label="Task"
+                                options={tasks}
+                                placeholder="Select a task"
+                                keySelector={SlotEditor.keySelector}
+                                labelSelector={SlotEditor.labelSelector}
+                            />
+                            <TextInput
+                                className={styles.remarks}
+                                faramElementName="remarks"
+                                label="Remarks"
+                                placeholder="Remarks"
+                            />
+                        </div>
+                        <div className={styles.actionButtons}>
+                            <PrimaryButton
+                                type="submit"
+                                disabled={pristine || pendingSave || hasError}
+                            >
+                                Save
+                            </PrimaryButton>
+                            <DangerButton
+                                onClick={this.handleDiscard}
+                                disabled={pristine || pendingSave || hasError}
+                            >
+                                Discard
+                            </DangerButton>
+                        </div>
                     </div>
-                    <div className={styles.infowrapper} >
-                    <SelectInput
-                        formname="userGroup"
-                        className={styles.usergroup}
-                        label="User Group"
-                        options={userGroups}
-                        placeholder="Select a user group"
-                        keySelector={SlotEditor.keySelector}
-                        labelSelector={SlotEditor.labelSelector}
-                    />
-                    <SelectInput
-                        formname="project"
-                        label="Project"
-                        className={styles.project}
-                        options={projects}
-                        placeholder="Select a project"
-                        keySelector={SlotEditor.keySelector}
-                        labelSelector={SlotEditor.labelSelector}
-                    />
-                    <SelectInput
-                        formname="task"
-                        label="Task"
-                        className={styles.task}
-                        options={tasks}
-                        placeholder="Select a task"
-                        keySelector={SlotEditor.keySelector}
-                        labelSelector={SlotEditor.labelSelector}
-                    />
+                    <div className={styles.bottom}>
+                        { weekDay !== undefined &&
+                            <div className={styles.date}>
+                                {getWeekDayName(weekDay)},{day}
+                            </div>
+                        }
                     </div>
-                    <TextInput
-                        formname="remarks"
-                        label="Remarks"
-                        className={styles.remarks}
-                        options={tasks}
-                        placeholder="Remarks"
-                    />
-                    <div className={styles.actionButtons}>
-                        <PrimaryButton
-                            type="submit"
-                            disabled={!pristine || pending}
-                        >
-                            Save
-                        </PrimaryButton>
-                        <DangerButton
-                            onClick={this.handleDiscard}
-                            disabled={!pristine || pending}
-                        >
-                            Discard
-                        </DangerButton>
-                    </div>
-                </Form>
+                </Faram>
             </div>
         );
     }
 }
 
-const mapStateToProps = (state: RootState) => ({
-    activeDay: activeDaySelector(state),
+const mapStateToProps = (state: RootState, props: OwnProps) => ({
+    activeWipTimeSlot: activeWipTimeSlotSelector(state, props),
     userGroups: userGroupsSelector(state),
     projects: projectsSelector(state),
     tasks: tasksSelector(state),
-    slotData: workspaceActiveTimeslotSelector(state),
-    slotView: timeslotActiveViewSelector(state),
 });
 
 const mapDispatchToProps = (dispatch: Redux.Dispatch<RootState>) => ({
-    setSlot: (params: SlotParams) => dispatch(setSlotAction(params)),
-    setSlotView: (params: TimeslotView) => dispatch(setSlotViewAction(params)),
+    changeTimeSlot: (params: ChangeTimeSlotAction) => dispatch(changeTimeSlotAction(params)),
+    discardTimeSlot: () => dispatch(discardTimeSlotAction()),
+    saveTimeSlot: (params: SaveTimeSlotAction) => dispatch(saveTimeSlotAction(params)),
 });
 
 export default connect<PropsFromState, PropsFromDispatch, OwnProps>(

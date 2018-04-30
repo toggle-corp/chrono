@@ -14,7 +14,7 @@ services:
             - .:/code
             - ./media:/media
         ports:
-            - '8000:8000'
+            - '8010:8010'
         depends_on:
             - db
     client:
@@ -26,6 +26,6 @@ services:
             - .:/code
             - ./media:/media
         ports:
-            - '3000:3000'
+            - '3001:3001'
         depends_on:
             - server

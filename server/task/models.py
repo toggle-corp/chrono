@@ -72,12 +72,14 @@ class TimeSlot(models.Model):
                     start_time__lt=self.end_time,
                     end_time__gt=self.end_time,
                 )
-        if TimeSlot.objects.filter(
-            time_condition,
-            user=self.user,
-            task__project=self.task.project,
-        ).exists():
-            raise ValidationError('This time slot overlaps with another'
+        if TimeSlot.objects.exclude(pk=self.pk) \
+                .filter(
+                    time_condition,
+                    date=self.date,
+                    user=self.user,
+                    task__project=self.task.project,
+                ).exists():
+            raise ValidationError('This time slot overlaps with another '
                                   'for this day')
 
     @staticmethod

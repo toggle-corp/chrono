@@ -1,8 +1,5 @@
-// FIXME: move form related parts outside
+import { RestRequest } from '../vendor/react-store/utils/rest';
 
-import {
-    RestRequest,
-} from '../vendor/react-store/utils/rest';
 export interface RestPostBody {
     method: string;
     headers: object;
@@ -24,6 +21,7 @@ export interface RestAuthorizationHeader {
     Authorization?: string;
 }
 
+// FIXME: move form related parts outside
 export interface FormConditionFnRule {
     message: string;
     truth(value: any): boolean; // tslint:disable-line no-any
@@ -32,9 +30,21 @@ export interface FormConditionFnRules {
     [key: string]: FormConditionFnRule[];
 }
 
+export interface FaramErrors {
+    $internal?: undefined | string[];
+    [key: string]: string | string[] | undefined | FaramErrors;
+}
+
+export interface FaramValues {
+    [key: string]: any; // tslint:disable-line no-any
+}
+
+// FIXME: remove
 export interface FormFieldErrors {
     [key: string]: string | undefined | FormFieldErrors;
 }
+
+// FIXME: remove
 export type FormErrors = {
     errors?: (string | undefined)[] | undefined,
     fields?: {
@@ -42,15 +52,18 @@ export type FormErrors = {
     },
 };
 
+// FIXME: remove
 export interface ErrorsFromForm {
     formFieldErrors: FormFieldErrors;
     formErrors: FormErrors;
 }
 
+// FIXME: remove
 export interface ValuesFromForm {
     [key: string]: any; // tslint:disable-line no-any
 }
 
+// FIXME: remove
 export interface ErrorsFromServer {
     [key: string]: string[];
     nonFieldErrors: string[];

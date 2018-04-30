@@ -1,12 +1,10 @@
 import {
     Rest,
-    commonHeaderForGet,
     commonHeaderForPost,
     p,
     wsEndpoint,
 } from '../config/rest';
 import {
-    RestGetBody,
     RestPostBody,
     PostProjectBody,
 } from './interface';
@@ -15,18 +13,17 @@ export type ProjectUrlParams = {
     user?: number;
 };
 
+// get all projects
 export const urlForProjects: string = `${wsEndpoint}/projects/`;
+
+// get projects with filter
 export const createUrlForProjects = (params: ProjectUrlParams): string => (
     `${wsEndpoint}/projects/?${p(params)}`
 );
 
+// get a project
 export const createUrlForProject = (projectId: number): string =>
     `${wsEndpoint}/projects/${projectId}`;
-
-export const createParamsForGetProjects = (): RestGetBody => ({
-    method: Rest.GET,
-    headers: commonHeaderForGet,
-});
 
 export const createParamsForPostProject = (
     { title, description, userGroup }: PostProjectBody,

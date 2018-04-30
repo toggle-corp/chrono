@@ -6,4 +6,4 @@ export interface Schema {
     extends?: string;
     fields?: object;
 }
-export type SchemaGroup = ({ name: string, schema: Schema })[];
+// export type SchemaGroup = ({ name: string, schema: Schema })[];

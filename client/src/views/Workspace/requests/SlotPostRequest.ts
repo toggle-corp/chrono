@@ -3,33 +3,27 @@ import {
     FgRestBuilder,
 } from '../../../vendor/react-store/utils/rest';
 
+import { SaveTimeSlotAction, ChangeTimeSlotAction } from '../../../redux';
+import { WipTimeSlot, TimeSlot } from '../../../redux/interface';
+import { Request, ErrorsFromServer } from '../../../rest/interface';
+import schema from '../../../schema';
 import {
-    ErrorsFromServer,
-    Request,
-} from '../../../rest/interface';
-import { SlotEditor } from '../SlotEditor';
-
-import {
-    urlForSlot,
+    urlForSlots,
+    createUrlForSlot,
     createParamsForPostSlot,
+    createParamsForPutSlot,
+    alterResponseErrorToFaramError,
 } from '../../../rest';
-import { SlotData } from '../../../redux/interface';
-import schema from '../../../schema'; 
+
+import { SlotEditor } from '../SlotEditor';
 
 interface Props {
     setState: SlotEditor['setState'];
-    setSlot(params: SlotData): void;
+    saveTimeSlot(params: SaveTimeSlotAction): void;
+    changeTimeSlot(params: ChangeTimeSlotAction): void;
 }
 
-interface SlotPostResponse {
-    id: number;
-    date: string;
-    startTime: string;
-    endTime: string;
-    remarks: string;
-    task: number;
-    user: number;
-}
+type SlotData = WipTimeSlot['faramValues'] & { date: string, id?: number };
 
 export default class SlotPostRequest implements Request<{}> {
     props: Props;
@@ -39,29 +33,38 @@ export default class SlotPostRequest implements Request<{}> {
     }
 
     create = (values: SlotData): RestRequest => {
+        const params = values.id
+            ? () => createParamsForPutSlot(values)
+            : () => createParamsForPostSlot(values);
+        const url = values.id
+            ? createUrlForSlot(values.id)
+            : urlForSlots;
+
         const request = new FgRestBuilder()
-            .url(urlForSlot)
-            .params(() => createParamsForPostSlot(values))
-            .preLoad(() => { this.props.setState({ pending: true }); })
-            .postLoad(() => { this.props.setState({ pending: false }); })
-            .success((response: SlotPostResponse) => {
+            .url(url)
+            .params(params)
+            .preLoad(() => { this.props.setState({ pendingSave: true }); })
+            .postLoad(() => { this.props.setState({ pendingSave: false }); })
+            .success((response: TimeSlot) => {
                 try {
                     schema.validate(response, 'slotPostResponse');
-                    this.props.setSlot(response);
+                    this.props.saveTimeSlot({
+                        timeSlot: response,
+                    });
+                    console.log(response);
                 } catch (err) {
                     console.error(err);
                 }
             })
             .failure((response: { errors: ErrorsFromServer }) => {
-                // FIXME: notify user
-                console.warn('Failure: ', response);
+                const faramErrors = alterResponseErrorToFaramError(response.errors);
+                this.props.changeTimeSlot({ faramErrors });
             })
-            .fatal((response: object) => {
-                // FIXME: notify user
-                console.warn('Fatal: ', response);
+            .fatal(() => {
+                const faramErrors = { $internal: ['Some error occured.'] };
+                this.props.changeTimeSlot({ faramErrors });
             })
             .build();
         return request;
-
     }
 }

@@ -3,20 +3,15 @@ import {
     FgRestBuilder,
 } from '../../../vendor/react-store/utils/rest';
 
-import { ErrorsFromServer } from '../../../rest/interface';
 import { Workspace } from '../index';
 
+import { Request } from '../../../rest/interface';
 import {
     urlForProjects,
-    createParamsForGetProjects,
+    commonParamsForGet,
 } from '../../../rest';
 import { Project } from '../../../redux/interface';
 import schema from '../../../schema'; 
-
-// FIXME: reuse this interface
-interface Request<T> {
-    create: (value: T) => RestRequest;
-}
 
 interface Props {
     setState: Workspace['setState'];
@@ -40,9 +35,9 @@ export default class GetUserProjectsRequest implements Request<{}> {
     create = (): RestRequest => {
         const request = new FgRestBuilder()
             .url(urlForProjects)
-            .params(createParamsForGetProjects)
-            .preLoad(() => { this.props.setState({ pending: true }); })
-            .postLoad(() => { this.props.setState({ pending: false }); })
+            .params(commonParamsForGet)
+            .preLoad(() => { this.props.setState({ pendingProjects: true }); })
+            .postLoad(() => { this.props.setState({ pendingProjects: false }); })
             .success((response: ProjectsGetResponse) => {
                 try {
                     schema.validate(response, 'projectsGetResponse');
@@ -50,14 +45,6 @@ export default class GetUserProjectsRequest implements Request<{}> {
                 } catch (err) {
                     console.error(err);
                 }
-            })
-            .failure((response: { errors: ErrorsFromServer }) => {
-                // FIXME: notify user
-                console.warn('Failure: ', response);
-            })
-            .fatal((response: object) => {
-                // FIXME: notify user
-                console.warn('Fatal: ', response);
             })
             .build();
         return request;
