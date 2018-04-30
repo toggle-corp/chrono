@@ -23,6 +23,9 @@ const getFaramValuesFromTimeSlot = (timeSlot: TimeSlot): WipTimeSlot['faramValue
     startTime: timeSlot.startTime,
     endTime: timeSlot.endTime,
     remarks: timeSlot.remarks,
+    task: timeSlot.task,
+    userGroup: timeSlot.userGroup,
+    project: timeSlot.project,
 });
 
 // ACTION-CREATOR INTERFACE

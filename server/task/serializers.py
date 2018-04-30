@@ -17,6 +17,15 @@ class TaskSerializer(DynamicFieldsMixin, UserResourceSerializer):
 
 
 class TimeSlotSerializer(DynamicFieldsMixin, serializers.ModelSerializer):
+    userGroup = serializers.IntegerField(
+        source='task.project.user_group.pk',
+        read_only=True,
+    )
+    project = serializers.IntegerField(
+        source='task.project.pk',
+        read_only=True,
+    )
+
     class Meta:
         model = TimeSlot
         exclude = ('user',)  # can be obtained from context
@@ -28,6 +37,8 @@ class TimeSlotSerializer(DynamicFieldsMixin, serializers.ModelSerializer):
 
     def validate(self, attrs):
         attrs['user'] = self.context['request'].user
+        if self.instance:
+            attrs['id'] = self.instance.id
         instance = TimeSlot(**attrs)
         instance.clean()
         return attrs

@@ -7,7 +7,7 @@ import { RestPostBody } from './interface';
 
 export const urlForSlots: string = `${wsEndpoint}/time-slots/`;
 
-export const urlForSlot: string = `${wsEndpoint}/time-slots/`;
+export const createUrlForSlot = (slotId: number): string => `${wsEndpoint}/time-slots/${slotId}/`;
 
 export const createParamsForPostSlot = (
     { date, startTime, endTime, task, user, remarks }:

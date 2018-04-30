@@ -8,7 +8,8 @@ import { WipTimeSlot, TimeSlot } from '../../../redux/interface';
 import { Request, ErrorsFromServer } from '../../../rest/interface';
 import schema from '../../../schema';
 import {
-    urlForSlot,
+    urlForSlots,
+    createUrlForSlot,
     createParamsForPostSlot,
     createParamsForPutSlot,
     alterResponseErrorToFaramError,
@@ -35,9 +36,12 @@ export default class SlotPostRequest implements Request<{}> {
         const params = values.id
             ? () => createParamsForPutSlot(values)
             : () => createParamsForPostSlot(values);
+        const url = values.id
+            ? createUrlForSlot(values.id)
+            : urlForSlots;
 
         const request = new FgRestBuilder()
-            .url(urlForSlot)
+            .url(url)
             .params(params)
             .preLoad(() => { this.props.setState({ pendingSave: true }); })
             .postLoad(() => { this.props.setState({ pendingSave: false }); })

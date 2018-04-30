@@ -6,8 +6,9 @@ export interface TimeSlot {
     date: string;
     startTime: string;
     endTime: string;
-    user: number;
     task: number;
+    userGroup: number;
+    project: number;
     remarks: string;
 }
 
