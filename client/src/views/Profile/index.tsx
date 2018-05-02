@@ -180,10 +180,10 @@ export class Profile extends React.PureComponent<Props, States> {
             <div>
                 <PrimaryButton
                     onClick={this.handleEditProfileClick}
-                    iconName={iconNames.add}
-                >
-                    Edit Profile
-                </PrimaryButton>
+                    transparent
+                    iconName={iconNames.edit}
+                    title="Edit Profile"
+                />
                 { showEditProfileModal &&
                     <Modal
                         closeOnEscape
@@ -217,13 +217,18 @@ export class Profile extends React.PureComponent<Props, States> {
         }
         const { showAddUserGroupModal } = this.state;
         return (
-            <div>
-                <PrimaryButton
+            <div className={styles.usergroup}>
+                 <div className={styles.header}>
+                    <h2>
+                        USER GROUPS
+                    </h2>
+                 <PrimaryButton
                     onClick={this.handleAddUserGroupClick}
                     iconName={iconNames.add}
-                >
+                 >
                     Add User Group
-                </PrimaryButton>
+                 </PrimaryButton>
+                </div>
                 <UserUserGroups />
                 { showAddUserGroupModal &&
                     <Modal
@@ -258,13 +263,18 @@ export class Profile extends React.PureComponent<Props, States> {
         }
         const { showAddProjectModal } = this.state;
         return (
-            <div>
-                <PrimaryButton
-                    onClick={this.handleAddProjectClick}
-                    iconName={iconNames.add}
-                >
+            <div className={styles.userproject}>
+                 <div className={styles.header}>
+                    <h2>
+                        PROJECTS
+                    </h2>
+                    <PrimaryButton
+                        onClick={this.handleAddProjectClick}
+                        iconName={iconNames.add}
+                    >
                     Add Project
-                </PrimaryButton>
+                    </PrimaryButton>
+                </div>
                 <UserProjects />
                 { showAddProjectModal &&
                     <Modal
@@ -334,13 +344,17 @@ export class Profile extends React.PureComponent<Props, States> {
                                     {information.lastName}
                                 </span>
                             </div>
+                            <ProfileEdit />
                         </div>
                         <p className={styles.email}>
                             {information.email}
                         </p>
                     </div>
                 </div>
-                <ProfileEdit />
+                <div className={styles.stats}>
+                    <h2>Stats</h2>
+                </div>
+
                 <UserUserGroup />
                 <UserProject />
             </div>
