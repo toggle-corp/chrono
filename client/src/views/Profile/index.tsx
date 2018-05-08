@@ -34,7 +34,7 @@ import UserProfileGetRequest from './requests/UserProfileGetRequest';
 import UserUserGroupsGetRequest from './requests/UserUserGroupsGetRequest';
 import UserProjectsGetRequest from './requests/UserProjectsGetRequest';
 
-import * as styles from './styles.scss';
+import styles from './styles.scss';
 
 interface OwnProps {}
 interface PropsFromState {
