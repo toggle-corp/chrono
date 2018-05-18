@@ -108,3 +108,9 @@ export interface PatchUserBody {
     firstName: string;
     lastName: string;
 }
+
+export interface AddTaskParams {
+    project: number;
+    title: string;
+    description: string;
+}

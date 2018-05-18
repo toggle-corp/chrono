@@ -63,7 +63,7 @@ export class Login extends React.PureComponent<Props, States> {
             faramErrors: {},
             faramValues: {},
             pending: false,
-            pristine: false,
+            pristine: true,
         };
 
         this.schema = {
@@ -92,14 +92,14 @@ export class Login extends React.PureComponent<Props, States> {
         this.setState({
             faramValues,
             faramErrors,
-            pristine: true,
+            pristine: false,
         });
     }
 
     handleFaramFailure = (faramErrors: FaramErrors) => {
         this.setState({
             faramErrors,
-            pristine: true,
+            pristine: false,
         });
     }
 

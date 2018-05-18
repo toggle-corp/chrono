@@ -19,5 +19,9 @@ const taskSchemas: Schema[] = [
             previous: { type: 'string' },
         },
     },
+    {
+        doc: { name: 'tasksPostResponse' },
+        extends: 'task',
+    },
 ];
 export default taskSchemas;
