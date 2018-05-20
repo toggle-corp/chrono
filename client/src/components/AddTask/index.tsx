@@ -211,50 +211,13 @@ export class AddTask extends React.PureComponent<Props, States> {
         );
     }
 
-    renderModal = () => {
+    render() {
         const {
             showModal,
         } = this.state;
 
         // tslint:disable-next-line:variable-name
         const AddTaskForm = this.renderForm;
-
-        if (!showModal) {
-            return <div />;
-        }
-
-        return (
-            <Modal
-                closeOnEscape
-                onClose={this.handleAddTaskModalClose}
-            >
-                <ModalHeader
-                    title="Add Task"
-                    rightComponent={
-                        <PrimaryButton
-                            onClick={this.handleAddTaskModalClose}
-                            transparent
-                        >
-                            <span className={iconNames.close} />
-                        </PrimaryButton>
-                    }
-                />
-                <ModalBody>
-                    <AddTaskForm />
-                </ModalBody>
-            </Modal>
-        );
-    }
-
-
-
-    render() {
-        const {
-            showModal,
-        } = this.state;
-
-        // tslint:disable-next-line variable-name
-        const RenderModal = this.renderModal;
 
         return(
             <Fragment>
@@ -265,12 +228,30 @@ export class AddTask extends React.PureComponent<Props, States> {
                     <span className={iconNames.add} />
                 </PrimaryButton>
                 {
-                    showModal && <RenderModal />
+                    showModal &&
+                        <Modal
+                            closeOnEscape
+                            onClose={this.handleAddTaskModalClose}
+                        >
+                            <ModalHeader
+                                title="Add Task"
+                                rightComponent={
+                                    <PrimaryButton
+                                        onClick={this.handleAddTaskModalClose}
+                                        transparent
+                                    >
+                                        <span className={iconNames.close} />
+                                    </PrimaryButton>
+                                }
+                            />
+                            <ModalBody>
+                                <AddTaskForm />
+                            </ModalBody>
+                        </Modal>
                 }
             </Fragment>
         );
     }
-
 }
 
 const mapStateToProps = (state: RootState) => ({
