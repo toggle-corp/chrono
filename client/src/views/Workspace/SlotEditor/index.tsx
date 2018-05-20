@@ -13,6 +13,8 @@ import Faram, {
     requiredCondition,
 } from '../../../vendor/react-store/components/Input/Faram';
 
+import AddTask from '../../../components/AddTask';
+
 import {
     FaramErrors,
     Schema,
@@ -230,6 +232,7 @@ export class SlotEditor extends React.PureComponent<Props, States> {
                                 keySelector={SlotEditor.keySelector}
                                 labelSelector={SlotEditor.labelSelector}
                             />
+                            <AddTask />
                             <TextInput
                                 className={styles.remarks}
                                 faramElementName="remarks"
