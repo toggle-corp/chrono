@@ -36,7 +36,6 @@
     "@types/react-svg": "^2.2.0",
     "@types/redux-devtools-extension": "^2.13.2",
     "autoprefixer": "7.1.6",
-    "awesome-typed-sass-modules": "^1.0.2",
     "awesome-typed-sass-modules": "https://github.com/tnagorra/awesome-typed-sass-modules",
     "case-sensitive-paths-webpack-plugin": "2.1.1",
     "chalk": "1.1.3",
