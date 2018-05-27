@@ -6,8 +6,9 @@ import {
     ReducerGroup,
     UserGroup,
     Users,
-
     SetUserGroupAction,
+    UnsetUserGroupProjectAction,
+    UnsetUserGroupMemberAction,
 } from '../../interface';
 
 // ACTION-TYPE
@@ -15,6 +16,8 @@ import {
 export const enum USERGROUP_ACTION {
     setUserGroups = 'domainData/USERGROUP/SET_USERGROUPS',
     setUserGroup = 'domainData/USERGROUP/SET_USERGROUP',
+    unsetUserGroupProject = 'domainData/USERGROUP/UNSET-PROJECT',
+    unsetUserGroupMember = 'domainData/USERGROUP/UNSET-MEMBER',
 }
 
 // ACTION-CREATOR
@@ -29,6 +32,18 @@ export const setUserGroupAction = ({ userId, userGroup }: SetUserGroupAction) =>
     userGroup,
     type: USERGROUP_ACTION.setUserGroup,
 });
+
+export const unsetUserGroupProjectAction = ({ projectId } : UnsetUserGroupProjectAction) => ({
+    projectId,
+    type: USERGROUP_ACTION.unsetUserGroupProject,
+});
+
+export const unsetUserGroupMemberAction = (
+    { userGroupId, memberId } : UnsetUserGroupMemberAction) => ({
+        userGroupId,
+        memberId,
+        type: USERGROUP_ACTION.unsetUserGroupMember,
+    });
 
 // HELPER
 
@@ -85,9 +100,70 @@ const setUserGroup = (state: DomainData, action: SetUserGroupAction) => {
     return update(state, settings);
 };
 
+const removeUserGroupProject = (state: DomainData, action: UnsetUserGroupProjectAction) => {
+    const { projectId } = action;
+    const {
+        projects,
+    } = state;
+
+    const index = projects.findIndex(p => (p.id === projectId));
+    if (index === -1) {
+        return state;
+    }
+
+    const settings = {
+        projects: {
+            $splice: [[index, 1]],
+        },
+    };
+
+    return update(state, settings);
+};
+
+const removeUserGroupMember = (state: DomainData, action: UnsetUserGroupMemberAction) => {
+    const { userGroups } = state;
+    const {
+        userGroupId,
+        memberId,
+    } = action;
+
+    const userGroupIndex = userGroups.findIndex(
+        u => u.id === userGroupId,
+    );
+    if (userGroupIndex === -1) {
+        return state;
+    }
+
+    const userGroup = userGroups[userGroupIndex];
+    if (!userGroup.memberships) {
+        return state;
+    }
+
+    const memberIndex = userGroup.memberships.findIndex(
+        m => m.id === memberId,
+    );
+    if (memberIndex === -1) {
+        return state;
+    }
+
+    const settings = {
+        userGroups: {
+            [userGroupIndex]: {
+                memberships: {
+                    $splice: [[memberIndex, 1]],
+                },
+            },
+        },
+    };
+
+    return update(state, settings);
+};
+
 const reducer: ReducerGroup<DomainData> = {
     [USERGROUP_ACTION.setUserGroups]: setUserGroups,
     [USERGROUP_ACTION.setUserGroup]: setUserGroup,
+    [USERGROUP_ACTION.unsetUserGroupProject]: removeUserGroupProject,
+    [USERGROUP_ACTION.unsetUserGroupMember]: removeUserGroupMember,
 };
 
 export default reducer;

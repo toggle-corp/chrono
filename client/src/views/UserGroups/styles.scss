@@ -1,0 +1,32 @@
+@import '../../stylesheets/base';
+
+.usergroups {
+    display: grid;
+    height: 100%;
+
+    .header {
+        display: flex;
+    }
+
+    .info {
+        display: flex;
+
+        .detail {
+            .name {
+                display: flex;
+            }
+        }
+    }
+
+    .log {
+        display: flex;
+    }
+
+    .userprojects {
+        display: flex;
+    }
+
+    .usermembers {
+        display: flex;
+    }
+}

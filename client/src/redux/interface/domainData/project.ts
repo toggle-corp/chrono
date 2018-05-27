@@ -7,7 +7,7 @@ export interface Project {
     createdBy: number;
     modifiedBy: number;
     createdByName: string;
-    modifiedByname: string;
+    modifiedByName: string;
     description: string;
 }
 

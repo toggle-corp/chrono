@@ -1,5 +1,8 @@
 import { createSelector } from 'reselect';
-import { userIdFromRouteSelector } from './route';
+import {
+    userIdFromRouteSelector,
+    userGroupIdFromRouteSelector,
+} from './route';
 import {
     RootState,
     UserGroup,
@@ -7,7 +10,12 @@ import {
     Project,
     Task,
     Users,
+    Member,
 } from '../interface';
+import {
+    activeUserSelector,
+}
+from './auth';
 
 const emptyObject = {};
 const emptyArray: object[] = [];
@@ -50,4 +58,35 @@ export const userUserGroupsSelector = createSelector(
 export const userProjectsSelector = createSelector(
     userSelector,
     user => (user ? user.projects : undefined) || (emptyArray as UserProject[]),
+);
+
+export const userGroupProjectsSelector = createSelector(
+    userGroupIdFromRouteSelector,
+    projectsSelector,
+    (userGroupId, projects) => (
+        projects.filter(project => project.userGroup === userGroupId)
+    ),
+);
+
+export const userGroupSelector = createSelector(
+    userGroupIdFromRouteSelector,
+    userGroupsSelector,
+    (userGroupId, userGroups) => (
+        userGroups.find(usergroup => usergroup.id === userGroupId)
+    ),
+);
+
+export const userGroupMembersSelector = createSelector(
+    userGroupSelector,
+    userGroup => (userGroup ? userGroup.memberships : undefined) || (emptyArray as Member[]),
+);
+
+export const isUserAdminSelector = createSelector(
+    activeUserSelector,
+    userGroupMembersSelector,
+    (activeUser, userMembers) => (
+        userMembers.find(member => (
+            member.member === activeUser.userId && member.role === 'admin'
+        )) ? true : false
+    ),
 );

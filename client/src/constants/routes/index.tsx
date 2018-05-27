@@ -52,8 +52,7 @@ export const routes: Map<RouteSetting> = {
         order: 5,
         type: ROUTE.private,
         path: '/user-group/:userGroupId/',
-        // TODO: create userGroup view
-        loader: () => import('../../views/Dashboard'),
+        loader: () => import('../../views/UserGroups'),
         links: allLinks,
         name: 'User Group',
     },

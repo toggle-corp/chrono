@@ -4,6 +4,7 @@ export interface Route {
     isExact?: boolean;
     params?: {
         userId?: number;
+        userGroupId?: number;
     };
     routeState?: object; // stricter rule here
 }
