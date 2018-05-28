@@ -1,12 +1,16 @@
 import React, {
     PureComponent,
 } from 'react';
+import Redux from 'redux';
 
 import { connect } from 'react-redux';
 import {
     RootState,
     UserGroup,
+    SetUserGroupAction,
+    SetUserGroupProjectsAction,
 } from '../../redux/interface';
+
 import Modal from '../../vendor/react-store/components/View/Modal';
 import ModalBody from '../../vendor/react-store/components/View/Modal/Body';
 import ModalHeader from '../../vendor/react-store/components/View/Modal/Header';
@@ -14,21 +18,32 @@ import PrimaryButton from '../../vendor/react-store/components/Action/Button/Pri
 import LoadingAnimation from '../../vendor/react-store/components/View/LoadingAnimation';
 
 import {
+    userGroupIdFromRouteSelector,
     userGroupSelector,
+    setUserGroupAction,
+    setUserGroupProjectsAction,
 }  from '../../redux';
 
 import { iconNames } from '../../constants';
 
 import UserGroupProjects from './UserGroupProjects';
 import UserGroupMembers from './UserGroupMembers';
+import UserProjectAdd from '../Profile/UserProjectAdd';
+
+import UserGroupGetRequest from './requests/UserGroupGetRequest';
+import ProjectsGetRequest from './requests/ProjectsGetRequest';
 
 import * as styles from './styles.scss';
+import { RestRequest } from '../../vendor/react-store/utils/rest';
 
 interface OwnProps {} {}
 interface PropsFromState {
+    userGroupId?: number;
     userGroup?: UserGroup;
 }
 interface PropsFromDispatch {
+    setUserGroup(params: SetUserGroupAction): void;
+    setUserGroupProjects(params: SetUserGroupProjectsAction): void;
 }
 
 type Props = OwnProps & PropsFromState & PropsFromDispatch;
@@ -36,31 +51,92 @@ type Props = OwnProps & PropsFromState & PropsFromDispatch;
 interface States{
     showAddProjectModal: boolean;
     showAddMemberModal: boolean;
-    memberPending: boolean;
-    projectPending: boolean;
+    projectsPending: boolean;
+    userGroupInfoPending: boolean;
 }
 export class UserGroups extends PureComponent<Props, States> {
+    userGroupRequest: RestRequest;
+    userGroupProjectsRequest: RestRequest;
+
     constructor(props: Props) {
         super(props);
 
         this.state = {
             showAddProjectModal: false,
             showAddMemberModal: false,
-            memberPending: false,
-            projectPending: false,
+            userGroupInfoPending: false,
+            projectsPending: false,
         };
     }
 
+    componentWillMount() {
+        const { userGroupId } = this.props;
+        if (userGroupId) {
+            this.startRequestForUserGroup(userGroupId);
+        }
+    }
+
+    componentWillReceiveProps(nextProps: Props) {
+        const { userGroupId } = nextProps;
+        if (this.props.userGroupId !== userGroupId && userGroupId) {
+            this.startRequestForUserGroup(userGroupId);
+        }
+    }
+
+    componentWillUnmount() {
+        if (this.userGroupRequest) {
+            this.userGroupRequest.stop();
+        }
+        if (this.userGroupProjectsRequest) {
+            this.userGroupProjectsRequest.stop();
+        }
+    }
+
+    startRequestForUserGroup = (userGroupId: number) => {
+        this.requestForUserGroupInfo(userGroupId);
+        this.requestForUserGroupProjects(userGroupId);
+    }
+
+    requestForUserGroupInfo = (userGroupId: number) => {
+        if (this.userGroupRequest) {
+            this.userGroupRequest.stop();
+        }
+
+        const userGroupRequest = new UserGroupGetRequest({
+            setUserGroup: this.props.setUserGroup,
+            setState: states => this.setState(states),
+        });
+        this.userGroupRequest = userGroupRequest.create(userGroupId);
+        this.userGroupRequest.start();
+    }
+
+    requestForUserGroupProjects = (userGroupId: number) => {
+        if (this.userGroupProjectsRequest) {
+            this.userGroupProjectsRequest.stop();
+        }
+
+        const projectsRequest = new ProjectsGetRequest({
+            setUserGroupProjects: this.props.setUserGroupProjects,
+            setState: states => this.setState(states),
+        });
+        this.userGroupProjectsRequest = projectsRequest.create(userGroupId);
+        this.userGroupProjectsRequest.start();
+    }
+
     handleAddProject = () => {
+        this.setState({ showAddProjectModal: true });
     }
 
     handleAddProjectModalClose = () => {
+        this.setState({ showAddProjectModal: false });
     }
 
     handleAddMember = () => {
+        this.setState({ showAddMemberModal: false });
     }
 
     handleAddMemberModalClose = () => {
+        this.setState({ showAddMemberModal: false });
     }
 
     renderUserGroupProjects = () => {
@@ -96,7 +172,10 @@ export class UserGroups extends PureComponent<Props, States> {
                           }
                       />
                       <ModalBody>
-                          <div />
+                          <UserProjectAdd
+                              handleClose={this.handleAddProjectModalClose}
+                              userGroup={this.props.userGroup}
+                          />
                       </ModalBody>
                   </Modal>
                 }
@@ -117,7 +196,7 @@ export class UserGroups extends PureComponent<Props, States> {
                         onClick={this.handleAddMember}
                         iconName={iconNames.add}
                     >
-                        Add Group Member
+                        Add User Member
                     </PrimaryButton>
                 </div>
                 <UserGroupMembers />
@@ -152,8 +231,8 @@ export class UserGroups extends PureComponent<Props, States> {
         } = this.props;
 
         const {
-            memberPending,
-            projectPending,
+            projectsPending,
+            userGroupInfoPending,
         } = this.state;
 
         if (!userGroup) {
@@ -169,7 +248,7 @@ export class UserGroups extends PureComponent<Props, States> {
         // tslint:disable-next-line:variable-name
         const Members = this.renderUserGroupMembers;
 
-        const pending = memberPending || projectPending;
+        const pending = userGroupInfoPending || projectsPending;
 
         return (
             <div className={styles.usergroups}>
@@ -196,9 +275,17 @@ export class UserGroups extends PureComponent<Props, States> {
 }
 
 const mapStateToProps = (state: RootState) => ({
+    userGroupId: userGroupIdFromRouteSelector(state),
     userGroup: userGroupSelector(state),
 });
 
+const mapDispatchToProps = (dispatch: Redux.Dispatch<RootState>) => ({
+    setUserGroup: (params: SetUserGroupAction) =>
+        dispatch(setUserGroupAction(params)),
+    setUserGroupProjects: (params: SetUserGroupProjectsAction) =>
+        dispatch(setUserGroupProjectsAction(params)),
+});
+
 export default connect<PropsFromState, PropsFromDispatch, OwnProps>(
-    mapStateToProps,
+    mapStateToProps, mapDispatchToProps,
 )(UserGroups);

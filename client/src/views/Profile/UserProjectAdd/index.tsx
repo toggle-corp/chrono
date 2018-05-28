@@ -39,6 +39,7 @@ import * as styles from './styles.scss';
 
 interface OwnProps {
     handleClose() : void;
+    userGroup?: UserGroup;
 }
 interface PropsFromState {
     activeUser: ActiveUser;
@@ -80,13 +81,18 @@ export class UserProjectAdd extends React.PureComponent<Props, States> {
             fields: {
                 title: [requiredCondition],
                 description: [],
-                userGroup: [requiredCondition],
             },
         };
+
+        if (!this.props.userGroup) {
+            this.schema.fields.userGroup = [requiredCondition];
+        }
     }
 
     componentWillMount() {
-        this.startRequestForUserGroup();
+        if (!this.props.userGroup) {
+            this.startRequestForUserGroup();
+        }
     }
 
     componentWillUnmount() {
@@ -113,6 +119,9 @@ export class UserProjectAdd extends React.PureComponent<Props, States> {
     startRequestForProjectPost = (value: PostProjectBody) => {
         if (this.projectPostRequest) {
             this.projectPostRequest.stop();
+        }
+        if (this.props.userGroup) {
+            value.userGroup = this.props.userGroup.id;
         }
         const request = new ProjectPostRequest({
             userId: this.props.activeUser.userId,
@@ -158,6 +167,7 @@ export class UserProjectAdd extends React.PureComponent<Props, States> {
         const {
             handleClose,
             userGroups,
+            userGroup,
         } = this.props;
 
         return (
@@ -185,15 +195,17 @@ export class UserProjectAdd extends React.PureComponent<Props, States> {
                     placeholder=""
                     rows={3}
                 />
-                <SelectInput
-                    faramElementName="userGroup"
-                    className={styles.usergroup}
-                    label="User Group"
-                    options={userGroups}
-                    placeholder="Select a user group"
-                    keySelector={UserProjectAdd.keySelector}
-                    labelSelector={UserProjectAdd.labelSelector}
-                />
+                { !userGroup &&
+                  <SelectInput
+                      faramElementName="userGroup"
+                      className={styles.usergroup}
+                      label="User Group"
+                      options={userGroups}
+                      placeholder="Select a user group"
+                      keySelector={UserProjectAdd.keySelector}
+                      labelSelector={UserProjectAdd.labelSelector}
+                  />
+                }
                 <div className={styles.actionButtons}>
                     <PrimaryButton
                         type="submit"

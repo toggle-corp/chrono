@@ -19,9 +19,8 @@ export const urlForUserGroups: string = `${wsEndpoint}/user-groups/`;
 export const createUrlForUserGroups = (params: UserGroupUrlParams): string => (
     `${wsEndpoint}/user-groups/?${p(params)}`
 );
-
 export const createUrlForUserGroup = (userGroupId: number): string =>
-    `${wsEndpoint}/user-groups/${userGroupId}`;
+    `${wsEndpoint}/user-groups/${userGroupId}/`;
 
 export const createParamsForPostUserGroup = (
     { title, description }: PostUserGroupBody,

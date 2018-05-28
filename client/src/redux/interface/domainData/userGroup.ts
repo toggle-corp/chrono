@@ -1,3 +1,5 @@
+import { Project } from './project';
+
 export interface Member {
     id: number;
     member: number;
@@ -24,6 +26,11 @@ export interface UserGroupProject {
 export interface SetUserGroupAction {
     userId?: number;
     userGroup: UserGroup;
+}
+
+export interface SetUserGroupProjectsAction {
+    userGroupId?: number;
+    projects: Project[];
 }
 
 export interface UnsetUserGroupMemberAction {

@@ -11,6 +11,7 @@ import {
 export type ProjectUrlParams = {
     fields?: string[];
     user?: number;
+    user_group?:number;
 };
 
 // get all projects
