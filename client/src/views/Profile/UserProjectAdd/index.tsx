@@ -8,16 +8,15 @@ import {
     UserGroup,
 } from '../../../redux/interface';
 import {
-    FormErrors,
-    FormFieldErrors,
-    ValuesFromForm,
+    FaramErrors,
+    FaramValues,
     Schema,
     PostProjectBody,
 } from '../../../rest/interface';
 
-import Form, {
+import Faram, {
     requiredCondition,
-} from '../../../vendor/react-store/components/Input/Form';
+} from '../../../vendor/react-store/components/Input/Faram';
 import LoadingAnimation from '../../../vendor/react-store/components/View/LoadingAnimation';
 import SelectInput from '../../../vendor/react-store/components/Input/SelectInput';
 import NonFieldErrors from '../../../vendor/react-store/components/Input/NonFieldErrors';
@@ -53,9 +52,8 @@ interface PropsFromDispatch {
 type Props = OwnProps & PropsFromState & PropsFromDispatch;
 
 interface States {
-    formErrors: FormErrors;
-    formFieldErrors: FormFieldErrors;
-    formValues: ValuesFromForm;
+    faramErrors: FaramErrors;
+    faramValues: FaramValues;
     pristine: boolean;
     pending: boolean;
 }
@@ -72,11 +70,10 @@ export class UserProjectAdd extends React.PureComponent<Props, States> {
         super(props);
 
         this.state = {
-            formErrors: {},
-            formFieldErrors: {},
-            formValues: {},
+            faramErrors: {},
+            faramValues: {},
             pending: false,
-            pristine: false,
+            pristine: true,
         };
 
         this.schema = {
@@ -129,34 +126,31 @@ export class UserProjectAdd extends React.PureComponent<Props, States> {
 
     // FORM RELATED
 
-    handleFormChange = (
-        values: PostProjectBody, formFieldErrors: FormFieldErrors, formErrors: FormErrors,
+    handleFaramChange = (
+        values: PostProjectBody, faramErrors: FaramErrors,
     ) => {
         this.setState({
-            formErrors,
-            formFieldErrors,
-            formValues: values,
-            pristine: true,
+            faramErrors,
+            faramValues: values,
+            pristine: false,
         });
     }
 
-    handleFormError = (formFieldErrors: FormFieldErrors, formErrors: FormErrors) => {
+    handleFaramError = (faramErrors: FaramErrors) => {
         this.setState({
-            formErrors,
-            formFieldErrors,
-            pristine: true,
+            faramErrors,
+            pristine: false,
         });
     }
 
-    handleFormSubmit = (value: PostProjectBody) => {
+    handleFaramSubmit = (value: PostProjectBody) => {
         this.startRequestForProjectPost(value);
     }
 
     render() {
         const {
-            formErrors,
-            formFieldErrors,
-            formValues,
+            faramErrors,
+            faramValues,
             pending,
             pristine,
         } = this.state;
@@ -167,33 +161,32 @@ export class UserProjectAdd extends React.PureComponent<Props, States> {
         } = this.props;
 
         return (
-            <Form
+            <Faram
                 className={styles.projectAddForm}
                 schema={this.schema}
-                value={formValues}
-                formErrors={formErrors}
-                fieldErrors={formFieldErrors}
-                changeCallback={this.handleFormChange}
-                successCallback={this.handleFormSubmit}
-                failureCallback={this.handleFormError}
+                value={faramValues}
+                error={faramErrors}
+                onChange={this.handleFaramChange}
+                onValidationSuccess={this.handleFaramSubmit}
+                onValidationFailure={this.handleFaramError}
                 disabled={pending}
             >
                 {pending && <LoadingAnimation />}
-                <NonFieldErrors formerror="" />
+                <NonFieldErrors faramElement />
                 <TextInput
-                    formname="title"
+                    faramElementName="title"
                     label="Title"
                     placeholder=""
                     autoFocus
                 />
                 <TextArea
-                    formname="description"
+                    faramElementName="description"
                     label="Description"
                     placeholder=""
                     rows={3}
                 />
                 <SelectInput
-                    formname="userGroup"
+                    faramElementName="userGroup"
                     className={styles.usergroup}
                     label="User Group"
                     options={userGroups}
@@ -204,7 +197,7 @@ export class UserProjectAdd extends React.PureComponent<Props, States> {
                 <div className={styles.actionButtons}>
                     <PrimaryButton
                         type="submit"
-                        disabled={!pristine || pending}
+                        disabled={pristine || pending}
                     >
                         Add
                     </PrimaryButton>
@@ -214,7 +207,7 @@ export class UserProjectAdd extends React.PureComponent<Props, States> {
                         Cancel
                     </DangerButton>
                 </div>
-            </Form>
+            </Faram>
         );
     }
 }
