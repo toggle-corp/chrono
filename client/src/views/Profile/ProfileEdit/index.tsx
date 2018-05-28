@@ -7,16 +7,15 @@ import {
     SetUserAction,
 } from '../../../redux/interface';
 import {
-    FormErrors,
-    FormFieldErrors,
-    ValuesFromForm,
+    FaramErrors,
+    FaramValues,
     Schema,
     PatchUserBody,
 } from '../../../rest/interface';
 
-import Form, {
+import Faram, {
     requiredCondition,
-} from '../../../vendor/react-store/components/Input/Form';
+} from '../../../vendor/react-store/components/Input/Faram';
 import LoadingAnimation from '../../../vendor/react-store/components/View/LoadingAnimation';
 import NonFieldErrors from '../../../vendor/react-store/components/Input/NonFieldErrors';
 import TextInput from '../../../vendor/react-store/components/Input/TextInput';
@@ -47,9 +46,8 @@ interface PropsFromDispatch {
 type Props = OwnProps & PropsFromState & PropsFromDispatch;
 
 interface States {
-    formErrors: FormErrors;
-    formFieldErrors: FormFieldErrors;
-    formValues: ValuesFromForm;
+    faramErrors: FaramErrors;
+    faramValues: FaramValues;
     pristine: boolean;
     pending: boolean;
 }
@@ -62,11 +60,10 @@ export class ProfileEdit extends React.PureComponent<Props, States> {
         super(props);
 
         this.state = {
-            formErrors: {},
-            formFieldErrors: {},
-            formValues: props.information  || {},
+            faramErrors: {},
+            faramValues: props.information  || {},
             pending: false,
-            pristine: false,
+            pristine: true,
         };
 
         this.schema = {
@@ -97,28 +94,26 @@ export class ProfileEdit extends React.PureComponent<Props, States> {
         this.userPatchRequest.start();
     }
 
-    // FORM RELATED
+    // Faram RELATED
 
-    handleFormChange = (
-        values: PatchUserBody, formFieldErrors: FormFieldErrors, formErrors: FormErrors,
+    handleFaramChange = (
+        values: PatchUserBody, faramErrors: FaramErrors,
     ) => {
         this.setState({
-            formErrors,
-            formFieldErrors,
-            formValues: values,
-            pristine: true,
+            faramErrors,
+            faramValues: values,
+            pristine: false,
         });
     }
 
-    handleFormError = (formFieldErrors: FormFieldErrors, formErrors: FormErrors) => {
+    handleFaramError = (faramErrors: FaramErrors) => {
         this.setState({
-            formErrors,
-            formFieldErrors,
-            pristine: true,
+            faramErrors,
+            pristine: false,
         });
     }
 
-    handleFormSubmit = (value: PatchUserBody) => {
+    handleFaramSubmit = (value: PatchUserBody) => {
         const { userId } = this.props;
         if (userId) {
             this.startRequestForUserPatch(userId, value);
@@ -127,9 +122,8 @@ export class ProfileEdit extends React.PureComponent<Props, States> {
 
     render() {
         const {
-            formErrors,
-            formFieldErrors,
-            formValues,
+            faramErrors,
+            faramValues,
             pending,
             pristine,
         } = this.state;
@@ -139,27 +133,26 @@ export class ProfileEdit extends React.PureComponent<Props, States> {
         } = this.props;
 
         return (
-            <Form
+            <Faram
                 className={styles.profileEditForm}
                 schema={this.schema}
-                value={formValues}
-                formErrors={formErrors}
-                fieldErrors={formFieldErrors}
-                changeCallback={this.handleFormChange}
-                successCallback={this.handleFormSubmit}
-                failureCallback={this.handleFormError}
+                value={faramValues}
+                error={faramErrors}
+                onChange={this.handleFaramChange}
+                onValidationSuccess={this.handleFaramSubmit}
+                onValidationFailure={this.handleFaramError}
                 disabled={pending}
             >
                 {pending && <LoadingAnimation />}
-                <NonFieldErrors formerror="" />
+                <NonFieldErrors faramElement />
                 <TextInput
-                    formname="firstName"
+                    faramElementName="firstName"
                     label="First Name"
                     placeholder=""
                     autoFocus
                 />
                 <TextInput
-                    formname="lastName"
+                    faramElementName="lastName"
                     label="Last Name"
                     placeholder=""
                     autoFocus
@@ -167,7 +160,7 @@ export class ProfileEdit extends React.PureComponent<Props, States> {
                 <div className={styles.actionButtons}>
                     <PrimaryButton
                         type="submit"
-                        disabled={!pristine || pending}
+                        disabled={pristine || pending}
                     >
                         Update
                     </PrimaryButton>
@@ -177,7 +170,7 @@ export class ProfileEdit extends React.PureComponent<Props, States> {
                         Cancel
                     </DangerButton>
                 </div>
-            </Form>
+            </Faram>
         );
     }
 }

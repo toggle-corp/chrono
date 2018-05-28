@@ -5,7 +5,7 @@ import {
 import {
     urlForUserGroups,
     createParamsForPostUserGroup,
-    transformResponseErrorToFormError,
+    alterResponseErrorToFaramError,
 } from '../../../rest';
 import {
     Request,
@@ -49,20 +49,16 @@ export default class UserGroupPostRequest implements Request<PostUserGroupBody> 
     }
 
     failure = (response: { errors: ErrorsFromServer }) => {
-        const {
-            formFieldErrors,
-            formErrors,
-        } = transformResponseErrorToFormError(response.errors);
+        const faramErrors = alterResponseErrorToFaramError(response.errors);
         this.props.setState({
-            formErrors,
-            formFieldErrors,
+            faramErrors,
             pending: false,
         });
     }
 
     fatal = () => {
         this.props.setState({
-            formErrors: { errors: ['Some error occured.'] },
+            faramErrors: { $internal: ['Some error occured.'] },
             pending: false,
         });
     }

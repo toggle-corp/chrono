@@ -137,7 +137,6 @@ export class Login extends React.PureComponent<Props, States> {
                         className={styles.loginForm}
                         schema={this.schema}
                         disabled={pending}
-
                         value={faramValues}
                         error={faramErrors}
                         onChange={this.handleFaramChange}

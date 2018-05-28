@@ -7,16 +7,15 @@ import {
     ActiveUser,
 } from '../../../redux/interface';
 import {
-    FormErrors,
-    FormFieldErrors,
-    ValuesFromForm,
+    FaramErrors,
+    FaramValues,
     Schema,
     PostUserGroupBody,
 } from '../../../rest/interface';
 
-import Form, {
+import Faram, {
     requiredCondition,
-} from '../../../vendor/react-store/components/Input/Form';
+} from '../../../vendor/react-store/components/Input/Faram';
 import LoadingAnimation from '../../../vendor/react-store/components/View/LoadingAnimation';
 import NonFieldErrors from '../../../vendor/react-store/components/Input/NonFieldErrors';
 import TextInput from '../../../vendor/react-store/components/Input/TextInput';
@@ -46,9 +45,8 @@ interface PropsFromDispatch {
 type Props = OwnProps & PropsFromState & PropsFromDispatch;
 
 interface States {
-    formErrors: FormErrors;
-    formFieldErrors: FormFieldErrors;
-    formValues: ValuesFromForm;
+    faramErrors: FaramErrors;
+    faramValues: FaramValues;
     pristine: boolean;
     pending: boolean;
 }
@@ -61,11 +59,10 @@ export class UserUserGroupAdd extends React.PureComponent<Props, States> {
         super(props);
 
         this.state = {
-            formErrors: {},
-            formFieldErrors: {},
-            formValues: {},
+            faramErrors: {},
+            faramValues: {},
             pending: false,
-            pristine: false,
+            pristine: true,
         };
 
         this.schema = {
@@ -96,36 +93,33 @@ export class UserUserGroupAdd extends React.PureComponent<Props, States> {
         this.userGroupPostRequest.start();
     }
 
-    // FORM RELATED
+    // Faram RELATED
 
-    handleFormChange = (
-        values: PostUserGroupBody, formFieldErrors: FormFieldErrors, formErrors: FormErrors,
+    handleFaramChange = (
+        values: PostUserGroupBody, faramErrors: FaramErrors,
     ) => {
         this.setState({
-            formErrors,
-            formFieldErrors,
-            formValues: values,
-            pristine: true,
+            faramErrors,
+            faramValues: values,
+            pristine: false,
         });
     }
 
-    handleFormError = (formFieldErrors: FormFieldErrors, formErrors: FormErrors) => {
+    handleFaramError = (faramErrors: FaramErrors) => {
         this.setState({
-            formErrors,
-            formFieldErrors,
-            pristine: true,
+            faramErrors,
+            pristine: false,
         });
     }
 
-    handleFormSubmit = (value: PostUserGroupBody) => {
+    handleFaramSubmit = (value: PostUserGroupBody) => {
         this.startRequestForUserGroupPost(value);
     }
 
     render() {
         const {
-            formErrors,
-            formFieldErrors,
-            formValues,
+            faramErrors,
+            faramValues,
             pending,
             pristine,
         } = this.state;
@@ -135,27 +129,26 @@ export class UserUserGroupAdd extends React.PureComponent<Props, States> {
         } = this.props;
 
         return (
-            <Form
+            <Faram
                 className={styles.userGroupAddForm}
                 schema={this.schema}
-                value={formValues}
-                formErrors={formErrors}
-                fieldErrors={formFieldErrors}
-                changeCallback={this.handleFormChange}
-                successCallback={this.handleFormSubmit}
-                failureCallback={this.handleFormError}
+                value={faramValues}
+                error={faramErrors}
+                onChange={this.handleFaramChange}
+                onValidationSuccess={this.handleFaramSubmit}
+                onValidationFailure={this.handleFaramError}
                 disabled={pending}
             >
                 {pending && <LoadingAnimation />}
-                <NonFieldErrors formerror="" />
+                <NonFieldErrors faramElement />
                 <TextInput
-                    formname="title"
+                    faramElementName="title"
                     label="Title"
                     placeholder=""
                     autoFocus
                 />
                 <TextArea
-                    formname="description"
+                    faramElementName="description"
                     label="Description"
                     placeholder=""
                     rows={3}
@@ -163,7 +156,7 @@ export class UserUserGroupAdd extends React.PureComponent<Props, States> {
                 <div className={styles.actionButtons}>
                     <PrimaryButton
                         type="submit"
-                        disabled={!pristine || pending}
+                        disabled={pristine || pending}
                     >
                         Add
                     </PrimaryButton>
@@ -173,7 +166,7 @@ export class UserUserGroupAdd extends React.PureComponent<Props, States> {
                         Cancel
                     </DangerButton>
                 </div>
-            </Form>
+            </Faram>
         );
     }
 }
