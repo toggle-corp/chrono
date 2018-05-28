@@ -1,0 +1,14 @@
+{
+    "extends": [
+        "airbnb"
+    ],
+    "env": {
+        "node": true,
+    },
+    "parser": "babel-eslint",
+    "parserOptions": {
+        "no-console": 0,
+        "indent": ["error", 4, { "SwitchCase": 1 }],
+        "allowImportExportEverywhere": true
+    }
+}

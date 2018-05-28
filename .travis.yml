@@ -1,0 +1,32 @@
+sudo: required
+
+services:
+    - docker
+
+before_install:
+    - sudo pip install --upgrade awscli
+    - sudo pip install --upgrade awsebcli
+    - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+
+    - mkdir -p client/src/vendor
+
+    - git clone https://github.com/toggle-corp/react-store.git client/src/vendor/react-store
+    - git --git-dir=client/src/vendor/react-store/.git --no-pager show --pretty=fuller --quiet
+    - cp client/src/vendor/react-store/stylesheets/_user-imports-sample.scss client/src/vendor/react-store/stylesheets/_user-imports.scss
+
+    - git clone https://github.com/toggle-corp/ravl.git client/src/vendor/ravl
+    - git --git-dir=client/src/vendor/ravl/.git --no-pager show --pretty=fuller --quiet
+
+    - env > .env
+    - docker pull devtc/chrono:latest
+    - docker build --cache-from devtc/chrono:latest --tag devtc/chrono:latest .
+
+before_script:
+    - echo 'before_script'
+
+script:
+    - echo 'script'
+
+after_success:
+    - docker push devtc/chrono:latest
+    - ./scripts/deploy.sh
