@@ -14,8 +14,7 @@ import {
 } from '../interface';
 import {
     activeUserSelector,
-}
-from './auth';
+} from './auth';
 
 const emptyObject = {};
 const emptyArray: object[] = [];

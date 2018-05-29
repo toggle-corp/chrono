@@ -28,7 +28,7 @@ import { iconNames } from '../../constants';
 
 import UserGroupProjects from './UserGroupProjects';
 import UserGroupMembers from './UserGroupMembers';
-import UserProjectAdd from '../Profile/UserProjectAdd';
+import AddProject from '../../components/AddProject';
 
 import UserGroupGetRequest from './requests/UserGroupGetRequest';
 import ProjectsGetRequest from './requests/ProjectsGetRequest';
@@ -139,7 +139,7 @@ export class UserGroups extends PureComponent<Props, States> {
         this.setState({ showAddMemberModal: false });
     }
 
-    renderUserGroupProjects = () => {
+    renderUserGroupProjects = ({ userGroup } : { userGroup: UserGroup }) => {
         const { showAddProjectModal } = this.state;
         return (
             <div className={styles.userprojects}>
@@ -172,9 +172,9 @@ export class UserGroups extends PureComponent<Props, States> {
                           }
                       />
                       <ModalBody>
-                          <UserProjectAdd
+                          <AddProject
                               handleClose={this.handleAddProjectModalClose}
-                              userGroup={this.props.userGroup}
+                              userGroupId={userGroup.id}
                           />
                       </ModalBody>
                   </Modal>
@@ -267,7 +267,9 @@ export class UserGroups extends PureComponent<Props, States> {
                 <div className={styles.log}>
                     <h2>Activity</h2>
                 </div>
-                <Projects />
+                <Projects
+                    userGroup={userGroup}
+                />
                 <Members />
             </div>
         );

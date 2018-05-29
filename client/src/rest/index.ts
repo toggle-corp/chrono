@@ -38,4 +38,3 @@ export * from './userGroups';
 export * from './slot';
 export * from './project';
 export * from './task';
-export * from './groupMemberships';

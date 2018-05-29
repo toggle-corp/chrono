@@ -6,40 +6,40 @@ import {
     SetProjectAction,
     ActiveUser,
     UserGroup,
-} from '../../../redux/interface';
+} from '../../redux/interface';
 import {
     FaramErrors,
     FaramValues,
     Schema,
     PostProjectBody,
-} from '../../../rest/interface';
+} from '../../rest/interface';
 
 import Faram, {
     requiredCondition,
-} from '../../../vendor/react-store/components/Input/Faram';
-import LoadingAnimation from '../../../vendor/react-store/components/View/LoadingAnimation';
-import SelectInput from '../../../vendor/react-store/components/Input/SelectInput';
-import NonFieldErrors from '../../../vendor/react-store/components/Input/NonFieldErrors';
-import TextInput from '../../../vendor/react-store/components/Input/TextInput';
-import TextArea from '../../../vendor/react-store/components/Input/TextArea';
-import PrimaryButton from '../../../vendor/react-store/components/Action/Button/PrimaryButton';
-import DangerButton from '../../../vendor/react-store/components/Action/Button/DangerButton';
-import { RestRequest } from '../../../vendor/react-store/utils/rest';
+} from '../../vendor/react-store/components/Input/Faram';
+import LoadingAnimation from '../../vendor/react-store/components/View/LoadingAnimation';
+import SelectInput from '../../vendor/react-store/components/Input/SelectInput';
+import NonFieldErrors from '../../vendor/react-store/components/Input/NonFieldErrors';
+import TextInput from '../../vendor/react-store/components/Input/TextInput';
+import TextArea from '../../vendor/react-store/components/Input/TextArea';
+import PrimaryButton from '../../vendor/react-store/components/Action/Button/PrimaryButton';
+import DangerButton from '../../vendor/react-store/components/Action/Button/DangerButton';
+import { RestRequest } from '../../vendor/react-store/utils/rest';
 
 import {
     setProjectAction,
     activeUserSelector,
     userGroupsSelector,
     setUserGroupsAction,
-} from '../../../redux';
+} from '../../redux';
 
-import UserGroupsGetRequest from '../requests/UserGroupsGetRequest';
-import ProjectPostRequest from '../requests/ProjectPostRequest';
+import UserGroupsGetRequest from './requests/UserGroupsGetRequest';
+import ProjectPostRequest from './requests/ProjectPostRequest';
 import * as styles from './styles.scss';
 
 interface OwnProps {
     handleClose() : void;
-    userGroup?: UserGroup;
+    userGroupId?: number;
 }
 interface PropsFromState {
     activeUser: ActiveUser;
@@ -72,7 +72,7 @@ export class UserProjectAdd extends React.PureComponent<Props, States> {
 
         this.state = {
             faramErrors: {},
-            faramValues: {},
+            faramValues: { userGroup: props.userGroupId },
             pending: false,
             pristine: true,
         };
@@ -80,19 +80,14 @@ export class UserProjectAdd extends React.PureComponent<Props, States> {
         this.schema = {
             fields: {
                 title: [requiredCondition],
+                userGroup: [requiredCondition],
                 description: [],
             },
         };
-
-        if (!this.props.userGroup) {
-            this.schema.fields.userGroup = [requiredCondition];
-        }
     }
 
     componentWillMount() {
-        if (!this.props.userGroup) {
-            this.startRequestForUserGroup();
-        }
+        this.startRequestForUserGroup();
     }
 
     componentWillUnmount() {
@@ -119,9 +114,6 @@ export class UserProjectAdd extends React.PureComponent<Props, States> {
     startRequestForProjectPost = (value: PostProjectBody) => {
         if (this.projectPostRequest) {
             this.projectPostRequest.stop();
-        }
-        if (this.props.userGroup) {
-            value.userGroup = this.props.userGroup.id;
         }
         const request = new ProjectPostRequest({
             userId: this.props.activeUser.userId,
@@ -167,8 +159,10 @@ export class UserProjectAdd extends React.PureComponent<Props, States> {
         const {
             handleClose,
             userGroups,
-            userGroup,
+            userGroupId,
         } = this.props;
+
+        console.warn(faramValues);
 
         return (
             <Faram
@@ -195,17 +189,16 @@ export class UserProjectAdd extends React.PureComponent<Props, States> {
                     placeholder=""
                     rows={3}
                 />
-                { !userGroup &&
-                  <SelectInput
-                      faramElementName="userGroup"
-                      className={styles.usergroup}
-                      label="User Group"
-                      options={userGroups}
-                      placeholder="Select a user group"
-                      keySelector={UserProjectAdd.keySelector}
-                      labelSelector={UserProjectAdd.labelSelector}
-                  />
-                }
+                <SelectInput
+                    faramElementName="userGroup"
+                    className={styles.usergroup}
+                    label="User Group"
+                    options={userGroups}
+                    placeholder="Select a user group"
+                    keySelector={UserProjectAdd.keySelector}
+                    labelSelector={UserProjectAdd.labelSelector}
+                    disabled={userGroupId}
+                />
                 <div className={styles.actionButtons}>
                     <PrimaryButton
                         type="submit"

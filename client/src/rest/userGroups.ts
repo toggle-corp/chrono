@@ -22,6 +22,12 @@ export const createUrlForUserGroups = (params: UserGroupUrlParams): string => (
 export const createUrlForUserGroup = (userGroupId: number): string =>
     `${wsEndpoint}/user-groups/${userGroupId}/`;
 
+// get user membership
+export const urlForGroupMembership: string = `${wsEndpoint}/group-memberships/`;
+
+export const createUrlForGroupMembership = (memberId: number): string =>
+    `${wsEndpoint}/group-memberships/${memberId}/`;
+
 export const createParamsForPostUserGroup = (
     { title, description }: PostUserGroupBody,
 ): RestPostBody => ({
