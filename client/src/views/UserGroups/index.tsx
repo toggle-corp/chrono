@@ -29,7 +29,9 @@ import { iconNames } from '../../constants';
 
 import UserGroupProjects from './UserGroupProjects';
 import UserGroupMembers from './UserGroupMembers';
+
 import AddProject from '../../components/AddProject';
+import MemberAdd from './MemberAdd';
 
 import UserGroupGetRequest from './requests/UserGroupGetRequest';
 import ProjectsGetRequest from './requests/ProjectsGetRequest';
@@ -133,7 +135,7 @@ export class UserGroups extends PureComponent<Props, States> {
     }
 
     handleAddMember = () => {
-        this.setState({ showAddMemberModal: false });
+        this.setState({ showAddMemberModal: true });
     }
 
     handleAddMemberModalClose = () => {
@@ -218,7 +220,10 @@ export class UserGroups extends PureComponent<Props, States> {
                           }
                       />
                       <ModalBody>
-                          <div />
+                          <MemberAdd
+                              userGroupId={this.props.userGroupId}
+                              handleClose={this.handleAddMemberModalClose}
+                          />
                       </ModalBody>
                   </Modal>
                 }

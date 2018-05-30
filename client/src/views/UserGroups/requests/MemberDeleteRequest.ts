@@ -37,7 +37,7 @@ export default class MemberDeleteRequest implements Request<UnsetUserGroupMember
 
     failure = () => {
         notify.send({
-            title: 'Member Delete',
+            title: 'Delete Member',
             type: notify.type.ERROR,
             message: 'Failed to delete the Member',
         });
@@ -45,7 +45,7 @@ export default class MemberDeleteRequest implements Request<UnsetUserGroupMember
 
     fatal = () => {
         notify.send({
-            title: 'Project Delete',
+            title: 'Delete Member',
             type: notify.type.ERROR,
             message: 'Failed to delete the Member',
             duration: notify.duration.SLOW,

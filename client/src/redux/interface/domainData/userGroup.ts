@@ -30,7 +30,12 @@ export interface SetUserGroupAction {
 
 export interface SetUserGroupProjectsAction {
     userGroupId?: number;
-    projects: Project[];
+    projects: Project;
+}
+
+export interface SetUserGroupMemberAction {
+    userGroupId?: number;
+    member: Member;
 }
 
 export interface UnsetUserGroupMemberAction {

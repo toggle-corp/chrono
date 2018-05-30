@@ -4,10 +4,11 @@ import { Project } from './project';
 // ENTITY INTERFACE
 export interface UserInformation {
     id: number;
+    username: string;
     firstName: string;
     lastName: string;
     email: string;
-    organization: string;
+    displayName: string;
 }
 
 export interface UserUserGroup extends UserGroup {

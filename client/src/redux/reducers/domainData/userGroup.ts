@@ -11,6 +11,7 @@ import {
     SetUserGroupProjectsAction,
     UnsetUserGroupProjectAction,
     UnsetUserGroupMemberAction,
+    SetUserGroupMemberAction,
 } from '../../interface';
 
 // ACTION-TYPE
@@ -19,6 +20,7 @@ export const enum USERGROUP_ACTION {
     setUserGroups = 'domainData/USERGROUP/SET_USERGROUPS',
     setUserGroup = 'domainData/USERGROUP/SET_USERGROUP',
     setUserGroupProjects = 'domainData/USERGROUP/SET_PROJECTS',
+    setUserGroupMember = 'domainData/USERGROUP/SET_MEMBER',
     unsetUserGroupProject = 'domainData/USERGROUP/UNSET-PROJECT',
     unsetUserGroupMember = 'domainData/USERGROUP/UNSET-MEMBER',
 }
@@ -46,6 +48,12 @@ export const setUserGroupProjectsAction = (
 export const unsetUserGroupProjectAction = ({ projectId } : UnsetUserGroupProjectAction) => ({
     projectId,
     type: USERGROUP_ACTION.unsetUserGroupProject,
+});
+
+export const setUserGroupMemberAction = ({ userGroupId, member } : SetUserGroupMemberAction) => ({
+    userGroupId,
+    member,
+    type: USERGROUP_ACTION.setUserGroupMember,
 });
 
 export const unsetUserGroupMemberAction = (
@@ -148,6 +156,32 @@ const unsetUserGroupProject = (state: DomainData, action: UnsetUserGroupProjectA
     return update(state, settings);
 };
 
+const setUserGroupMember = (state: DomainData, action: SetUserGroupMemberAction) => {
+    const { userGroups } = state;
+    const {
+        userGroupId,
+        member,
+    } = action;
+
+    const userGroupIndex = userGroups.findIndex(
+        u => u.id === userGroupId,
+    );
+    if (userGroupIndex === -1) {
+        return state;
+    }
+
+    const settings = {
+        userGroups: {
+            [userGroupIndex]: {
+                memberships: {
+                    $push: [member],
+                },
+            },
+        },
+    };
+    return update(state, settings);
+};
+
 const unsetUserGroupMember = (state: DomainData, action: UnsetUserGroupMemberAction) => {
     const { userGroups } = state;
     const {
@@ -192,6 +226,7 @@ const reducer: ReducerGroup<DomainData> = {
     [USERGROUP_ACTION.setUserGroup]: setUserGroup,
     [USERGROUP_ACTION.setUserGroupProjects]: setUserGroupProjects,
     [USERGROUP_ACTION.unsetUserGroupProject]: unsetUserGroupProject,
+    [USERGROUP_ACTION.setUserGroupMember]: setUserGroupMember,
     [USERGROUP_ACTION.unsetUserGroupMember]: unsetUserGroupMember,
 };
 
