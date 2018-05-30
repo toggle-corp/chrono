@@ -10,5 +10,3 @@ export interface Task {
     description: string;
     project: number;
 }
-
-

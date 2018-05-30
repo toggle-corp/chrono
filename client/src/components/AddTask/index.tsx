@@ -4,26 +4,26 @@ import React, {
 } from 'react';
 import { connect } from 'react-redux';
 
-import PrimaryButton from '../../vendor/react-store/components/Action/Button/PrimaryButton';
 import DangerButton from '../../vendor/react-store/components/Action/Button/DangerButton';
-import Modal from '../../vendor/react-store/components/View/Modal';
-import ModalBody from '../../vendor/react-store/components/View/Modal/Body';
-import ModalHeader from '../../vendor/react-store/components/View/Modal/Header';
-import { RestRequest } from '../../vendor/react-store/utils/rest';
-import SelectInput from '../../vendor/react-store/components/Input/SelectInput';
-import TextInput from '../../vendor/react-store/components/Input/TextInput';
-import TextArea from '../../vendor/react-store/components/Input/TextArea';
-import LoadingAnimation from '../../vendor/react-store/components/View/LoadingAnimation';
+import PrimaryButton from '../../vendor/react-store/components/Action/Button/PrimaryButton';
 import NonFieldErrors from '../../vendor/react-store/components/Input/NonFieldErrors';
 import Faram, {
     requiredCondition,
 } from '../../vendor/react-store/components/Input/Faram';
+import SelectInput from '../../vendor/react-store/components/Input/SelectInput';
+import TextArea from '../../vendor/react-store/components/Input/TextArea';
+import TextInput from '../../vendor/react-store/components/Input/TextInput';
+import LoadingAnimation from '../../vendor/react-store/components/View/LoadingAnimation';
+import Modal from '../../vendor/react-store/components/View/Modal';
+import ModalBody from '../../vendor/react-store/components/View/Modal/Body';
+import ModalHeader from '../../vendor/react-store/components/View/Modal/Header';
+import { RestRequest } from '../../vendor/react-store/utils/rest';
 
 import {
+    AddTaskParams,
     FaramErrors,
     FaramValues,
     Schema,
-    AddTaskParams,
 } from '../../rest/interface';
 
 import {
@@ -38,13 +38,10 @@ import {
 } from '../../redux';
 
 import { iconNames } from '../../constants';
+
 import TaskPostRequest from './requests/TaskPostRequest';
 import * as styles from './styles.scss';
 
-interface WithIdAndTitle {
-    id: number;
-    title: string;
-}
 interface OwnProps{}
 interface PropsFromState{
     projects: Project[];
@@ -67,8 +64,8 @@ export class AddTask extends React.PureComponent<Props, States> {
     addTaskRequest: RestRequest;
     schema: Schema;
 
-    static keySelector = (d: WithIdAndTitle) => d.id;
-    static labelSelector = (d: WithIdAndTitle) => d.title;
+    static keySelector = (d: Project) => d.id;
+    static labelSelector = (d: Project) => d.title;
 
     constructor(props: Props) {
         super(props);
@@ -82,9 +79,9 @@ export class AddTask extends React.PureComponent<Props, States> {
 
         this.schema = {
             fields: {
+                project: [requiredCondition],
                 title: [requiredCondition],
                 description: [],
-                project: [requiredCondition],
             },
         };
     }
@@ -110,7 +107,8 @@ export class AddTask extends React.PureComponent<Props, States> {
     }
 
     handleFaramChange = (
-        faramValues: AddTaskParams, faramErrors: FaramErrors,
+        faramValues: AddTaskParams,
+        faramErrors: FaramErrors,
     ) => {
         this.setState({
             faramValues,
@@ -131,18 +129,17 @@ export class AddTask extends React.PureComponent<Props, States> {
     }
 
     handleAddTaskButton = () => {
-        this.setState({
-            showModal: true,
-        });
+        this.setState({ showModal: true });
     }
 
     handleAddTaskModalClose = () => {
         this.setState({
-            faramErrors: {},
-            faramValues: {},
             showModal: false,
+
             pending: false,
             pristine: true,
+            faramErrors: {},
+            faramValues: {},
         });
     }
 
@@ -154,60 +151,56 @@ export class AddTask extends React.PureComponent<Props, States> {
             pristine,
         } = this.state;
 
-        const {
-            projects,
-        } = this.props;
+        const { projects } = this.props;
 
         return (
-            <div className={styles.addTask}>
-                <div className={styles.addTaskFormContainer}>
-                    <Faram
-                        className={styles.addTaskForm}
-                        schema={this.schema}
+            <Faram
+                className={styles.addTaskForm}
+                schema={this.schema}
+                disabled={pending}
+                value={faramValues}
+                error={faramErrors}
+                onChange={this.handleFaramChange}
+                onValidationSuccess={this.handleFaramSuccess}
+                onValidationFailure={this.handleFaramFailure}
+            >
+                {pending && <LoadingAnimation />}
+                <NonFieldErrors faramElement />
+                <SelectInput
+                    faramElementName="project"
+                    label="Project"
+                    options={projects}
+                    placeholder="Select a project"
+                    keySelector={AddTask.keySelector}
+                    labelSelector={AddTask.labelSelector}
+                />
+                <TextInput
+                    faramElementName="title"
+                    label="Title"
+                    placeholder="Task Title"
+                />
+                <TextArea
+                    faramElementName="description"
+                    label="Description"
+                    placeholder="Task Description"
+                />
+                <div className={styles.actionButtons}>
+                    <DangerButton
+                        className={styles.actionButton}
+                        onClick={this.handleAddTaskModalClose}
                         disabled={pending}
-                        value={faramValues}
-                        error={faramErrors}
-                        onChange={this.handleFaramChange}
-                        onValidationSuccess={this.handleFaramSuccess}
-                        onValidationFailure={this.handleFaramFailure}
                     >
-                        {pending && <LoadingAnimation />}
-                        <NonFieldErrors faramElement />
-                        <SelectInput
-                            faramElementName="project"
-                            label="Project"
-                            options={projects}
-                            placeholder="Select a project"
-                            keySelector={AddTask.keySelector}
-                            labelSelector={AddTask.labelSelector}
-                        />
-                        <TextInput
-                            faramElementName="title"
-                            label="title"
-                            placeholder="Title"
-                        />
-                        <TextArea
-                            faramElementName="description"
-                            label="description"
-                            placeholder="Description"
-                        />
-                        <div className={styles.actionButtons}>
-                            <PrimaryButton
-                                type="submit"
-                                disabled={pristine || pending}
-                            >
-                                Add
-                            </PrimaryButton>
-                            <DangerButton
-                                onClick={this.handleAddTaskModalClose}
-                                disabled={pristine || pending}
-                            >
-                                Cancel
-                            </DangerButton>
-                        </div>
-                    </Faram>
+                        Cancel
+                    </DangerButton>
+                    <PrimaryButton
+                        className={styles.actionButton}
+                        type="submit"
+                        disabled={pristine || pending}
+                    >
+                        Save
+                    </PrimaryButton>
                 </div>
-            </div>
+            </Faram>
         );
     }
 
@@ -223,6 +216,7 @@ export class AddTask extends React.PureComponent<Props, States> {
             <Fragment>
                 <PrimaryButton
                     onClick={this.handleAddTaskButton}
+                    transparent
                     disabled={showModal}
                 >
                     <span className={iconNames.add} />
@@ -234,14 +228,13 @@ export class AddTask extends React.PureComponent<Props, States> {
                             onClose={this.handleAddTaskModalClose}
                         >
                             <ModalHeader
-                                title="Add Task"
+                                title="Create Task"
                                 rightComponent={
-                                    <PrimaryButton
+                                    <DangerButton
                                         onClick={this.handleAddTaskModalClose}
                                         transparent
-                                    >
-                                        <span className={iconNames.close} />
-                                    </PrimaryButton>
+                                        iconName={iconNames.close}
+                                    />
                                 }
                             />
                             <ModalBody>

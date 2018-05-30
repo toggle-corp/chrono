@@ -13,7 +13,6 @@ export const enum TASKS_ACTION {
     setTask = 'domainData/TASK/SET_TASK',
 }
 
-
 // ACTION-CREATOR
 
 export const setTasksAction = (tasks:  Task[]) => ({

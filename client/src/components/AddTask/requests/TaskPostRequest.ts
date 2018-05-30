@@ -15,9 +15,7 @@ import {
     alterResponseErrorToFaramError,
 } from '../../../rest';
 
-import {
-    AddTask,
- } from '../../AddTask';
+import { AddTask } from '../../AddTask';
 
 interface Props {
     setState: AddTask['setState'];
@@ -36,11 +34,12 @@ export default class TaskPostRequest implements Request < {} > {
             schema.validate(response, 'tasksPostResponse');
             this.props.setTask(response);
             this.props.setState({
-                faramErrors: {},
-                faramValues: {},
+                showModal: false,
+
                 pending: false,
                 pristine: true,
-                showModal: false,
+                faramErrors: {},
+                faramValues: {},
             });
         } catch (err) {
             console.error(err);

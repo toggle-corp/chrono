@@ -41,17 +41,19 @@ export class ViewManager extends React.PureComponent<Props, {}> {
     }
 
     render() {
-        const { load, ...otherProps } = this.props;
+        const { name, load, ...otherProps } = this.props;
+
         return (
             <Fragment>
                 <Helmet>
                     <meta charSet="utf-8" />
                     <title>
-                        {this.props.name}
+                        {name}
                     </title>
                 </Helmet>
                 <Bundle
                     load={load}
+                    name={name}
                     {...otherProps}
                 />
             </Fragment>

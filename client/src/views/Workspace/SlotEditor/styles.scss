@@ -3,6 +3,7 @@
 .day-editor {
     @include background-color($color-foreground);
     position: relative;
+    min-height: 140px;
 
     .day-editor-form {
         display: flex;
@@ -16,7 +17,7 @@
 
             .infowrapper {
                 display: flex;
-                align-items: flex-start;
+                align-items: center;
                 flex-grow: 1;
 
                 .startTime,

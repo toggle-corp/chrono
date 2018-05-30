@@ -87,7 +87,6 @@ interface ListData {
     weekDay: number;
 }
 
-
 export class Workspace extends React.PureComponent<Props, States> {
     userGroupRequest: RestRequest;
     projectsRequest: RestRequest;
@@ -202,7 +201,6 @@ export class Workspace extends React.PureComponent<Props, States> {
         this.userGroupRequest.start();
     }
 
-
     handleSlotClick = (
         year: number, month: number, day: number, timeSlotId: number | undefined,
     ) => () => {
@@ -252,10 +250,20 @@ export class Workspace extends React.PureComponent<Props, States> {
             classNames.push(styles.today);
         }
 
-        const { activeTimeSlots } = this.props;
+        const {
+            activeTimeSlots,
+            activeTimeSlotId,
+        } = this.props;
 
         const canonicalDate = getCanonicalDate(date.year, date.month, date.day);
         const timeSlots = activeTimeSlots[canonicalDate];
+
+        const addButtonClassNames = [
+            styles.button,
+        ];
+        if (this.props.activeDate.day === date.day && activeTimeSlotId === undefined) {
+            addButtonClassNames.push(styles.activeSlot);
+        }
 
         return (
             <div
@@ -269,7 +277,7 @@ export class Workspace extends React.PureComponent<Props, States> {
                 </div>
                 <div className={styles.right}>
                     <Button
-                        className={styles.button}
+                        className={addButtonClassNames.join(' ')}
                         title="Add a new timeslot"
                         onClick={this.handleSlotClick(date.year, date.month, date.day, undefined)}
                     >

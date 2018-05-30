@@ -7,5 +7,3 @@ export interface Route {
     };
     routeState?: object; // stricter rule here
 }
-
-

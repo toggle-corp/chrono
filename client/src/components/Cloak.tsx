@@ -39,13 +39,11 @@ class Cloak extends React.PureComponent<Props, {}> {
             render,
         } = this.props;
 
-        if (requireDevMode && process.env.NODE_ENV !== 'development') {
-            return null;
-        } 
-        if (requireLogin && !userId) {
-            return null;
-        } 
-        if (requireAdminRights && !isSuperuser) {
+        if (
+            requireDevMode && process.env.NODE_ENV !== 'development' ||
+            requireLogin && !userId ||
+            requireAdminRights && !isSuperuser
+        ) {
             return null;
         }
         return render();

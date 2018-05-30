@@ -1,7 +1,6 @@
 import { RestRequest } from '../vendor/react-store/utils/rest';
 import { RestHeader, RestAuthorizationHeader } from '../rest/interface';
 
-
 export interface PP {
     [key: string]: (undefined | string | number | (string | number)[]);
 }

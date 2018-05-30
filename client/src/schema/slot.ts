@@ -30,5 +30,3 @@ const slotSchemas: Schema[] = [
     },
 ];
 export default slotSchemas;
-
-

@@ -1,27 +1,16 @@
 @import '../../stylesheets/base';
 
-.add-task {
-    display: flex;
-    flex-direction: column;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: center;
+.add-task-form {
+    @include background-color($color-foreground);
+    padding: $spacing-small $spacing-large $spacing-large;
+    width: 100%;
 
-    .add-task-form-container {
+    .action-buttons {
         display: flex;
-        position: relative;
-        flex-direction: column;
+        justify-content: flex-end;
 
-        .add-task-form {
-            @include background-color($color-foreground);
-            padding: $spacing-small $spacing-large $spacing-large;
-            width: 100%;
-
-            .action-buttons {
-                display: flex;
-                align-items: flex-start;
-                justify-content: space-between;
-            }
+        .action-button {
+            margin-left: $spacing-small;
         }
     }
 }

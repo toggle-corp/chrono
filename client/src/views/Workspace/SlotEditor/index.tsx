@@ -2,16 +2,17 @@ import React from 'react';
 import Redux from 'redux';
 import { connect } from 'react-redux';
 
-import LoadingAnimation from '../../../vendor/react-store/components/View/LoadingAnimation';
-import NonFieldErrors from '../../../vendor/react-store/components/Input/NonFieldErrors';
-import TextInput from '../../../vendor/react-store/components/Input/TextInput';
-import SelectInput from '../../../vendor/react-store/components/Input/SelectInput';
-import PrimaryButton from '../../../vendor/react-store/components/Action/Button/PrimaryButton';
 import DangerButton from '../../../vendor/react-store/components/Action/Button/DangerButton';
-import { RestRequest } from '../../../vendor/react-store/utils/rest';
+import PrimaryButton from '../../../vendor/react-store/components/Action/Button/PrimaryButton';
 import Faram, {
     requiredCondition,
 } from '../../../vendor/react-store/components/Input/Faram';
+import NonFieldErrors from '../../../vendor/react-store/components/Input/NonFieldErrors';
+import SelectInput from '../../../vendor/react-store/components/Input/SelectInput';
+import TextInput from '../../../vendor/react-store/components/Input/TextInput';
+import LoadingAnimation from '../../../vendor/react-store/components/View/LoadingAnimation';
+import Message from '../../../vendor/react-store/components/View/Message';
+import { RestRequest } from '../../../vendor/react-store/utils/rest';
 
 import AddTask from '../../../components/AddTask';
 
@@ -112,7 +113,6 @@ export class SlotEditor extends React.PureComponent<Props, States> {
         if (this.submitSlotRequest) {
             this.submitSlotRequest.stop();
         }
-        // TODO: check if id already exits, in which case PUT request is sent
         const request = new SlotPostRequest({
             setState: params => this.setState(params),
             saveTimeSlot: this.props.saveTimeSlot,
@@ -165,7 +165,13 @@ export class SlotEditor extends React.PureComponent<Props, States> {
 
         // If there is no activeWipTimeSlot then we cannot continue
         if (!activeWipTimeSlot) {
-            return null;
+            return (
+                <div className={styles.dayEditor}>
+                    <Message>
+                        Please select something, anything!
+                    </Message>
+                </div>
+            );
         }
 
         const {
@@ -237,7 +243,7 @@ export class SlotEditor extends React.PureComponent<Props, States> {
                                 className={styles.remarks}
                                 faramElementName="remarks"
                                 label="Remarks"
-                                placeholder="Remarks"
+                                placeholder="Some remarks here"
                             />
                         </div>
                         <div className={styles.actionButtons}>
