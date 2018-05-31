@@ -12,6 +12,7 @@ import {
 } from '../../redux/interface';
 
 import Modal from '../../vendor/react-store/components/View/Modal';
+import Message from '../../vendor/react-store/components/View/Message';
 import ModalBody from '../../vendor/react-store/components/View/Modal/Body';
 import ModalHeader from '../../vendor/react-store/components/View/Modal/Header';
 import PrimaryButton from '../../vendor/react-store/components/Action/Button/PrimaryButton';
@@ -237,9 +238,9 @@ export class UserGroups extends PureComponent<Props, States> {
 
         if (!userGroup) {
             return (
-                <div>
-                    This page doesnot exist!!;
-                </div>
+                <Message>
+                    The usergroup doesn't exist.
+                </Message>
             );
         }
 
@@ -254,7 +255,7 @@ export class UserGroups extends PureComponent<Props, States> {
             <div className={styles.usergroups}>
                 {pending && <LoadingAnimation />}
                 <header className={styles.header}>
-                    <h2> UserGroup</h2>
+                    <h2>UserGroup</h2>
                 </header>
                 <div className={styles.info}>
                     <div className={styles.detail}>

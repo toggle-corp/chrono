@@ -162,8 +162,6 @@ export class UserProjectAdd extends React.PureComponent<Props, States> {
             userGroupId,
         } = this.props;
 
-        console.warn(faramValues);
-
         return (
             <Faram
                 className={styles.projectAddForm}

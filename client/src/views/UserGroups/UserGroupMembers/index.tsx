@@ -3,6 +3,7 @@ import React, {
 } from 'react';
 import Redux from 'redux';
 import { connect } from 'react-redux';
+
 import {
     compareString, compareDate,
 } from '../../../vendor/react-store/utils/common';
@@ -12,6 +13,8 @@ import FormattedDate from '../../../vendor/react-store/components/View/Formatted
 import LoadingAnimation from '../../../vendor/react-store/components/View/LoadingAnimation';
 
 import { RestRequest } from '../../../vendor/react-store/utils/rest';
+import { TableHeader } from '../../../rest/interface';
+
 
 import {
     RootState,
@@ -48,7 +51,7 @@ interface States {
 
 export class UserGroupMembers extends PureComponent<Props, States> {
     memberDeleteRequest: RestRequest;
-    headers: object[];
+    headers: TableHeader<Member>[];
 
     constructor(props: Props) {
         super(props);
@@ -65,33 +68,29 @@ export class UserGroupMembers extends PureComponent<Props, States> {
                 label: 'Name',
                 order: 1,
                 sortable: true,
-                comparator: (a: Member, b: Member) =>
-                    compareString(a.memberName, b.memberName),
+                comparator: (a, b) => compareString(a.memberName, b.memberName),
             },
             {
                 key: 'memberEmail',
                 label: 'Email',
                 order: 2,
                 sortable: true,
-                comparator: (a: Member, b: Member) =>
-                    compareString(a.memberEmail, b.memberEmail),
+                comparator: (a, b) => compareString(a.memberEmail, b.memberEmail),
             },
             {
                 key: 'role',
                 label: 'Role',
                 order: 3,
                 sortable: true,
-                comparator: (a: Member, b: Member) =>
-                    compareString(a.role, b.role),
+                comparator: (a, b) => compareString(a.role, b.role),
             },
             {
                 key: 'joinedAt',
                 label: 'Joined At',
                 order: 4,
                 sortable: true,
-                comparator: (a: Member, b: Member) =>
-                    compareDate(a.joinedAt, b.joinedAt),
-                modifier: (row: Member) => (
+                comparator: (a, b) => compareDate(a.joinedAt, b.joinedAt),
+                modifier: row => (
                     <FormattedDate
                         date={row.joinedAt}
                         mode="dd-MM-yyyy"
@@ -103,7 +102,7 @@ export class UserGroupMembers extends PureComponent<Props, States> {
                 label: 'Action',
                 order: 5,
                 sortable: false,
-                modifier: (row: Member) => (
+                modifier: row => (
                     <ActionButtons
                         row={row}
                         onRemove={this.onRemove}

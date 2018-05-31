@@ -14,6 +14,7 @@ import FormattedDate from '../../../vendor/react-store/components/View/Formatted
 import LoadingAnimation from '../../../vendor/react-store/components/View/LoadingAnimation';
 
 import { RestRequest } from '../../../vendor/react-store/utils/rest';
+import { TableHeader } from '../../../rest/interface';
 
 import {
     RootState,
@@ -48,7 +49,7 @@ interface States {
 
 export class UserGroupProjects extends PureComponent<Props, States> {
     projectDeleteRequest: RestRequest;
-    headers: object[];
+    headers: TableHeader<Project>[];
 
     constructor(props: Props) {
         super(props);
@@ -65,17 +66,15 @@ export class UserGroupProjects extends PureComponent<Props, States> {
                 label: 'Title',
                 order: 1,
                 sortable: true,
-                comparator: (a: Project, b: Project) =>
-                    compareString(a.title, b.title),
+                comparator: (a, b) => compareString(a.title, b.title),
             },
             {
                 key: 'createdAt',
                 label: 'Created At',
                 order: 2,
                 sortable: true,
-                comparator: (a: Project, b: Project) =>
-                    compareDate(a.createdAt, b.createdAt),
-                modifier: (row: Project) => (
+                comparator: (a, b) => compareDate(a.createdAt, b.createdAt),
+                modifier: row => (
                     <FormattedDate
                         date={row.createdAt}
                         mode="dd-MM-yyyy hh:mm"
@@ -84,12 +83,11 @@ export class UserGroupProjects extends PureComponent<Props, States> {
             },
             {
                 key: 'modifiedAt',
-                lable: 'Modified At',
+                label: 'Modified At',
                 order: 3,
                 sortable: true,
-                comparator: (a: Project, b: Project) =>
-                    compareDate(a.modifiedAt, b.modifiedAt),
-                modifier: (row: Project) => (
+                comparator: (a, b) => compareDate(a.modifiedAt, b.modifiedAt),
+                modifier: row => (
                     <FormattedDate
                         date={row.createdAt}
                         mode="dd-MM-yyyy hh:mm"
@@ -101,23 +99,21 @@ export class UserGroupProjects extends PureComponent<Props, States> {
                 label: 'Created By',
                 order: 4,
                 sortable: true,
-                comparator: (a: Project, b: Project) =>
-                    compareString(a.createdByName, b.createdByName),
+                comparator: (a, b) => compareString(a.createdByName, b.createdByName),
             },
             {
                 key: 'modifiedByName',
                 label: 'Modified By',
                 order: 5,
                 sortable: true,
-                comparator: (a: Project, b: Project) =>
-                    compareString(a.modifiedByName, b.modifiedByName),
+                comparator: (a, b) => compareString(a.modifiedByName, b.modifiedByName),
             },
             {
                 key: 'action',
                 label: 'Action',
                 order: 6,
                 sortable: false,
-                modifier: (row: Project) => (
+                modifier: row => (
                     <ActionButtons
                         row={row}
                         onRemove={this.onRemove}
@@ -190,7 +186,7 @@ export class UserGroupProjects extends PureComponent<Props, States> {
                     onClose={this.handleModalClose}
                 >
                     <p>
-                        Are you sure ?
+                        Are you sure you want to delete the project ?
                     </p>
                 </Confirm>
             </div>

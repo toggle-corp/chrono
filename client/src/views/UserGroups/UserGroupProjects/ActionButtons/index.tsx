@@ -59,7 +59,6 @@ export class ActionButtons extends PureComponent<Props, States> {
     render() {
         const links = this.getLinks();
         const { isAdmin } = this.props;
-        console.log(isAdmin);
 
         if (!isAdmin) {
             return (

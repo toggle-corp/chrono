@@ -19,7 +19,7 @@ import {
 
 import schema from '../../../schema';
 
-import { UserProjectAdd } from '../';
+import { UserProjectAdd } from '../../AddProject';
 
 interface Props {
     userId?: number;

@@ -10,6 +10,8 @@ import Confirm from '../../../vendor/react-store/components/View/Modal/Confirm';
 import LoadingAnimation from '../../../vendor/react-store/components/View/LoadingAnimation';
 
 import { RestRequest } from '../../../vendor/react-store/utils/rest';
+import { TableHeader } from '../../../rest/interface';
+
 import {
     RootState,
     UserUserGroup,
@@ -45,7 +47,7 @@ interface States {
 
 export class UserUserGroups extends React.PureComponent<Props, States> {
     userGroupDeleteRequest: RestRequest;
-    headers: object[];
+    headers: TableHeader<UserUserGroup>[];
 
     constructor(props: Props) {
         super(props);
@@ -62,21 +64,21 @@ export class UserUserGroups extends React.PureComponent<Props, States> {
                 label: 'Title',
                 order: 1,
                 sortable: true,
-                comparator: (a: UserUserGroup, b: UserUserGroup) => compareString(a.title, b.title),
+                comparator: (a, b) => compareString(a.title, b.title),
             },
             {
                 key: 'role',
                 label: 'Role',
                 order: 2,
                 sortable: true,
-                comparator: (a: UserUserGroup, b: UserUserGroup) => compareString(a.role, b.role),
+                comparator: (a, b) => compareString(a.role, b.role),
             },
             {
                 key: 'action',
                 label: 'Action',
                 order: 3,
                 sortable: false,
-                modifier: (row: UserUserGroup) => (
+                modifier: row => (
                     <ActionButtons
                         row={row}
                         onRemove={this.onRemove}
