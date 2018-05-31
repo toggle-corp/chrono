@@ -3,10 +3,7 @@ import {
     FgRestBuilder,
 } from '../../../vendor/react-store/utils/rest';
 
-import {
-    ErrorsFromServer,
-    Request,
-} from '../../../rest/interface';
+import { Request } from '../../../rest/interface';
 import { UserProjectAdd } from '../UserProjectAdd';
 
 import {
@@ -48,14 +45,6 @@ export default class UserGroupsGetRequest implements Request<{}> {
                 } catch (err) {
                     console.error(err);
                 }
-            })
-            .failure((response: { errors: ErrorsFromServer }) => {
-                // FIXME: notify user
-                console.warn('Failure: ', response);
-            })
-            .fatal((response: object) => {
-                // FIXME: notify user
-                console.warn('Fatal: ', response);
             })
             .build();
         return userGroupsRequest;

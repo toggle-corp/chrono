@@ -15,6 +15,7 @@ export const enum TIME_SLOT_ACTION {
     changeTimeSlot = 'siloDomainData/CHANGE_TIME_SLOT',
     saveTimeSlot = 'siloDomainData/SAVE_TIME_SLOT',
     discardTimeSlot = 'siloDomainData/DISCARD_TIME_SLOT',
+    deleteTimeSlot = 'siloDomainData/DELETE_TIME_SLOT',
 }
 
 // HELPER
@@ -80,6 +81,10 @@ export const discardTimeSlotAction = () => ({
     type: TIME_SLOT_ACTION.discardTimeSlot,
 });
 
+export const deleteTimeSlotAction = () => ({
+    type: TIME_SLOT_ACTION.deleteTimeSlot,
+});
+
 // REDUCER
 
 const setActiveSlot = (
@@ -134,6 +139,37 @@ const setActiveSlot = (
                     },
                 },
             ],
+        },
+    };
+    return update(state, settings);
+};
+
+const deleteTimeSlot = (
+    state: SiloDomainData,
+) => {
+    const { activeDate, activeTimeSlotId } = state.workspace;
+
+    // at this point year, month, and day should be defined
+    const { year, month, day } = activeDate as { year: number, month: number, day: number};
+
+    const canonicalDate = getCanonicalDate(year, month, day);
+
+    const settings = {
+        workspace: {
+            activeTimeSlotId: { $set: undefined },
+            activeDate: {
+                day: { $set: undefined },
+            },
+            timeSlots: {
+                [canonicalDate]: {
+                    $unset: [activeTimeSlotId],
+                },
+            },
+            wipTimeSlots: {
+                [canonicalDate]: {
+                    $unset: [activeTimeSlotId],
+                },
+            },
         },
     };
     return update(state, settings);
@@ -291,5 +327,6 @@ export const siloDomainDataReducers: ReducerGroup<SiloDomainData> = {
     [TIME_SLOT_ACTION.changeTimeSlot]: changeTimeSlot,
     [TIME_SLOT_ACTION.saveTimeSlot]: saveTimeSlot,
     [TIME_SLOT_ACTION.discardTimeSlot]: discardTimeSlot,
+    [TIME_SLOT_ACTION.deleteTimeSlot]: deleteTimeSlot,
 };
 export default createReducerWithMap(siloDomainDataReducers, initialSiloDomainData);

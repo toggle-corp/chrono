@@ -44,11 +44,12 @@ export default class UserGroupsRequest implements Request<number> {
     }
 
     failure = () => {
+        // Show error from server
         notify.send({
             title: 'User Groups',
             type: notify.type.ERROR,
             message: 'Failed when trying to pull list of user\'s groups',
-            duration: notify.duration.MEDIUM,
+            duration: notify.duration.SLOW,
         });
     }
 

@@ -34,11 +34,12 @@ export default class ProjectDeleteRequest implements Request<UnsetUserProjectAct
     }
 
     failure = () => {
+        // FIXME: show error from server
         notify.send({
             title: 'Project Delete',
             type: notify.type.ERROR,
             message: 'Failed when trying to delete the Project',
-            duration: notify.duration.MEDIUM,
+            duration: notify.duration.SLOW,
         });
     }
 
@@ -52,7 +53,6 @@ export default class ProjectDeleteRequest implements Request<UnsetUserProjectAct
     }
 
     create = ({ userId, project }: UnsetUserProjectAction): RestRequest => {
-        // FIXME: add required fields only
         const url = createUrlForProject(project.id);
         const request = new FgRestBuilder()
             .url(url)
