@@ -11,7 +11,7 @@ import {
     commonParamsForGet,
 } from '../../../rest';
 import { Project } from '../../../redux/interface';
-import schema from '../../../schema'; 
+import schema from '../../../schema';
 
 interface Props {
     setState: Workspace['setState'];

@@ -5,7 +5,7 @@ import {
 
 import { Request } from '../../../rest/interface';
 import { UserGroup } from '../../../redux/interface';
-import schema from '../../../schema'; 
+import schema from '../../../schema';
 import {
     urlForUserGroups,
     commonParamsForGet,

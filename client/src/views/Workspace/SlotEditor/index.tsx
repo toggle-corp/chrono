@@ -3,6 +3,7 @@ import Redux from 'redux';
 import { connect } from 'react-redux';
 
 import DangerButton from '../../../vendor/react-store/components/Action/Button/DangerButton';
+import WarningButton from '../../../vendor/react-store/components/Action/Button/WarningButton';
 import PrimaryButton from '../../../vendor/react-store/components/Action/Button/PrimaryButton';
 import Faram, {
     requiredCondition,
@@ -238,7 +239,11 @@ export class SlotEditor extends React.PureComponent<Props, States> {
                                 keySelector={SlotEditor.keySelector}
                                 labelSelector={SlotEditor.labelSelector}
                             />
-                            <AddTask />
+                            <AddTask
+                                disabled={pendingSave}
+                                // FIXME: don't access faramValues directly
+                                projectId={faramValues.project}
+                            />
                             <TextInput
                                 className={styles.remarks}
                                 faramElementName="remarks"
@@ -247,18 +252,26 @@ export class SlotEditor extends React.PureComponent<Props, States> {
                             />
                         </div>
                         <div className={styles.actionButtons}>
+                            { activeWipTimeSlot && activeWipTimeSlot.id &&
+                                <DangerButton
+                                    type="submit"
+                                    disabled
+                                >
+                                    Delete
+                                </DangerButton>
+                            }
                             <PrimaryButton
                                 type="submit"
                                 disabled={pristine || pendingSave || hasError}
                             >
                                 Save
                             </PrimaryButton>
-                            <DangerButton
+                            <WarningButton
                                 onClick={this.handleDiscard}
                                 disabled={pristine || pendingSave || hasError}
                             >
                                 Discard
-                            </DangerButton>
+                            </WarningButton>
                         </div>
                     </div>
                     <div className={styles.bottom}>
