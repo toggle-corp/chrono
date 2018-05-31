@@ -2,7 +2,7 @@ import update from '../../vendor/react-store/utils/immutable-update';
 import { analyzeErrors } from '../../vendor/react-store/components/Input/Faram/validator';
 import { randomString } from '../../vendor/react-store/utils/common';
 import createReducerWithMap from '../../utils/createReducerWithMap';
-import { getCanonicalDate, getWeekDayNumber } from '../../utils/map';
+import { getCanonicalDate } from '../../utils/map';
 
 import initialSiloDomainData from '../initial-state/siloDomainData';
 import { SiloDomainData, TimeSlot, ReducerGroup, WipTimeSlot } from '../interface';
@@ -106,17 +106,12 @@ const setActiveSlot = (
         ? getFaramValuesFromTimeSlot(timeSlots[canonicalDate][timeSlotId as number])
         : {};
 
-    const weekDay = year && month && day
-        ? getWeekDayNumber(year, month, day)
-        : undefined;
-
     const settings = {
         workspace: {
             activeDate: {
                 year: { $set: year },
                 month: { $set: month },
                 day: { $set: day },
-                weekDay: { $set: weekDay },
             },
             activeTimeSlotId: { $set: timeSlotId },
             $if: [

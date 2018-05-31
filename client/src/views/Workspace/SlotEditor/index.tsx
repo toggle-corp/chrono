@@ -2,6 +2,7 @@ import React from 'react';
 import Redux from 'redux';
 import { connect } from 'react-redux';
 
+import FormattedDate from '../../../vendor/react-store/components/View/FormattedDate';
 import DangerButton from '../../../vendor/react-store/components/Action/Button/DangerButton';
 import WarningButton from '../../../vendor/react-store/components/Action/Button/WarningButton';
 import PrimaryButton from '../../../vendor/react-store/components/Action/Button/PrimaryButton';
@@ -39,7 +40,7 @@ import {
     Task,
     WipTimeSlot,
 } from '../../../redux/interface';
-import { getWeekDayName, getCanonicalDate } from '../../../utils/map';
+import { getCanonicalDate } from '../../../utils/map';
 
 import SlotPostRequest from '../requests/SlotPostRequest';
 import * as styles from './styles.scss';
@@ -53,7 +54,6 @@ interface OwnProps {
     year: number;
     month: number;
     day?: number;
-    weekDay?: number;
     timeSlotId?: number;
 }
 
@@ -160,7 +160,8 @@ export class SlotEditor extends React.PureComponent<Props, States> {
             userGroups,
             projects,
             tasks,
-            weekDay,
+            year,
+            month,
             day,
         } = this.props;
 
@@ -275,11 +276,12 @@ export class SlotEditor extends React.PureComponent<Props, States> {
                         </div>
                     </div>
                     <div className={styles.bottom}>
-                        { weekDay !== undefined &&
-                            <div className={styles.date}>
-                                {getWeekDayName(weekDay)},{day}
-                            </div>
-                        }
+                        <div className={styles.date}>
+                            <FormattedDate
+                                date={`${year}-${month}-${day || 1}`}
+                                mode="EEE, dd"
+                            />
+                        </div>
                     </div>
                 </Faram>
             </div>

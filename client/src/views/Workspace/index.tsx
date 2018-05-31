@@ -2,17 +2,13 @@ import React from 'react';
 import Redux from 'redux';
 import { connect } from 'react-redux';
 
+import FormattedDate from '../../vendor/react-store/components/View/FormattedDate';
 import LoadingAnimation from '../../vendor/react-store/components/View/LoadingAnimation';
 import Button from '../../vendor/react-store/components/Action/Button';
 import ListView from '../../vendor/react-store/components/View/List/ListView';
 import { RestRequest } from '../../vendor/react-store/utils/rest';
 import { getNumDaysInMonthX } from '../../vendor/react-store/utils/common';
-import {
-    getCanonicalDate,
-    getMonthName,
-    getWeekDayName,
-    getWeekDayNumber,
-} from '../../utils/map';
+import { getCanonicalDate } from '../../utils/map';
 
 import {
     setUserGroupsAction,
@@ -48,7 +44,6 @@ interface Ymd {
     year: number;
     month: number;
     day?: number;
-    weekDay?: number;
 }
 
 interface OwnProps {}
@@ -84,7 +79,6 @@ interface ListData {
     year: number;
     month: number;
     day: number;
-    weekDay: number;
 }
 
 export class Workspace extends React.PureComponent<Props, States> {
@@ -97,7 +91,7 @@ export class Workspace extends React.PureComponent<Props, States> {
 
     static calculateListData = (activeDate: Ymd) => {
         const { year, month } = activeDate;
-        const numberOfDays: number = getNumDaysInMonthX(year, month - 1);
+        const numberOfDays: number = getNumDaysInMonthX(year, month);
 
         const listData: ListData[] = [];
         for (let i = 1; i <= numberOfDays; i += 1) {
@@ -105,7 +99,6 @@ export class Workspace extends React.PureComponent<Props, States> {
                 year,
                 month,
                 day: i,
-                weekDay: getWeekDayNumber(year, month, i),
             });
         }
         return listData;
@@ -272,7 +265,10 @@ export class Workspace extends React.PureComponent<Props, States> {
             >
                 <div className={styles.left}>
                     <div className={styles.date}>
-                        {getWeekDayName(date.weekDay)},{date.day}
+                        <FormattedDate
+                            date={`${date.year}-${date.month}-${date.day}`}
+                            mode="EEE, dd"
+                        />
                     </div>
                 </div>
                 <div className={styles.right}>
@@ -297,6 +293,10 @@ export class Workspace extends React.PureComponent<Props, States> {
             pendingUsergroups,
             pendingSlots,
         } = this.state;
+        const {
+            activeDate,
+        } = this.props;
+
         if (pendingProjects || pendingTasks || pendingUsergroups || pendingSlots) {
             return (
                 <div className={styles.workspace}>
@@ -304,12 +304,14 @@ export class Workspace extends React.PureComponent<Props, States> {
                 </div>
             );
         }
-
         return (
             <div className={styles.workspace}>
                 <div className={styles.datebar}>
                     <span className={styles.date}>
-                        {getMonthName(this.props.activeDate.month)}, {this.props.activeDate.year}
+                        <FormattedDate
+                            date={`${activeDate.year}-${activeDate.month}-${activeDate.day || 1}`}
+                            mode="MMM, yyyy"
+                        />
                     </span>
                 </div>
                 <div className={styles.information}>
@@ -321,10 +323,9 @@ export class Workspace extends React.PureComponent<Props, States> {
                 </div>
                 <SlotEditor
                     timeSlotId={this.props.activeTimeSlotId}
-                    year={this.props.activeDate.year}
-                    month={this.props.activeDate.month}
-                    day={this.props.activeDate.day}
-                    weekDay={this.props.activeDate.weekDay}
+                    year={activeDate.year}
+                    month={activeDate.month}
+                    day={activeDate.day}
                 />
             </div>
         );
