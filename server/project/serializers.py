@@ -14,3 +14,9 @@ class ProjectSerializer(DynamicFieldsMixin, UserResourceSerializer):
         if not group.can_get(self.context['request'].user):
             raise serializers.Validations('Invalid user group')
         return group
+
+
+class ProjectExportSerializer(serializers.Serializer):
+    export_format = serializers.CharField()
+    start_date = serializers.DateField()
+    end_date = serializers.DateField()
