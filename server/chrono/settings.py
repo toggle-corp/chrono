@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'user_resource',
     'project',
     'task',
+    'export',
 ]
 
 MIDDLEWARE = [
