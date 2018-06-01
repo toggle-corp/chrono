@@ -47,17 +47,29 @@ class ProjectViewSet(viewsets.ModelViewSet):
                 {'message': 'Project does not exist'},
                 status=status.HTTP_404_NOT_FOUND
             )
+
         filters = serializer.data
         # pop export_type, which is not required in filters
         export_format = filters.pop('export_format')
-        exportable_data = project.filtered_project_summary()
 
+        # get exporter class from export format
         ExporterClass = format_exporters.get(export_format)
         if not ExporterClass:
             return response.Response(
                 {'error': 'Unsupported export format'},
                 status=status.HTTP_400_BAD_REQUEST
             )
+
+        # get the corresponding method from project object
+        data_method_name = 'project_summary_{}'.format(export_format)
+        if not hasattr(project, data_method_name):
+            return response.Response(
+                {'error': 'Something went wrong. Try later.'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        data_method = getattr(project, data_method_name)
+        exportable_data = data_method()
+
         exporter = ExporterClass(exportable_data)
         filepath = exporter.export()
         resp = HttpResponse(content_type=ExporterClass.MIME_TYPE)
@@ -65,6 +77,7 @@ class ProjectViewSet(viewsets.ModelViewSet):
             timezone.now().strftime('%Y-%m-%dT%H.%M.%S'),
             export_format
         )
+        # write data to response
         with open(filepath) as f:
             data = f.read()
         resp.write(data)
