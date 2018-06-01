@@ -1,41 +1,38 @@
-import React, {
-    PureComponent,
-} from 'react';
-import Redux from 'redux';
+import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
+import Redux from 'redux';
 
-import {
-    compareString, compareDate,
-} from '../../../vendor/react-store/utils/common';
-import Table from '../../../vendor/react-store/components/View/Table';
-import Confirm from '../../../vendor/react-store/components/View/Modal/Confirm';
 import FormattedDate from '../../../vendor/react-store/components/View/FormattedDate';
 import LoadingAnimation from '../../../vendor/react-store/components/View/LoadingAnimation';
-
+import Confirm from '../../../vendor/react-store/components/View/Modal/Confirm';
+import Table from '../../../vendor/react-store/components/View/Table';
+import {
+    compareDate,
+    compareString,
+} from '../../../vendor/react-store/utils/common';
 import { RestRequest } from '../../../vendor/react-store/utils/rest';
-import { TableHeader } from '../../../rest/interface';
-
 
 import {
-    RootState,
     Member,
+    RootState,
     UnsetUserGroupMemberAction,
 } from '../../../redux/interface';
 import {
-    userGroupMembersSelector,
-    userGroupIdFromRouteSelector,
     unsetUserGroupMemberAction,
+    userGroupIdFromRouteSelector,
+    userGroupMembersSelector,
 } from '../../../redux';
+import { TableHeader } from '../../../rest/interface';
+
+import MemberDeleteRequest from '../requests/MemberDeleteRequest';
 
 import ActionButtons from './ActionButtons';
 import styles from './styles.scss';
 
-import MemberDeleteRequest from '../requests/MemberDeleteRequest';
-
 interface OwnProps{}
 interface PropsFromState{
-    userGroupId?: number;
     members: Member[];
+    userGroupId?: number;
 }
 interface PropsFromDispatch {
     unsetMember(params: UnsetUserGroupMemberAction): void;
@@ -44,22 +41,24 @@ interface PropsFromDispatch {
 type Props = OwnProps & PropsFromState & PropsFromDispatch;
 
 interface States {
+    pending: boolean;
     selectedMemberIdForDelete?: number;
     showDeleteModal: boolean;
-    pending: boolean;
 }
 
 export class UserGroupMembers extends PureComponent<Props, States> {
     memberDeleteRequest: RestRequest;
     headers: TableHeader<Member>[];
 
+    static keyExtractor = (member: Member) => member.id;
+
     constructor(props: Props) {
         super(props);
 
         this.state  = {
+            pending: false,
             selectedMemberIdForDelete: undefined,
             showDeleteModal: false,
-            pending: false,
         };
 
         this.headers = [
@@ -152,8 +151,6 @@ export class UserGroupMembers extends PureComponent<Props, States> {
         this.setState({ showDeleteModal: false });
     }
 
-    keyExtractor = (member: Member) => member.id;
-
     render() {
         const {
             showDeleteModal,
@@ -170,7 +167,7 @@ export class UserGroupMembers extends PureComponent<Props, States> {
                 <Table
                     data={members}
                     headers={this.headers}
-                    keyExtractor={this.keyExtractor}
+                    keyExtractor={UserGroupMembers.keyExtractor}
                 />
                 <Confirm
                     show={showDeleteModal}

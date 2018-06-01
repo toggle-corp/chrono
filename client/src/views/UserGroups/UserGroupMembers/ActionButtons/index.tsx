@@ -5,20 +5,20 @@ import React, {
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 
-import { pathNames, iconNames } from '../../../../constants';
-import { reverseRoute } from '../../../../vendor/react-store/utils/common';
 import DangerButton from '../../../../vendor/react-store/components/Action/Button/DangerButton';
+import { reverseRoute } from '../../../../vendor/react-store/utils/common';
 
+import {
+    pathNames,
+    iconNames,
+} from '../../../../constants';
+import { isUserAdminSelector } from '../../../../redux';
 import {
     RootState,
     Member,
 } from '../../../../redux/interface';
 
 import * as styles from './styles.scss';
-
-import {
-    isUserAdminSelector,
-} from '../../../../redux';
 
 interface OwnProps {
     row: Member;
@@ -99,6 +99,6 @@ const mapStateToProps = (state: RootState) => ({
     isAdmin: isUserAdminSelector(state),
 });
 
-export default connect<PropsFromState,PropsFromDispatch, OwnProps>(
+export default connect<PropsFromState, PropsFromDispatch, OwnProps>(
     mapStateToProps,
 )(ActionButtons);

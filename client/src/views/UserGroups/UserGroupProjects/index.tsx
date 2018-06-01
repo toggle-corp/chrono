@@ -1,35 +1,33 @@
-import React, {
-    PureComponent,
-} from 'react';
+import React, { PureComponent } from 'react';
 import Redux from 'redux';
 import { connect } from 'react-redux';
 
-import {
-    compareString,
-    compareDate,
-} from '../../../vendor/react-store/utils/common';
-import Table from '../../../vendor/react-store/components/View/Table';
-import Confirm from '../../../vendor/react-store/components/View/Modal/Confirm';
 import FormattedDate from '../../../vendor/react-store/components/View/FormattedDate';
 import LoadingAnimation from '../../../vendor/react-store/components/View/LoadingAnimation';
-
+import Confirm from '../../../vendor/react-store/components/View/Modal/Confirm';
+import Table from '../../../vendor/react-store/components/View/Table';
+import {
+    compareDate,
+    compareString,
+} from '../../../vendor/react-store/utils/common';
 import { RestRequest } from '../../../vendor/react-store/utils/rest';
-import { TableHeader } from '../../../rest/interface';
 
+import { TableHeader } from '../../../rest/interface';
+import {
+    userGroupProjectsSelector,
+    unsetUserGroupProjectAction,
+} from '../../../redux';
 import {
     RootState,
     Project,
     UnsetUserGroupProjectAction,
 } from '../../../redux/interface';
-import {
-    userGroupProjectsSelector,
-    unsetUserGroupProjectAction,
-} from '../../../redux';
+
+import ProjectDeleteRequest from '../requests/ProjectDeleteRequest';
 
 import ActionButtons from './ActionButtons';
 
 import * as styles from './styles.scss';
-import ProjectDeleteRequest from '../requests/ProjectDeleteRequest';
 
 interface OwnProps{}
 interface PropsFromState {
@@ -50,6 +48,8 @@ interface States {
 export class UserGroupProjects extends PureComponent<Props, States> {
     projectDeleteRequest: RestRequest;
     headers: TableHeader<Project>[];
+
+    static keyExtractor = (project: Project)  => project.id;
 
     constructor(props: Props) {
         super(props);
@@ -160,17 +160,13 @@ export class UserGroupProjects extends PureComponent<Props, States> {
         this.setState({ showDeleteModal: false });
     }
 
-    keyExtractor = (project: Project)  => project.id;
-
     render() {
         const {
             showDeleteModal,
             pending,
         } = this.state;
 
-        const {
-            projects,
-        } = this.props;
+        const { projects } = this.props;
 
         return (
             <div className={styles.projects}>
@@ -178,7 +174,7 @@ export class UserGroupProjects extends PureComponent<Props, States> {
                 <Table
                     data={projects}
                     headers={this.headers}
-                    keyExtractor={this.keyExtractor}
+                    keyExtractor={UserGroupProjects.keyExtractor}
                 />
                 <Confirm
                     show={showDeleteModal}

@@ -2,40 +2,39 @@ import React, {
     PureComponent,
 } from 'react';
 import Redux from 'redux';
-
 import { connect } from 'react-redux';
-import {
-    RootState,
-    UserGroup,
-    SetUserGroupAction,
-    SetUserGroupProjectsAction,
-} from '../../redux/interface';
 
-import Modal from '../../vendor/react-store/components/View/Modal';
-import Message from '../../vendor/react-store/components/View/Message';
-import ModalBody from '../../vendor/react-store/components/View/Modal/Body';
-import ModalHeader from '../../vendor/react-store/components/View/Modal/Header';
 import PrimaryButton from '../../vendor/react-store/components/Action/Button/PrimaryButton';
 import LoadingAnimation from '../../vendor/react-store/components/View/LoadingAnimation';
+import Message from '../../vendor/react-store/components/View/Message';
+import Modal from '../../vendor/react-store/components/View/Modal';
+import ModalBody from '../../vendor/react-store/components/View/Modal/Body';
+import ModalHeader from '../../vendor/react-store/components/View/Modal/Header';
+import { RestRequest } from '../../vendor/react-store/utils/rest';
 
 import {
-    userGroupIdFromRouteSelector,
-    userGroupSelector,
     setUserGroupAction,
     setUserGroupProjectsAction,
+    userGroupIdFromRouteSelector,
+    userGroupSelector,
 }  from '../../redux';
+import {
+    RootState,
+    SetUserGroupAction,
+    SetUserGroupProjectsAction,
+    UserGroup,
+} from '../../redux/interface';
 
 import { iconNames } from '../../constants';
+import AddProject from '../../components/AddProject';
 
 import UserGroupProjects from './UserGroupProjects';
 import UserGroupMembers from './UserGroupMembers';
-import AddProject from '../../components/AddProject';
 
 import UserGroupGetRequest from './requests/UserGroupGetRequest';
 import ProjectsGetRequest from './requests/ProjectsGetRequest';
 
 import * as styles from './styles.scss';
-import { RestRequest } from '../../vendor/react-store/utils/rest';
 
 interface OwnProps {} {}
 interface PropsFromState {
@@ -50,23 +49,24 @@ interface PropsFromDispatch {
 type Props = OwnProps & PropsFromState & PropsFromDispatch;
 
 interface States{
-    showAddProjectModal: boolean;
-    showAddMemberModal: boolean;
     projectsPending: boolean;
+    showAddMemberModal: boolean;
+    showAddProjectModal: boolean;
     userGroupInfoPending: boolean;
 }
 export class UserGroups extends PureComponent<Props, States> {
-    userGroupRequest: RestRequest;
     userGroupProjectsRequest: RestRequest;
+    userGroupRequest: RestRequest;
 
     constructor(props: Props) {
         super(props);
 
         this.state = {
-            showAddProjectModal: false,
-            showAddMemberModal: false,
-            userGroupInfoPending: false,
             projectsPending: false,
+            userGroupInfoPending: false,
+
+            showAddMemberModal: false,
+            showAddProjectModal: false,
         };
     }
 
@@ -278,8 +278,8 @@ export class UserGroups extends PureComponent<Props, States> {
 }
 
 const mapStateToProps = (state: RootState) => ({
-    userGroupId: userGroupIdFromRouteSelector(state),
     userGroup: userGroupSelector(state),
+    userGroupId: userGroupIdFromRouteSelector(state),
 });
 
 const mapDispatchToProps = (dispatch: Redux.Dispatch<RootState>) => ({

@@ -5,20 +5,20 @@ import React, {
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 
+import DangerButton from '../../../../vendor/react-store/components/Action/Button/DangerButton';
+import { reverseRoute } from '../../../../vendor/react-store/utils/common';
+
+import {
+    pathNames,
+    iconNames,
+} from '../../../../constants';
+import { isUserAdminSelector } from '../../../../redux';
 import {
     RootState,
     Project,
 } from '../../../../redux/interface';
 
-import { pathNames, iconNames } from '../../../../constants';
-import { reverseRoute } from '../../../../vendor/react-store/utils/common';
-import DangerButton from '../../../../vendor/react-store/components/Action/Button/DangerButton';
-
 import * as styles from './styles.scss';
-
-import {
-    isUserAdminSelector,
-} from '../../../../redux';
 
 interface OwnProps {
     row: Project;
