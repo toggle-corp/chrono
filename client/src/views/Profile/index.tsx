@@ -27,8 +27,8 @@ import { iconNames } from '../../constants';
 import ProfileEdit from './ProfileEdit';
 import UserProjects from './UserProjects';
 import UserUserGroups from './UserUserGroups';
-import UserProjectAdd from './UserProjectAdd';
 import UserUserGroupAdd from './UserUserGroupAdd';
+import AddProject from '../../components/AddProject';
 
 import UserProfileGetRequest from './requests/UserProfileGetRequest';
 import UserUserGroupsGetRequest from './requests/UserUserGroupsGetRequest';
@@ -293,7 +293,7 @@ export class Profile extends React.PureComponent<Props, States> {
                             }
                         />
                         <ModalBody>
-                            <UserProjectAdd
+                            <AddProject
                                 handleClose={this.handleAddProjectModalClose}
                             />
                         </ModalBody>

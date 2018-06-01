@@ -6,8 +6,11 @@ import {
     ReducerGroup,
     UserGroup,
     Users,
-
+    Project,
     SetUserGroupAction,
+    SetUserGroupProjectsAction,
+    UnsetUserGroupProjectAction,
+    UnsetUserGroupMemberAction,
 } from '../../interface';
 
 // ACTION-TYPE
@@ -15,6 +18,9 @@ import {
 export const enum USERGROUP_ACTION {
     setUserGroups = 'domainData/USERGROUP/SET_USERGROUPS',
     setUserGroup = 'domainData/USERGROUP/SET_USERGROUP',
+    setUserGroupProjects = 'domainData/USERGROUP/SET_PROJECTS',
+    unsetUserGroupProject = 'domainData/USERGROUP/UNSET-PROJECT',
+    unsetUserGroupMember = 'domainData/USERGROUP/UNSET-MEMBER',
 }
 
 // ACTION-CREATOR
@@ -29,6 +35,25 @@ export const setUserGroupAction = ({ userId, userGroup }: SetUserGroupAction) =>
     userGroup,
     type: USERGROUP_ACTION.setUserGroup,
 });
+
+export const setUserGroupProjectsAction = (
+    { userGroupId, projects }: SetUserGroupProjectsAction) => ({
+        userGroupId,
+        projects,
+        type: USERGROUP_ACTION.setUserGroupProjects,
+    });
+
+export const unsetUserGroupProjectAction = ({ projectId } : UnsetUserGroupProjectAction) => ({
+    projectId,
+    type: USERGROUP_ACTION.unsetUserGroupProject,
+});
+
+export const unsetUserGroupMemberAction = (
+    { userGroupId, memberId } : UnsetUserGroupMemberAction) => ({
+        userGroupId,
+        memberId,
+        type: USERGROUP_ACTION.unsetUserGroupMember,
+    });
 
 // HELPER
 
@@ -85,9 +110,89 @@ const setUserGroup = (state: DomainData, action: SetUserGroupAction) => {
     return update(state, settings);
 };
 
+const setUserGroupProjects = (state: DomainData, action: SetUserGroupProjectsAction) => {
+    const{
+        userGroupId,
+        projects: userGroupProjects,
+    } = action;
+
+    const settings = {
+        projects: {
+            $bulk: [
+                { $filter: ((project: Project) => project.userGroup !== userGroupId) },
+                { $push: userGroupProjects },
+            ],
+        },
+    };
+
+    return update(state, settings);
+};
+
+const unsetUserGroupProject = (state: DomainData, action: UnsetUserGroupProjectAction) => {
+    const { projectId } = action;
+    const {
+        projects,
+    } = state;
+
+    const index = projects.findIndex(p => (p.id === projectId));
+    if (index === -1) {
+        return state;
+    }
+
+    const settings = {
+        projects: {
+            $splice: [[index, 1]],
+        },
+    };
+
+    return update(state, settings);
+};
+
+const unsetUserGroupMember = (state: DomainData, action: UnsetUserGroupMemberAction) => {
+    const { userGroups } = state;
+    const {
+        userGroupId,
+        memberId,
+    } = action;
+
+    const userGroupIndex = userGroups.findIndex(
+        u => u.id === userGroupId,
+    );
+    if (userGroupIndex === -1) {
+        return state;
+    }
+
+    const userGroup = userGroups[userGroupIndex];
+    if (!userGroup.memberships) {
+        return state;
+    }
+
+    const memberIndex = userGroup.memberships.findIndex(
+        m => m.id === memberId,
+    );
+    if (memberIndex === -1) {
+        return state;
+    }
+
+    const settings = {
+        userGroups: {
+            [userGroupIndex]: {
+                memberships: {
+                    $splice: [[memberIndex, 1]],
+                },
+            },
+        },
+    };
+
+    return update(state, settings);
+};
+
 const reducer: ReducerGroup<DomainData> = {
     [USERGROUP_ACTION.setUserGroups]: setUserGroups,
     [USERGROUP_ACTION.setUserGroup]: setUserGroup,
+    [USERGROUP_ACTION.setUserGroupProjects]: setUserGroupProjects,
+    [USERGROUP_ACTION.unsetUserGroupProject]: unsetUserGroupProject,
+    [USERGROUP_ACTION.unsetUserGroupMember]: unsetUserGroupMember,
 };
 
 export default reducer;

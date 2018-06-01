@@ -11,3 +11,8 @@ export const userIdFromRouteSelector = createSelector(
     routeParamsSelector,
     routeParams => routeParams ? routeParams.userId : 0,
 );
+
+export const userGroupIdFromRouteSelector = createSelector(
+    routeParamsSelector,
+    routeParams => routeParams ? routeParams.userGroupId : 0,
+);

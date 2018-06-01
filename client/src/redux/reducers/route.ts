@@ -31,6 +31,7 @@ export const clearRouteStateAction = () => ({
 
 const urlValues = [
     'userId',
+    'userGroupId',
 ];
 
 const transform = (params: object) => {

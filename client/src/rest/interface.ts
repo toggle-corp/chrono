@@ -114,3 +114,12 @@ export interface AddTaskParams {
     title: string;
     description: string;
 }
+// FIXME: migrate the interface to make it modular.
+export interface TableHeader<T> {
+    key: string;
+    label: string;
+    order: number;
+    sortable?: boolean;
+    comparator?(a: T, b: T): number;
+    modifier?(a: T): React.ReactNode;
+}

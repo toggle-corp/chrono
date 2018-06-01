@@ -6,39 +6,40 @@ import {
     SetProjectAction,
     ActiveUser,
     UserGroup,
-} from '../../../redux/interface';
+} from '../../redux/interface';
 import {
     FaramErrors,
     FaramValues,
     Schema,
     PostProjectBody,
-} from '../../../rest/interface';
+} from '../../rest/interface';
 
 import Faram, {
     requiredCondition,
-} from '../../../vendor/react-store/components/Input/Faram';
-import LoadingAnimation from '../../../vendor/react-store/components/View/LoadingAnimation';
-import SelectInput from '../../../vendor/react-store/components/Input/SelectInput';
-import NonFieldErrors from '../../../vendor/react-store/components/Input/NonFieldErrors';
-import TextInput from '../../../vendor/react-store/components/Input/TextInput';
-import TextArea from '../../../vendor/react-store/components/Input/TextArea';
-import PrimaryButton from '../../../vendor/react-store/components/Action/Button/PrimaryButton';
-import DangerButton from '../../../vendor/react-store/components/Action/Button/DangerButton';
-import { RestRequest } from '../../../vendor/react-store/utils/rest';
+} from '../../vendor/react-store/components/Input/Faram';
+import LoadingAnimation from '../../vendor/react-store/components/View/LoadingAnimation';
+import SelectInput from '../../vendor/react-store/components/Input/SelectInput';
+import NonFieldErrors from '../../vendor/react-store/components/Input/NonFieldErrors';
+import TextInput from '../../vendor/react-store/components/Input/TextInput';
+import TextArea from '../../vendor/react-store/components/Input/TextArea';
+import PrimaryButton from '../../vendor/react-store/components/Action/Button/PrimaryButton';
+import DangerButton from '../../vendor/react-store/components/Action/Button/DangerButton';
+import { RestRequest } from '../../vendor/react-store/utils/rest';
 
 import {
     setProjectAction,
     activeUserSelector,
     userGroupsSelector,
     setUserGroupsAction,
-} from '../../../redux';
+} from '../../redux';
 
-import UserGroupsGetRequest from '../requests/UserGroupsGetRequest';
-import ProjectPostRequest from '../requests/ProjectPostRequest';
+import UserGroupsGetRequest from './requests/UserGroupsGetRequest';
+import ProjectPostRequest from './requests/ProjectPostRequest';
 import * as styles from './styles.scss';
 
 interface OwnProps {
     handleClose() : void;
+    userGroupId?: number;
 }
 interface PropsFromState {
     activeUser: ActiveUser;
@@ -58,7 +59,7 @@ interface States {
     pending: boolean;
 }
 
-export class UserProjectAdd extends React.PureComponent<Props, States> {
+export class AddProject extends React.PureComponent<Props, States> {
     projectPostRequest: RestRequest;
     userGroupRequest: RestRequest;
     schema: Schema;
@@ -71,7 +72,7 @@ export class UserProjectAdd extends React.PureComponent<Props, States> {
 
         this.state = {
             faramErrors: {},
-            faramValues: {},
+            faramValues: { userGroup: props.userGroupId },
             pending: false,
             pristine: true,
         };
@@ -79,8 +80,8 @@ export class UserProjectAdd extends React.PureComponent<Props, States> {
         this.schema = {
             fields: {
                 title: [requiredCondition],
-                description: [],
                 userGroup: [requiredCondition],
+                description: [],
             },
         };
     }
@@ -158,6 +159,7 @@ export class UserProjectAdd extends React.PureComponent<Props, States> {
         const {
             handleClose,
             userGroups,
+            userGroupId,
         } = this.props;
 
         return (
@@ -191,8 +193,9 @@ export class UserProjectAdd extends React.PureComponent<Props, States> {
                     label="User Group"
                     options={userGroups}
                     placeholder="Select a user group"
-                    keySelector={UserProjectAdd.keySelector}
-                    labelSelector={UserProjectAdd.labelSelector}
+                    keySelector={AddProject.keySelector}
+                    labelSelector={AddProject.labelSelector}
+                    disabled={!!userGroupId}
                 />
                 <div className={styles.actionButtons}>
                     <PrimaryButton
@@ -224,4 +227,4 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<RootState>) => ({
 
 export default connect<PropsFromState, PropsFromDispatch, OwnProps>(
     mapStateToProps, mapDispatchToProps,
-)(UserProjectAdd);
+)(AddProject);
