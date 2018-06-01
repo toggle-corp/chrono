@@ -8,7 +8,7 @@ import {
     ErrorsFromServer,
     Request,
 } from '../../../rest/interface';
-import { UserProjectAdd } from '../index';
+import { AddProject } from '../index';
 
 import {
     urlForUserGroups,
@@ -18,7 +18,7 @@ import { UserGroup } from '../../../redux/interface';
 import schema from '../../../schema';
 
 interface Props {
-    setState: UserProjectAdd['setState'];
+    setState: AddProject['setState'];
     setUserGroups(params: UserGroup[]): void;
 }
 

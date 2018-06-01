@@ -19,11 +19,11 @@ import {
 
 import schema from '../../../schema';
 
-import { UserProjectAdd } from '../../AddProject';
+import { AddProject } from '../../AddProject';
 
 interface Props {
     userId?: number;
-    setState: UserProjectAdd['setState'];
+    setState: AddProject['setState'];
     setProject(params: SetProjectAction): void;
     handleClose(): void;
 }

@@ -55,7 +55,6 @@ export const unsetUserGroupMemberAction = (
         type: USERGROUP_ACTION.unsetUserGroupMember,
     });
 
-
 // HELPER
 
 const findIndexOfUserGroupOfUser = (

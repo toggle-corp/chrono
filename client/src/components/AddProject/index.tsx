@@ -59,7 +59,7 @@ interface States {
     pending: boolean;
 }
 
-export class UserProjectAdd extends React.PureComponent<Props, States> {
+export class AddProject extends React.PureComponent<Props, States> {
     projectPostRequest: RestRequest;
     userGroupRequest: RestRequest;
     schema: Schema;
@@ -193,9 +193,9 @@ export class UserProjectAdd extends React.PureComponent<Props, States> {
                     label="User Group"
                     options={userGroups}
                     placeholder="Select a user group"
-                    keySelector={UserProjectAdd.keySelector}
-                    labelSelector={UserProjectAdd.labelSelector}
-                    disabled={userGroupId}
+                    keySelector={AddProject.keySelector}
+                    labelSelector={AddProject.labelSelector}
+                    disabled={!!userGroupId}
                 />
                 <div className={styles.actionButtons}>
                     <PrimaryButton
@@ -227,4 +227,4 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<RootState>) => ({
 
 export default connect<PropsFromState, PropsFromDispatch, OwnProps>(
     mapStateToProps, mapDispatchToProps,
-)(UserProjectAdd);
+)(AddProject);
