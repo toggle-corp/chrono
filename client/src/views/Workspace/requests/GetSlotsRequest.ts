@@ -10,7 +10,7 @@ import {
     urlForSlots,
     commonParamsForGet,
 } from '../../../rest';
-import schema from '../../../schema'; 
+import schema from '../../../schema';
 
 import { Workspace } from '../index';
 

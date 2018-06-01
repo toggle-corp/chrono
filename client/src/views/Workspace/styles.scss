@@ -54,9 +54,10 @@ $color-text-on-primary: get-text-color($color-primary);
                 display: flex;
                 .button {
                     margin-left: $spacing-small;
+                    border-bottom: $width-separator-medium solid transparent;
 
                     &.active-slot {
-                        border-right: $width-separator-thin solid $color-success;
+                        border-bottom: $width-separator-medium solid $color-success;
                     }
                 }
             }

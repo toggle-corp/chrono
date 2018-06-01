@@ -44,11 +44,12 @@ export default class ProjectsRequest implements Request<number> {
     }
 
     failure = () => {
+        // FIXME: show error from server
         notify.send({
             title: 'User Projects',
             type: notify.type.ERROR,
             message: 'Failed when trying to pull list of user\'s projects',
-            duration: notify.duration.MEDIUM,
+            duration: notify.duration.SLOW,
         });
     }
 

@@ -2,16 +2,19 @@ import React from 'react';
 import Redux from 'redux';
 import { connect } from 'react-redux';
 
-import LoadingAnimation from '../../../vendor/react-store/components/View/LoadingAnimation';
-import NonFieldErrors from '../../../vendor/react-store/components/Input/NonFieldErrors';
-import TextInput from '../../../vendor/react-store/components/Input/TextInput';
-import SelectInput from '../../../vendor/react-store/components/Input/SelectInput';
-import PrimaryButton from '../../../vendor/react-store/components/Action/Button/PrimaryButton';
+import FormattedDate from '../../../vendor/react-store/components/View/FormattedDate';
 import DangerButton from '../../../vendor/react-store/components/Action/Button/DangerButton';
-import { RestRequest } from '../../../vendor/react-store/utils/rest';
+import WarningButton from '../../../vendor/react-store/components/Action/Button/WarningButton';
+import PrimaryButton from '../../../vendor/react-store/components/Action/Button/PrimaryButton';
 import Faram, {
     requiredCondition,
 } from '../../../vendor/react-store/components/Input/Faram';
+import NonFieldErrors from '../../../vendor/react-store/components/Input/NonFieldErrors';
+import SelectInput from '../../../vendor/react-store/components/Input/SelectInput';
+import TextInput from '../../../vendor/react-store/components/Input/TextInput';
+import LoadingAnimation from '../../../vendor/react-store/components/View/LoadingAnimation';
+import Message from '../../../vendor/react-store/components/View/Message';
+import { RestRequest } from '../../../vendor/react-store/utils/rest';
 
 import AddTask from '../../../components/AddTask';
 
@@ -27,6 +30,7 @@ import {
     changeTimeSlotAction,
     ChangeTimeSlotAction,
     discardTimeSlotAction,
+    deleteTimeSlotAction,
     saveTimeSlotAction,
     SaveTimeSlotAction,
 } from '../../../redux';
@@ -37,9 +41,10 @@ import {
     Task,
     WipTimeSlot,
 } from '../../../redux/interface';
-import { getWeekDayName, getCanonicalDate } from '../../../utils/map';
+import { getCanonicalDate } from '../../../utils/map';
 
 import SlotPostRequest from '../requests/SlotPostRequest';
+import SlotDeleteRequest from '../requests/SlotDeleteRequest';
 import * as styles from './styles.scss';
 
 interface WithIdAndTitle {
@@ -51,7 +56,6 @@ interface OwnProps {
     year: number;
     month: number;
     day?: number;
-    weekDay?: number;
     timeSlotId?: number;
 }
 
@@ -65,6 +69,7 @@ interface PropsFromState {
 interface PropsFromDispatch {
     changeTimeSlot(params: ChangeTimeSlotAction): void;
     discardTimeSlot(): void;
+    deleteTimeSlot(): void;
     saveTimeSlot(params: SaveTimeSlotAction): void;
 }
 
@@ -72,11 +77,13 @@ type Props = OwnProps & PropsFromState & PropsFromDispatch;
 
 interface States {
     pendingSave: boolean;
+    pendingDelete: boolean;
 }
 
 export class SlotEditor extends React.PureComponent<Props, States> {
     schema: Schema;
     submitSlotRequest: RestRequest;
+    deleteSlotRequest: RestRequest;
 
     static keySelector = (d: WithIdAndTitle) => d.id;
     static labelSelector = (d: WithIdAndTitle) => d.title;
@@ -86,6 +93,7 @@ export class SlotEditor extends React.PureComponent<Props, States> {
 
         this.state = {
             pendingSave: false,
+            pendingDelete: false,
         };
 
         this.schema = {
@@ -112,7 +120,6 @@ export class SlotEditor extends React.PureComponent<Props, States> {
         if (this.submitSlotRequest) {
             this.submitSlotRequest.stop();
         }
-        // TODO: check if id already exits, in which case PUT request is sent
         const request = new SlotPostRequest({
             setState: params => this.setState(params),
             saveTimeSlot: this.props.saveTimeSlot,
@@ -121,6 +128,20 @@ export class SlotEditor extends React.PureComponent<Props, States> {
 
         this.submitSlotRequest = request.create(value);
         this.submitSlotRequest.start();
+    }
+
+    startDeleteSlotRequest = (slotId: number) => {
+        if (this.deleteSlotRequest) {
+            this.deleteSlotRequest.stop();
+        }
+
+        const request = new SlotDeleteRequest({
+            setState: params => this.setState(params),
+            deleteTimeSlot: this.props.deleteTimeSlot,
+        });
+
+        this.deleteSlotRequest = request.create(slotId);
+        this.deleteSlotRequest.start();
     }
 
     handleFaramChange = (
@@ -152,20 +173,41 @@ export class SlotEditor extends React.PureComponent<Props, States> {
         this.props.discardTimeSlot();
     }
 
+    handleDelete = () => {
+        const { activeWipTimeSlot } = this.props;
+
+        const slotId = activeWipTimeSlot ? activeWipTimeSlot.id : undefined;
+        if (!slotId) {
+            return;
+        }
+
+        this.startDeleteSlotRequest(slotId);
+    }
+
     render() {
-        const { pendingSave } = this.state;
+        const {
+            pendingSave,
+            pendingDelete,
+        } = this.state;
         const {
             activeWipTimeSlot,
             userGroups,
             projects,
             tasks,
-            weekDay,
+            year,
+            month,
             day,
         } = this.props;
 
         // If there is no activeWipTimeSlot then we cannot continue
         if (!activeWipTimeSlot) {
-            return null;
+            return (
+                <div className={styles.dayEditor}>
+                    <Message>
+                        Please select something, anything!
+                    </Message>
+                </div>
+            );
         }
 
         const {
@@ -175,6 +217,8 @@ export class SlotEditor extends React.PureComponent<Props, States> {
             hasError,
         } = activeWipTimeSlot;
 
+        const pending = pendingSave || pendingDelete;
+
         return (
             <div className={styles.dayEditor}>
                 <Faram
@@ -182,12 +226,12 @@ export class SlotEditor extends React.PureComponent<Props, States> {
                     schema={this.schema}
                     value={faramValues}
                     error={faramErrors}
-                    disabled={pendingSave}
+                    disabled={pending}
                     onChange={this.handleFaramChange}
                     onValidationSuccess={this.handleFaramSuccess}
                     onValidationFailure={this.handleFaramFailure}
                 >
-                    {pendingSave && <LoadingAnimation />}
+                    {pending && <LoadingAnimation />}
                     <NonFieldErrors faramElement />
                     <div className={styles.mainForm}>
                         <div className={styles.infowrapper} >
@@ -197,6 +241,7 @@ export class SlotEditor extends React.PureComponent<Props, States> {
                                 label="Start"
                                 placeholder="10:00"
                                 type="time"
+                                autoFocus
                              />
                             <TextInput
                                 faramElementName="endTime"
@@ -232,35 +277,48 @@ export class SlotEditor extends React.PureComponent<Props, States> {
                                 keySelector={SlotEditor.keySelector}
                                 labelSelector={SlotEditor.labelSelector}
                             />
-                            <AddTask />
+                            <AddTask
+                                // FIXME: don't access faramValues directly
+                                projectId={faramValues.project}
+                                disabled={pending}
+                            />
                             <TextInput
                                 className={styles.remarks}
                                 faramElementName="remarks"
                                 label="Remarks"
-                                placeholder="Remarks"
+                                placeholder="Some remarks here"
                             />
                         </div>
                         <div className={styles.actionButtons}>
+                            { activeWipTimeSlot && activeWipTimeSlot.id &&
+                                <DangerButton
+                                    onClick={this.handleDelete}
+                                    disabled={pending}
+                                >
+                                    Delete
+                                </DangerButton>
+                            }
                             <PrimaryButton
                                 type="submit"
-                                disabled={pristine || pendingSave || hasError}
+                                disabled={pristine || pending || hasError}
                             >
                                 Save
                             </PrimaryButton>
-                            <DangerButton
+                            <WarningButton
                                 onClick={this.handleDiscard}
-                                disabled={pristine || pendingSave || hasError}
+                                disabled={pristine || pending || hasError}
                             >
                                 Discard
-                            </DangerButton>
+                            </WarningButton>
                         </div>
                     </div>
                     <div className={styles.bottom}>
-                        { weekDay !== undefined &&
-                            <div className={styles.date}>
-                                {getWeekDayName(weekDay)},{day}
-                            </div>
-                        }
+                        <div className={styles.date}>
+                            <FormattedDate
+                                date={`${year}-${month}-${day || 1}`}
+                                mode="EEE, dd"
+                            />
+                        </div>
                     </div>
                 </Faram>
             </div>
@@ -278,6 +336,7 @@ const mapStateToProps = (state: RootState, props: OwnProps) => ({
 const mapDispatchToProps = (dispatch: Redux.Dispatch<RootState>) => ({
     changeTimeSlot: (params: ChangeTimeSlotAction) => dispatch(changeTimeSlotAction(params)),
     discardTimeSlot: () => dispatch(discardTimeSlotAction()),
+    deleteTimeSlot: () => dispatch(deleteTimeSlotAction()),
     saveTimeSlot: (params: SaveTimeSlotAction) => dispatch(saveTimeSlotAction(params)),
 });
 

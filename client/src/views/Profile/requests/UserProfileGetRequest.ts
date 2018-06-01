@@ -44,6 +44,7 @@ export default class UserProfileRequest implements Request<number> {
     }
 
     failure = () => {
+        // FIXME: show error from server
         notify.send({
             title: 'User Profile',
             type: notify.type.ERROR,

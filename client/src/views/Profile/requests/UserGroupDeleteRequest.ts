@@ -34,11 +34,12 @@ export default class UserGroupDeleteRequest implements Request<UnsetUserUserGrou
     }
 
     failure = () => {
+        // FIXME: show error from server
         notify.send({
             title: 'User Group Delete',
             type: notify.type.ERROR,
             message: 'Failed when trying to delete the user group',
-            duration: notify.duration.MEDIUM,
+            duration: notify.duration.SLOW,
         });
     }
 

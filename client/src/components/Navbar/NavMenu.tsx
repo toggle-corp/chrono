@@ -48,11 +48,9 @@ class NavMenu extends React.PureComponent<Props, State> {
         };
     }
 
-    componentWillMount() {
-        window.addEventListener('resize', this.handleWindowResize);
-    }
-
     componentDidMount() {
+        window.addEventListener('resize', this.handleWindowResize);
+
         const overflowMenuLinks = this.computeSize(this.state.navLinks);
         this.setState({ overflowMenuLinks });
     }
