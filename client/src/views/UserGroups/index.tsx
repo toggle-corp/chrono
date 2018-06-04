@@ -10,37 +10,41 @@ import Message from '../../vendor/react-store/components/View/Message';
 import Modal from '../../vendor/react-store/components/View/Modal';
 import ModalBody from '../../vendor/react-store/components/View/Modal/Body';
 import ModalHeader from '../../vendor/react-store/components/View/Modal/Header';
-import { RestRequest } from '../../vendor/react-store/utils/rest';
+
+import {
+    RootState,
+    UserGroup,
+    SetUserGroupAction,
+    SetUserGroupProjectsAction,
+} from '../../redux/interface';
 
 import {
     setUserGroupAction,
+    isUserAdminSelector,
     setUserGroupProjectsAction,
     userGroupIdFromRouteSelector,
     userGroupSelector,
 }  from '../../redux';
-import {
-    RootState,
-    SetUserGroupAction,
-    SetUserGroupProjectsAction,
-    UserGroup,
-} from '../../redux/interface';
 
 import { iconNames } from '../../constants';
 
-import UserGroupProjects from './UserGroupProjects';
-import UserGroupMembers from './UserGroupMembers';
-
-import AddProject from '../../components/AddProject';
-import MemberAdd from './MemberAdd';
+import { RestRequest } from '../../vendor/react-store/utils/rest';
 
 import UserGroupGetRequest from './requests/UserGroupGetRequest';
 import ProjectsGetRequest from './requests/ProjectsGetRequest';
+
+import AddProject from '../../components/AddProject';
+import MemberAdd from './MemberAdd';
+import UserGroupMembers from './UserGroupMembers';
+import UserGroupProfileEdit from './UserGroupProfileEdit';
+import UserGroupProjects from './UserGroupProjects';
 
 import * as styles from './styles.scss';
 
 interface OwnProps {} {}
 interface PropsFromState {
     userGroupId?: number;
+    isAdmin: boolean;
     userGroup?: UserGroup;
 }
 interface PropsFromDispatch {
@@ -55,6 +59,7 @@ interface States{
     showAddMemberModal: boolean;
     showAddProjectModal: boolean;
     userGroupInfoPending: boolean;
+    showEditUserGroupModal: boolean;
 }
 export class UserGroups extends PureComponent<Props, States> {
     userGroupProjectsRequest: RestRequest;
@@ -66,9 +71,9 @@ export class UserGroups extends PureComponent<Props, States> {
         this.state = {
             projectsPending: false,
             userGroupInfoPending: false,
-
             showAddMemberModal: false,
             showAddProjectModal: false,
+            showEditUserGroupModal: false,
         };
     }
 
@@ -126,6 +131,14 @@ export class UserGroups extends PureComponent<Props, States> {
         this.userGroupProjectsRequest.start();
     }
 
+    handleEditUserGroupClick = () => {
+        this.setState({ showEditUserGroupModal: true });
+    }
+
+    handleEditUserGroupClose = () => {
+        this.setState({ showEditUserGroupModal: false });
+    }
+
     handleAddProject = () => {
         this.setState({ showAddProjectModal: true });
     }
@@ -142,8 +155,9 @@ export class UserGroups extends PureComponent<Props, States> {
         this.setState({ showAddMemberModal: false });
     }
 
-    renderUserGroupProjects = ({ userGroup } : { userGroup: UserGroup }) => {
+    renderUserGroupProjects = () => {
         const { showAddProjectModal } = this.state;
+        const { userGroup } = this.props;
         return (
             <div className={styles.userprojects}>
                 <div className={styles.header}>
@@ -177,7 +191,7 @@ export class UserGroups extends PureComponent<Props, States> {
                       <ModalBody>
                           <AddProject
                               handleClose={this.handleAddProjectModalClose}
-                              userGroupId={userGroup.id}
+                              userGroupId={userGroup ? userGroup.id :  undefined}
                           />
                       </ModalBody>
                   </Modal>
@@ -234,10 +248,12 @@ export class UserGroups extends PureComponent<Props, States> {
     render() {
         const {
             userGroup,
+            isAdmin,
         } = this.props;
 
         const {
             projectsPending,
+            showEditUserGroupModal,
             userGroupInfoPending,
         } = this.state;
 
@@ -264,18 +280,26 @@ export class UserGroups extends PureComponent<Props, States> {
                 </header>
                 <div className={styles.info}>
                     <div className={styles.detail}>
-                        <span className={styles.name}>
+                        <span className={styles.title}>
                             {userGroup.title}
                         </span>
-                        <div />
+                        <span className={styles.description}>
+                            {userGroup.description}
+                        </span>
+                        {
+                            isAdmin &&
+                            <UserGroupProfileEdit
+                                onClick={this.handleEditUserGroupClick}
+                                onClose={this.handleEditUserGroupClose}
+                                showEditModal={showEditUserGroupModal}
+                            />
+                        }
                     </div>
                 </div>
                 <div className={styles.log}>
                     <h2>Activity</h2>
                 </div>
-                <Projects
-                    userGroup={userGroup}
-                />
+                <Projects />
                 <Members />
             </div>
         );
@@ -283,8 +307,9 @@ export class UserGroups extends PureComponent<Props, States> {
 }
 
 const mapStateToProps = (state: RootState) => ({
-    userGroup: userGroupSelector(state),
     userGroupId: userGroupIdFromRouteSelector(state),
+    isAdmin: isUserAdminSelector(state),
+    userGroup: userGroupSelector(state),
 });
 
 const mapDispatchToProps = (dispatch: Redux.Dispatch<RootState>) => ({

@@ -47,6 +47,11 @@ export interface PostUserGroupBody {
     description: string;
 }
 
+export interface PatchUserGroupBody {
+    title: string;
+    description: string;
+}
+
 export interface PatchUserBody {
     firstName: string;
     lastName: string;

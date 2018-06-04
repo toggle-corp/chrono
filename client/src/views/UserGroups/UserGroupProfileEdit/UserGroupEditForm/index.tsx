@@ -1,0 +1,190 @@
+import React, {
+    PureComponent,
+} from 'react';
+import Redux from 'redux';
+import { connect } from 'react-redux';
+
+import {
+    RootState,
+    PatchUserGroupAction,
+} from '../../../../redux/interface';
+import {
+    PatchUserGroupBody,
+} from '../../../../rest/interface';
+
+import Faram, {
+    FaramErrors,
+    Schema,
+    FaramValues,
+}
+import { requiredCondition } from '../../../../vendor/react-store/components/Input/Faram/validations';
+import NonFieldErrors from '../../../../vendor/react-store/components/Input/NonFieldErrors';
+import LoadingAnimation from '../../../../vendor/react-store/components/View/LoadingAnimation';
+import TextInput from '../../../../vendor/react-store/components/Input/TextInput';
+import TextArea from '../../../../vendor/react-store/components/Input/TextArea';
+import PrimaryButton from '../../../../vendor/react-store/components/Action/Button/PrimaryButton';
+import DangerButton from '../../../../vendor/react-store/components/Action/Button/DangerButton';
+
+import { RestRequest } from '../../../../vendor/react-store/utils/rest';
+
+import UserGroupPatchRequest from '../../requests/UserGroupPatchRequest';
+
+import {
+    userGroupIdFromRouteSelector,
+    patchUserGroupAction,
+} from '../../../../redux';
+
+import * as styles from './styles.scss';
+
+interface OwnProps{
+    handleClose(): void;
+}
+interface PropsFromState{
+    userGroupId?: number;
+}
+interface PropsFromDispatch{
+    patchUserGroup(params: PatchUserGroupAction): void;
+}
+
+
+type Props = OwnProps & PropsFromState & PropsFromDispatch;
+
+interface States {
+    faramErrors: FaramErrors;
+    faramValues: FaramValues;
+    pristine: boolean;
+    pending: boolean;
+}
+
+export class UserGroupEditForm extends PureComponent<Props, States> {
+    schema: Schema;
+    userGroupPatchRequest: RestRequest;
+
+    constructor(props: Props) {
+        super(props);
+
+        this.state  = {
+            faramErrors: {},
+            faramValues: {},
+            pristine: true,
+            pending: false,
+        };
+        this.schema = {
+            fields: {
+                title: [requiredCondition],
+                description: [],
+            },
+        };
+    }
+
+    componentWillUnmount() {
+        if (this.userGroupPatchRequest) {
+            this.userGroupPatchRequest.stop();
+        }
+    }
+
+    requestForUserGroupPatch = (userGroupId: number, values: PatchUserGroupBody) => {
+        if (this.userGroupPatchRequest) {
+            this.userGroupPatchRequest.stop();
+        }
+
+        const request = new UserGroupPatchRequest({
+            userGroupId,
+            patchUserGroup: this.props.patchUserGroup,
+            handleClose: this.props.handleClose,
+            setState: states => this.setState(states),
+        });
+
+        this.userGroupPatchRequest = request.create(values);
+        this.userGroupPatchRequest.start();
+    }
+
+    handleFaramChange = (values: PatchUserGroupBody, faramErrors: FaramErrors) => {
+        this.setState({
+            faramErrors,
+            faramValues: values,
+            pristine: false,
+        });
+    }
+
+    handleFaramError = (faramErrors: FaramErrors) => {
+        this.setState({
+            faramErrors,
+            pristine: false,
+        });
+    }
+
+    handleFaramSubmit = (values: PatchUserGroupBody) => {
+        const { userGroupId } = this.props;
+        if (userGroupId) {
+            this.requestForUserGroupPatch(userGroupId, values);
+        }
+    }
+
+    render() {
+        const {
+            pending,
+            pristine,
+            faramErrors,
+            faramValues,
+        } = this.state;
+
+        const {
+            handleClose,
+        } = this.props;
+
+        return (
+            <Faram
+                className={styles.editUserGroupForm}
+                schema={this.schema}
+                value={faramValues}
+                error={faramErrors}
+                onChange={this.handleFaramChange}
+                onValidationSuccess={this.handleFaramSubmit}
+                onValidationFailure={this.handleFaramError}
+                disabled={pending}
+            >
+                {pending && <LoadingAnimation />}
+                <NonFieldErrors faramElement />
+                <TextInput
+                    className={styles.title}
+                    faramElementName="title"
+                    label="Title"
+                    placeholder={faramValues.title}
+                    autoFocus
+                />
+                <TextArea
+                    className={styles.description}
+                    faramElementName="description"
+                    label="Description"
+                    placeholder={faramValues.description}
+                />
+                <div className={styles.actionButtons}>
+                    <DangerButton
+                        onClick={handleClose}
+                    >
+                        Cancel
+                    </DangerButton>
+                    <PrimaryButton
+                        type="submit"
+                        disabled={pristine || pending}
+                    >
+                        Save
+                    </PrimaryButton>
+                </div>
+            </Faram>
+        );
+    }
+}
+
+const mapStateToProps = (state: RootState) => ({
+    userGroupId: userGroupIdFromRouteSelector(state),
+});
+
+const mapDispatchToProps = (dispatch: Redux.Dispatch<RootState>) => ({
+    patchUserGroup: (params: PatchUserGroupAction) => dispatch(patchUserGroupAction(params)),
+});
+
+export default connect<PropsFromState, PropsFromDispatch, OwnProps>(
+    mapStateToProps, mapDispatchToProps,
+)(UserGroupEditForm);

@@ -13,7 +13,11 @@
 
         .detail {
 
-            .name {
+            .title {
+                display: flex;
+            }
+
+            .description {
                 display: flex;
             }
         }
