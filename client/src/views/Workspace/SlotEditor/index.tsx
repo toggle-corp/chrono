@@ -7,8 +7,10 @@ import DangerButton from '../../../vendor/react-store/components/Action/Button/D
 import WarningButton from '../../../vendor/react-store/components/Action/Button/WarningButton';
 import PrimaryButton from '../../../vendor/react-store/components/Action/Button/PrimaryButton';
 import Faram, {
-    requiredCondition,
+    FaramErrors,
+    FaramSchema,
 } from '../../../vendor/react-store/components/Input/Faram';
+import { requiredCondition } from '../../../vendor/react-store/components/Input/Faram/validations';
 import NonFieldErrors from '../../../vendor/react-store/components/Input/NonFieldErrors';
 import SelectInput from '../../../vendor/react-store/components/Input/SelectInput';
 import TextInput from '../../../vendor/react-store/components/Input/TextInput';
@@ -18,10 +20,6 @@ import { RestRequest } from '../../../vendor/react-store/utils/rest';
 
 import AddTask from '../../../components/AddTask';
 
-import {
-    FaramErrors,
-    Schema,
-} from '../../../rest/interface';
 import {
     activeWipTimeSlotSelector,
     userGroupsSelector,
@@ -81,7 +79,7 @@ interface States {
 }
 
 export class SlotEditor extends React.PureComponent<Props, States> {
-    schema: Schema;
+    schema: FaramSchema;
     submitSlotRequest: RestRequest;
     deleteSlotRequest: RestRequest;
 

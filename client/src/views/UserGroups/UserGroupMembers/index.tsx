@@ -5,7 +5,7 @@ import Redux from 'redux';
 import FormattedDate from '../../../vendor/react-store/components/View/FormattedDate';
 import LoadingAnimation from '../../../vendor/react-store/components/View/LoadingAnimation';
 import Confirm from '../../../vendor/react-store/components/View/Modal/Confirm';
-import Table from '../../../vendor/react-store/components/View/Table';
+import Table, { Header } from '../../../vendor/react-store/components/View/Table';
 import {
     compareDate,
     compareString,
@@ -22,7 +22,6 @@ import {
     userGroupIdFromRouteSelector,
     userGroupMembersSelector,
 } from '../../../redux';
-import { TableHeader } from '../../../rest/interface';
 
 import MemberDeleteRequest from '../requests/MemberDeleteRequest';
 
@@ -48,7 +47,7 @@ interface States {
 
 export class UserGroupMembers extends PureComponent<Props, States> {
     memberDeleteRequest: RestRequest;
-    headers: TableHeader<Member>[];
+    headers: Header<Member>[];
 
     static keyExtractor = (member: Member) => member.id;
 

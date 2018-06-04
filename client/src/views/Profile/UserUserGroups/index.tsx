@@ -5,12 +5,11 @@ import { connect } from 'react-redux';
 import {
     compareString,
 } from '../../../vendor/react-store/utils/common';
-import Table from '../../../vendor/react-store/components/View/Table';
+import Table, { Header } from '../../../vendor/react-store/components/View/Table';
 import Confirm from '../../../vendor/react-store/components/View/Modal/Confirm';
 import LoadingAnimation from '../../../vendor/react-store/components/View/LoadingAnimation';
 
 import { RestRequest } from '../../../vendor/react-store/utils/rest';
-import { TableHeader } from '../../../rest/interface';
 
 import {
     RootState,
@@ -47,7 +46,7 @@ interface States {
 
 export class UserUserGroups extends React.PureComponent<Props, States> {
     userGroupDeleteRequest: RestRequest;
-    headers: TableHeader<UserUserGroup>[];
+    headers: Header<UserUserGroup>[];
 
     constructor(props: Props) {
         super(props);

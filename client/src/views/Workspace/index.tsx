@@ -91,7 +91,7 @@ export class Workspace extends React.PureComponent<Props, States> {
 
     static calculateListData = (activeDate: Ymd) => {
         const { year, month } = activeDate;
-        const numberOfDays: number = getNumDaysInMonthX(year, month);
+        const numberOfDays = getNumDaysInMonthX(year, month);
 
         const listData: ListData[] = [];
         for (let i = 1; i <= numberOfDays; i += 1) {

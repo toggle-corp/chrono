@@ -6,16 +6,14 @@ import {
     SetUserGroupAction,
     ActiveUser,
 } from '../../../redux/interface';
-import {
-    FaramErrors,
-    FaramValues,
-    Schema,
-    PostUserGroupBody,
-} from '../../../rest/interface';
+import { PostUserGroupBody } from '../../../rest/interface';
 
 import Faram, {
-    requiredCondition,
+    FaramErrors,
+    FaramValues,
+    FaramSchema,
 } from '../../../vendor/react-store/components/Input/Faram';
+import { requiredCondition } from '../../../vendor/react-store/components/Input/Faram/validations';
 import LoadingAnimation from '../../../vendor/react-store/components/View/LoadingAnimation';
 import NonFieldErrors from '../../../vendor/react-store/components/Input/NonFieldErrors';
 import TextInput from '../../../vendor/react-store/components/Input/TextInput';
@@ -53,7 +51,7 @@ interface States {
 
 export class UserUserGroupAdd extends React.PureComponent<Props, States> {
     userGroupPostRequest: RestRequest;
-    schema: Schema;
+    schema: FaramSchema;
 
     constructor(props: Props) {
         super(props);
