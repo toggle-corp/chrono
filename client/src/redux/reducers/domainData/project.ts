@@ -37,7 +37,6 @@ const findIndexOfProjectOfUser = (
     userId: number | undefined,
     projectId: number,
 ) => {
-    // XXX: getObjectChildren is unsafe
     const projects: Project[] = getObjectChildren(users, [userId, 'projects']) || [];
     return projects.findIndex(project => project.id === projectId);
 };

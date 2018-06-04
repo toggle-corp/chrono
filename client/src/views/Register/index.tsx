@@ -9,16 +9,16 @@ import TextInput from '../../vendor/react-store/components/Input/TextInput';
 import PrimaryButton from '../../vendor/react-store/components/Action/Button/PrimaryButton';
 import { RestRequest } from '../../vendor/react-store/utils/rest';
 import Faram, {
+    FaramErrors,
+    FaramValues,
+    FaramSchema,
+} from '../../vendor/react-store/components/Input/Faram';
+import {
     emailCondition,
     lengthGreaterThanCondition,
     requiredCondition,
-} from '../../vendor/react-store/components/Input/Faram';
+} from '../../vendor/react-store/components/Input/Faram/validations';
 
-import {
-    FaramErrors,
-    FaramValues,
-    Schema,
-} from '../../rest/interface';
 import { pathNames } from '../../constants';
 
 import UserRegisterRequest, { RegisterParams } from './requests/UserRegisterRequest';
@@ -39,7 +39,7 @@ interface States {
 
 export class Register extends React.PureComponent<Props, States> {
     userRegisterRequest: RestRequest;
-    schema: Schema;
+    schema: FaramSchema;
 
     constructor(props: Props) {
         super(props);

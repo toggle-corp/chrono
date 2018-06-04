@@ -9,17 +9,18 @@ import NonFieldErrors from '../../vendor/react-store/components/Input/NonFieldEr
 import TextInput from '../../vendor/react-store/components/Input/TextInput';
 import PrimaryButton from '../../vendor/react-store/components/Action/Button/PrimaryButton';
 import { RestRequest } from '../../vendor/react-store/utils/rest';
+
 import Faram, {
+    FaramErrors,
+    FaramValues,
+    FaramSchema,
+} from '../../vendor/react-store/components/Input/Faram';
+import {
     emailCondition,
     lengthGreaterThanCondition,
     requiredCondition,
-} from '../../vendor/react-store/components/Input/Faram';
+} from '../../vendor/react-store/components/Input/Faram/validations';
 
-import {
-    FaramErrors,
-    FaramValues,
-    Schema,
-} from '../../rest/interface';
 import { startTasksAction } from '../../redux/middlewares/taskManager';
 import {
     authenticateAction,
@@ -54,7 +55,7 @@ interface AuthParams {
 
 export class Login extends React.PureComponent<Props, States> {
     userLoginRequest: RestRequest;
-    schema: Schema;
+    schema: FaramSchema;
 
     constructor(props: Props) {
         super(props);

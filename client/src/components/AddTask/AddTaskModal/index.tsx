@@ -11,8 +11,11 @@ import { RestRequest } from '../../../vendor/react-store/utils/rest';
 
 import NonFieldErrors from '../../../vendor/react-store/components/Input/NonFieldErrors';
 import Faram, {
-    requiredCondition,
+    FaramErrors,
+    FaramValues,
+    FaramSchema,
 } from '../../../vendor/react-store/components/Input/Faram';
+import { requiredCondition } from '../../../vendor/react-store/components/Input/Faram/validations';
 import SelectInput from '../../../vendor/react-store/components/Input/SelectInput';
 import TextArea from '../../../vendor/react-store/components/Input/TextArea';
 import TextInput from '../../../vendor/react-store/components/Input/TextInput';
@@ -27,12 +30,7 @@ import {
     RootState,
     Task,
 } from '../../../redux/interface';
-import {
-    AddTaskParams,
-    FaramErrors,
-    FaramValues,
-    Schema,
-} from '../../../rest/interface';
+import { AddTaskParams } from '../../../rest/interface';
 
 import { iconNames } from '../../../constants';
 
@@ -62,7 +60,7 @@ interface State {
 
 export class AddTaskModal extends React.PureComponent<Props, State> {
     addTaskRequest: RestRequest;
-    schema: Schema;
+    schema: FaramSchema;
 
     static keySelector = (d: Project) => d.id;
     static labelSelector = (d: Project) => d.title;

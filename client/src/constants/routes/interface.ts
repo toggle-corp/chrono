@@ -11,6 +11,7 @@ export interface RouteSetting {
     redirectTo?: string;
     order: number;
     loader: () => any; // tslint:disable-line no-any
+    // Undefined for 404 case
     path: string | undefined;
     links: Map<CloakSettings>;
     hideNavbar?: boolean;

@@ -8,15 +8,15 @@ import {
     UserGroup,
 } from '../../redux/interface';
 import {
-    FaramErrors,
-    FaramValues,
-    Schema,
     PostProjectBody,
 } from '../../rest/interface';
 
 import Faram, {
-    requiredCondition,
+    FaramErrors,
+    FaramValues,
+    FaramSchema,
 } from '../../vendor/react-store/components/Input/Faram';
+import { requiredCondition } from '../../vendor/react-store/components/Input/Faram/validations';
 import LoadingAnimation from '../../vendor/react-store/components/View/LoadingAnimation';
 import SelectInput from '../../vendor/react-store/components/Input/SelectInput';
 import NonFieldErrors from '../../vendor/react-store/components/Input/NonFieldErrors';
@@ -62,7 +62,7 @@ interface States {
 export class AddProject extends React.PureComponent<Props, States> {
     projectPostRequest: RestRequest;
     userGroupRequest: RestRequest;
-    schema: Schema;
+    schema: FaramSchema;
 
     static keySelector = (d: UserGroup) => d.id;
     static labelSelector = (d: UserGroup) => d.title;

@@ -5,14 +5,13 @@ import { connect } from 'react-redux';
 import FormattedDate from '../../../vendor/react-store/components/View/FormattedDate';
 import LoadingAnimation from '../../../vendor/react-store/components/View/LoadingAnimation';
 import Confirm from '../../../vendor/react-store/components/View/Modal/Confirm';
-import Table from '../../../vendor/react-store/components/View/Table';
+import Table, { Header } from '../../../vendor/react-store/components/View/Table';
 import {
     compareDate,
     compareString,
 } from '../../../vendor/react-store/utils/common';
 import { RestRequest } from '../../../vendor/react-store/utils/rest';
 
-import { TableHeader } from '../../../rest/interface';
 import {
     userGroupProjectsSelector,
     unsetUserGroupProjectAction,
@@ -47,7 +46,7 @@ interface States {
 
 export class UserGroupProjects extends PureComponent<Props, States> {
     projectDeleteRequest: RestRequest;
-    headers: TableHeader<Project>[];
+    headers: Header<Project>[];
 
     static keyExtractor = (project: Project)  => project.id;
 
