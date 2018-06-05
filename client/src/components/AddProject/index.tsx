@@ -195,7 +195,7 @@ export class AddProject extends React.PureComponent<Props, States> {
                     placeholder="Select a user group"
                     keySelector={AddProject.keySelector}
                     labelSelector={AddProject.labelSelector}
-                    disabled={!!userGroupId}
+                    disabled={userGroupId}
                 />
                 <div className={styles.actionButtons}>
                     <PrimaryButton

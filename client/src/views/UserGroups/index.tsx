@@ -26,10 +26,10 @@ import {
 } from '../../redux/interface';
 
 import { iconNames } from '../../constants';
-import AddProject from '../../components/AddProject';
 
 import UserGroupProjects from './UserGroupProjects';
 import UserGroupMembers from './UserGroupMembers';
+import AddProject from '../../components/AddProject';
 
 import UserGroupGetRequest from './requests/UserGroupGetRequest';
 import ProjectsGetRequest from './requests/ProjectsGetRequest';
