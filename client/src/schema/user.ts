@@ -13,7 +13,7 @@ const userSchema: Schema[] = [
         },
     },
     {
-        doc: { name: 'userGetRequest' },
+        doc: { name: 'userGetResponse' },
         extends: 'user',
     },
     {

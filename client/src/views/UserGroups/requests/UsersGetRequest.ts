@@ -43,6 +43,7 @@ export default class UsersGetRequest implements Request<{}> {
         }
     }
 
+    // FIXME show errors from server
     failure = () => {
         notify.send({
             title: 'User Group Add Member',
@@ -52,6 +53,7 @@ export default class UsersGetRequest implements Request<{}> {
         });
     }
 
+    // FIXME show errors from server
     fatal = () => {
         notify.send({
             title: 'User Group Add Member',

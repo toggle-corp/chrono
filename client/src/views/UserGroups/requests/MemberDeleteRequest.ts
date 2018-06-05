@@ -5,8 +5,8 @@ import {
 import notify from '../../../notify';
 
 import {
-    createUrlForGroupMembership,
     commonParamsForDelete,
+    createUrlForGroupMembership,
 } from '../../../rest';
 
 import {
@@ -34,7 +34,7 @@ export default class MemberDeleteRequest implements Request<UnsetUserGroupMember
     success = (params: UnsetUserGroupMemberAction) => () => {
         this.props.unsetMember(params);
     }
-
+    // FIXME show errors from server
     failure = () => {
         notify.send({
             title: 'Delete Member',
@@ -42,7 +42,7 @@ export default class MemberDeleteRequest implements Request<UnsetUserGroupMember
             message: 'Failed to delete the Member',
         });
     }
-
+    // FIXME show errors from server
     fatal = () => {
         notify.send({
             title: 'Delete Member',

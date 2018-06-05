@@ -14,14 +14,12 @@ import {
     setUserGroupMemberAction,
 } from '../../../redux';
 
-import {
+import Faram, {
     FaramErrors,
     FaramValues,
-} from '../../../rest/interface';
-
-import Faram, {
-    requiredCondition,
+    FaramSchema,
 } from '../../../vendor/react-store/components/Input/Faram';
+import { requiredCondition } from '../../../vendor/react-store/components/Input/Faram/validations';
 import LoadingAnimation from '../../../vendor/react-store/components/View/LoadingAnimation';
 import SelectInput from '../../../vendor/react-store/components/Input/SelectInput';
 import NonFieldErrors from '../../../vendor/react-store/components/Input/NonFieldErrors';
@@ -69,7 +67,7 @@ export class MemberAdd extends PureComponent<Props, States> {
         users: [],
     };
 
-    schema = {
+    schema : FaramSchema = {
         fields: {
             userId: [requiredCondition],
         },

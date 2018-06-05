@@ -14,10 +14,12 @@ import {
 
 import Faram, {
     FaramErrors,
-    Schema,
+    FaramSchema,
     FaramValues,
-}
-import { requiredCondition } from '../../../../vendor/react-store/components/Input/Faram/validations';
+} from '../../../../vendor/react-store/components/Input/Faram';
+import {
+    requiredCondition,
+} from '../../../../vendor/react-store/components/Input/Faram/validations';
 import NonFieldErrors from '../../../../vendor/react-store/components/Input/NonFieldErrors';
 import LoadingAnimation from '../../../../vendor/react-store/components/View/LoadingAnimation';
 import TextInput from '../../../../vendor/react-store/components/Input/TextInput';
@@ -46,7 +48,6 @@ interface PropsFromDispatch{
     patchUserGroup(params: PatchUserGroupAction): void;
 }
 
-
 type Props = OwnProps & PropsFromState & PropsFromDispatch;
 
 interface States {
@@ -57,7 +58,7 @@ interface States {
 }
 
 export class UserGroupEditForm extends PureComponent<Props, States> {
-    schema: Schema;
+    schema: FaramSchema;
     userGroupPatchRequest: RestRequest;
 
     constructor(props: Props) {

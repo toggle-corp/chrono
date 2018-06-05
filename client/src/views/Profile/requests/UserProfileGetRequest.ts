@@ -33,7 +33,7 @@ export default class UserProfileRequest implements Request<number> {
 
     success = (userId: number) => (response: UserInformation) => {
         try {
-            schema.validate(response, 'userGetRequest');
+            schema.validate(response, 'userGetResponse');
             this.props.setUser({
                 userId,
                 information: response,
