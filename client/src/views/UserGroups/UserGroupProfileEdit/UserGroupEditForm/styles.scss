@@ -1,15 +1,16 @@
+@import '../../../../stylesheets/base';
+
 .edit-user-group-form {
-    display: flex;
-
-    .title {
-        display: flex;
-    }
-
-    .description {
-        display: flex;
-    }
+    @include background-color($color-foreground);
+    padding: $spacing-small $spacing-large $spacing-large;
+    width: 100%;
 
     .action-buttons {
         display: flex;
+        justify-content: flex-end;
+
+        .action-button {
+            margin-left: $spacing-small;
+        }
     }
 }

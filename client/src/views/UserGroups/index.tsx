@@ -5,6 +5,7 @@ import Redux from 'redux';
 import { connect } from 'react-redux';
 
 import PrimaryButton from '../../vendor/react-store/components/Action/Button/PrimaryButton';
+import DangerButton from '../../vendor/react-store/components/Action/Button/DangerButton';
 import LoadingAnimation from '../../vendor/react-store/components/View/LoadingAnimation';
 import Message from '../../vendor/react-store/components/View/Message';
 import Modal from '../../vendor/react-store/components/View/Modal';
@@ -173,30 +174,30 @@ export class UserGroups extends PureComponent<Props, States> {
                 </div>
                 <UserGroupProjects />
                 { showAddProjectModal &&
-                  <Modal
-                      closeOnEscape
-                      onClose={this.handleAddProjectModalClose}
-                  >
-                      <ModalHeader
-                          title="Add Project"
-                          rightComponent={
-                              <PrimaryButton
-                                  onClick={this.handleAddProjectModalClose}
-                                  transparent
-                              >
-                                  <span className={iconNames.close} />
-                              </PrimaryButton>
-                          }
-                      />
-                      <ModalBody>
-                          <AddProject
-                              handleClose={this.handleAddProjectModalClose}
-                              userGroupId={userGroup ? userGroup.id :  undefined}
-                          />
-                      </ModalBody>
-                  </Modal>
+                    <Modal
+                        closeOnEscape
+                        onClose={this.handleAddProjectModalClose}
+                    >
+                        <ModalHeader
+                            title="Add Project"
+                            rightComponent={
+                                <DangerButton
+                                    onClick={this.handleAddProjectModalClose}
+                                    transparent
+                                    iconName={iconNames.close}
+                                    title="Close Modal"
+                                />
+                            }
+                        />
+                        <ModalBody>
+                            <AddProject
+                                handleClose={this.handleAddProjectModalClose}
+                                userGroupId={userGroup ? userGroup.id :  undefined}
+                            />
+                        </ModalBody>
+                    </Modal>
                 }
-            </div>
+                </div>
         );
     }
 
@@ -213,35 +214,35 @@ export class UserGroups extends PureComponent<Props, States> {
                         onClick={this.handleAddMember}
                         iconName={iconNames.add}
                     >
-                        Add User Member
+                        Add Member
                     </PrimaryButton>
                 </div>
                 <UserGroupMembers />
                 { showAddMemberModal &&
-                  <Modal
-                      closeOnEscape
-                      onClose={this.handleAddMemberModalClose}
-                  >
-                      <ModalHeader
-                          title="Add Member"
-                          rightComponent={
-                              <PrimaryButton
-                                  onClick={this.handleAddMemberModalClose}
-                                  transparent
-                              >
-                                  <span className={iconNames.close} />
-                              </PrimaryButton>
-                          }
-                      />
-                      <ModalBody>
-                          <MemberAdd
-                              userGroupId={this.props.userGroupId}
-                              handleClose={this.handleAddMemberModalClose}
-                          />
-                      </ModalBody>
-                  </Modal>
+                    <Modal
+                        closeOnEscape
+                        onClose={this.handleAddMemberModalClose}
+                    >
+                        <ModalHeader
+                            title="Add Member"
+                            rightComponent={
+                                <DangerButton
+                                    onClick={this.handleAddMemberModalClose}
+                                    transparent
+                                    iconName={iconNames.close}
+                                    title="Close Modal"
+                                />
+                            }
+                        />
+                            <ModalBody>
+                                <MemberAdd
+                                    userGroupId={this.props.userGroupId}
+                                    handleClose={this.handleAddMemberModalClose}
+                                />
+                            </ModalBody>
+                    </Modal>
                 }
-            </div>
+                </div>
         );
     }
 
@@ -275,29 +276,24 @@ export class UserGroups extends PureComponent<Props, States> {
         return (
             <div className={styles.usergroups}>
                 {pending && <LoadingAnimation />}
-                <header className={styles.header}>
-                    <h2>UserGroup</h2>
-                </header>
                 <div className={styles.info}>
                     <div className={styles.detail}>
-                        <span className={styles.title}>
-                            {userGroup.title}
-                        </span>
-                        <span className={styles.description}>
+                        <div className={styles.title}>
+                            <span className={styles.titleName}>
+                                {userGroup.title}
+                            </span>
+                            { isAdmin &&
+                                <UserGroupProfileEdit
+                                    onClick={this.handleEditUserGroupClick}
+                                    onClose={this.handleEditUserGroupClose}
+                                    showEditModal={showEditUserGroupModal}
+                                />
+                            }
+                        </div>
+                        <p className={styles.description}>
                             {userGroup.description}
-                        </span>
-                        {
-                            isAdmin &&
-                            <UserGroupProfileEdit
-                                onClick={this.handleEditUserGroupClick}
-                                onClose={this.handleEditUserGroupClose}
-                                showEditModal={showEditUserGroupModal}
-                            />
-                        }
+                        </p>
                     </div>
-                </div>
-                <div className={styles.log}>
-                    <h2>Activity</h2>
                 </div>
                 <Projects />
                 <Members />
@@ -314,9 +310,9 @@ const mapStateToProps = (state: RootState) => ({
 
 const mapDispatchToProps = (dispatch: Redux.Dispatch<RootState>) => ({
     setUserGroup: (params: SetUserGroupAction) =>
-        dispatch(setUserGroupAction(params)),
+    dispatch(setUserGroupAction(params)),
     setUserGroupProjects: (params: SetUserGroupProjectsAction) =>
-        dispatch(setUserGroupProjectsAction(params)),
+    dispatch(setUserGroupProjectsAction(params)),
 });
 
 export default connect<PropsFromState, PropsFromDispatch, OwnProps>(

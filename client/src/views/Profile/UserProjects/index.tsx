@@ -151,7 +151,7 @@ export class UserProjects extends React.PureComponent<Props, States> {
                     onClose={this.handleDeleteModalClose}
                 >
                     <p>
-                        Are you sure ?
+                        Are you sure you want to delete this project?
                     </p>
                 </Confirm>
             </div>

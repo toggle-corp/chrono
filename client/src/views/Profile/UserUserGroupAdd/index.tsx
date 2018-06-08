@@ -152,17 +152,20 @@ export class UserUserGroupAdd extends React.PureComponent<Props, States> {
                     rows={3}
                 />
                 <div className={styles.actionButtons}>
-                    <PrimaryButton
-                        type="submit"
-                        disabled={pristine || pending}
-                    >
-                        Add
-                    </PrimaryButton>
                     <DangerButton
+                        className={styles.actionButton}
                         onClick={handleClose}
+                        disabled={pending}
                     >
                         Cancel
                     </DangerButton>
+                    <PrimaryButton
+                        className={styles.actionButton}
+                        type="submit"
+                        disabled={pristine || pending}
+                    >
+                        Save
+                    </PrimaryButton>
                 </div>
             </Faram>
         );

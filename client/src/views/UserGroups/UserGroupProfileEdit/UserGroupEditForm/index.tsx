@@ -148,25 +148,26 @@ export class UserGroupEditForm extends PureComponent<Props, States> {
                 {pending && <LoadingAnimation />}
                 <NonFieldErrors faramElement />
                 <TextInput
-                    className={styles.title}
                     faramElementName="title"
                     label="Title"
                     placeholder={faramValues.title}
                     autoFocus
                 />
                 <TextArea
-                    className={styles.description}
                     faramElementName="description"
                     label="Description"
                     placeholder={faramValues.description}
                 />
                 <div className={styles.actionButtons}>
                     <DangerButton
+                        className={styles.actionButton}
                         onClick={handleClose}
+                        disabled={pending}
                     >
                         Cancel
                     </DangerButton>
                     <PrimaryButton
+                        className={styles.actionButton}
                         type="submit"
                         disabled={pristine || pending}
                     >

@@ -1,16 +1,16 @@
+@import '../../../stylesheets/base';
+
 .member-add-form {
-    display: flex;
-
-    .non-field-errors {
-        display: flex;
-    }
-
-    .tabular-select {
-        display: flex;
-    }
+    @include background-color($color-foreground);
+    padding: $spacing-small $spacing-large $spacing-large;
+    width: 100%;
 
     .action-buttons {
         display: flex;
+        justify-content: flex-end;
+
+        .action-button {
+            margin-left: $spacing-small;
+        }
     }
 }
-

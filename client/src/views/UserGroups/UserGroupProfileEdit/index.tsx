@@ -1,5 +1,5 @@
 import React, {
-    SFC,
+    SFC, Fragment,
 } from 'react';
 
 import PrimaryButton from '../../../vendor/react-store/components/Action/Button/PrimaryButton';
@@ -18,7 +18,7 @@ interface OwnProps {
 
 /* tslint:disable-next-line:variable-name */
 const UserGroupProfileEdit: SFC<OwnProps> = props => (
-    <div>
+    <Fragment>
         <PrimaryButton
             onClick={props.onClick}
             transparent
@@ -32,14 +32,14 @@ const UserGroupProfileEdit: SFC<OwnProps> = props => (
                 onClose={props.onClose}
             >
                 <ModalHeader
-                    title="Edit UserGroup"
+                    title="Edit User Group"
                     rightComponent={
                         <PrimaryButton
                             onClick={props.onClose}
                             transparent
-                        >
-                            <span  className={iconNames.close} />
-                        </PrimaryButton>
+                            title="Close Modal"
+                            iconName={iconNames.close}
+                        />
                     }
                 />
                 <ModalBody>
@@ -49,7 +49,7 @@ const UserGroupProfileEdit: SFC<OwnProps> = props => (
                 </ModalBody>
             </Modal>
         }
-    </div>
+    </Fragment>
 );
 
 export default UserGroupProfileEdit;

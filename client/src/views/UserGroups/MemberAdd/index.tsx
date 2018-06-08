@@ -168,29 +168,30 @@ export class MemberAdd extends PureComponent<Props, States> {
                 disabled={pending}
             >
                 {pending && <LoadingAnimation />}
-                <NonFieldErrors
-                    className={styles.nonFieldErrors}
-                    faramElement
-                />
+                <NonFieldErrors faramElement />
                 <SelectInput
                     faramElementName="userId"
-                    className={styles.tabularSelect}
-                    label="Users"
+                    label="User"
                     options={users}
                     placeholder="Select a user"
                     labelSelector={MemberAdd.labelSelector}
                     keySelector={MemberAdd.keySelector}
                 />
                 <div className={styles.actionButtons}>
+                    <DangerButton
+                        className={styles.actionButton}
+                        onClick={handleClose}
+                        disabled={pending}
+                    >
+                        Cancel
+                    </DangerButton>
                     <PrimaryButton
+                        className={styles.actionButton}
                         type="submit"
                         disabled={pending || pristine}
                     >
-                        Add
+                        Save
                     </PrimaryButton>
-                    <DangerButton onClick={handleClose} >
-                        Cancel
-                    </DangerButton>
                 </div>
             </Faram>
         );

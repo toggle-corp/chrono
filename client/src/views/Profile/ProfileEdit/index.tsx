@@ -153,20 +153,22 @@ export class ProfileEdit extends React.PureComponent<Props, States> {
                     faramElementName="lastName"
                     label="Last Name"
                     placeholder=""
-                    autoFocus
                 />
                 <div className={styles.actionButtons}>
-                    <PrimaryButton
-                        type="submit"
-                        disabled={pristine || pending}
-                    >
-                        Update
-                    </PrimaryButton>
                     <DangerButton
+                        className={styles.actionButton}
                         onClick={handleClose}
+                        disabled={pending}
                     >
                         Cancel
                     </DangerButton>
+                    <PrimaryButton
+                        className={styles.actionButton}
+                        type="submit"
+                        disabled={pristine || pending}
+                    >
+                        Save
+                    </PrimaryButton>
                 </div>
             </Faram>
         );

@@ -1,37 +1,50 @@
 @import '../../stylesheets/base';
 
 .usergroups {
-    display: grid;
-    height: 100%;
-
-    .header {
-        display: flex;
-    }
+    @extend %main-content;
+    display: flex;
+    flex-direction: column;
 
     .info {
         display: flex;
+        padding: $spacing-large;
 
         .detail {
-
             .title {
                 display: flex;
+                font-size: $font-size-super-large;
+
+                .title-name {
+                    color: $color-text;
+                }
             }
 
             .description {
-                display: flex;
+                margin: 0;
+                color: $color-text-label;
             }
         }
     }
 
-    .log {
-        display: flex;
-    }
-
     .userprojects {
-        display: flex;
+        .header {
+            display: flex;
+            align-items: center;
+            flex-shrink: 0;
+            justify-content: space-between;
+            padding: $spacing-small $spacing-medium;
+            height: $height-navbar;
+        }
     }
 
     .usermembers {
-        display: flex;
+        .header {
+            display: flex;
+            align-items: center;
+            flex-shrink: 0;
+            justify-content: space-between;
+            padding: $spacing-small $spacing-medium;
+            height: $height-navbar;
+        }
     }
 }

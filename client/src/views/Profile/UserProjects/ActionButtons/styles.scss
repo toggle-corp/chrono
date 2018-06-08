@@ -3,9 +3,9 @@
 %link {
     display: inline-block;
     padding: 0 $spacing-small;
-    color: $color-text-label;
 }
 
 .edit-link {
     @extend %link;
+    color: $color-warning;
 }

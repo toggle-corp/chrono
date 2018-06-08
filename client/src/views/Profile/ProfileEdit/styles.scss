@@ -7,12 +7,10 @@
 
     .action-buttons {
         display: flex;
-        align-items: flex-start;
-        justify-content: space-between;
+        justify-content: flex-end;
 
-        .forgot-password-link {
-            color: $color-text-label;
-            font-size: $font-size-extra-small;
+        .action-button {
+            margin-left: $spacing-small;
         }
     }
 }
