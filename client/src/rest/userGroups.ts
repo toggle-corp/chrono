@@ -7,6 +7,8 @@ import {
 import {
     RestPostBody,
     PostUserGroupBody,
+    PatchUserGroupBody,
+    PostGroupMembershipBody,
 } from './interface';
 
 export type UserGroupUrlParams = {
@@ -36,5 +38,28 @@ export const createParamsForPostUserGroup = (
     body: JSON.stringify({
         title,
         description ,
+    }),
+});
+
+export const createParamsForPostGroupMembership = (
+    { member, group, role }: PostGroupMembershipBody,
+): RestPostBody => ({
+    method: Rest.POST,
+    headers: commonHeaderForPost,
+    body: JSON.stringify({
+        member,
+        group,
+        role,
+    }),
+});
+
+export const createParamsForUserGroupPatch = (
+    { title, description }: PatchUserGroupBody,
+) : RestPostBody => ({
+    method: Rest.PATCH,
+    headers: commonHeaderForPost,
+    body: JSON.stringify({
+        title,
+        description,
     }),
 });

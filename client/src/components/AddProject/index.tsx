@@ -175,21 +175,8 @@ export class AddProject extends React.PureComponent<Props, States> {
             >
                 {pending && <LoadingAnimation />}
                 <NonFieldErrors faramElement />
-                <TextInput
-                    faramElementName="title"
-                    label="Title"
-                    placeholder=""
-                    autoFocus
-                />
-                <TextArea
-                    faramElementName="description"
-                    label="Description"
-                    placeholder=""
-                    rows={3}
-                />
                 <SelectInput
                     faramElementName="userGroup"
-                    className={styles.usergroup}
                     label="User Group"
                     options={userGroups}
                     placeholder="Select a user group"
@@ -197,18 +184,31 @@ export class AddProject extends React.PureComponent<Props, States> {
                     labelSelector={AddProject.labelSelector}
                     disabled={!!userGroupId}
                 />
+                <TextInput
+                    faramElementName="title"
+                    label="Title"
+                    autoFocus
+                />
+                <TextArea
+                    faramElementName="description"
+                    label="Description"
+                    rows={3}
+                />
                 <div className={styles.actionButtons}>
+                    <DangerButton
+                        className={styles.actionButton}
+                        onClick={handleClose}
+                        disabled={pending}
+                    >
+                        Cancel
+                    </DangerButton>
                     <PrimaryButton
+                        className={styles.actionButton}
                         type="submit"
                         disabled={pristine || pending}
                     >
                         Add
                     </PrimaryButton>
-                    <DangerButton
-                        onClick={handleClose}
-                    >
-                        Cancel
-                    </DangerButton>
                 </div>
             </Faram>
         );

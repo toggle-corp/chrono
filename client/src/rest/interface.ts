@@ -36,7 +36,18 @@ export interface PostProjectBody {
     userGroup: number;
 }
 
+export interface PostGroupMembershipBody {
+    member: number;
+    group?: number;
+    role: string;
+}
+
 export interface PostUserGroupBody {
+    title: string;
+    description: string;
+}
+
+export interface PatchUserGroupBody {
     title: string;
     description: string;
 }

@@ -6,7 +6,6 @@ import {
     ReducerGroup,
     Project,
     Users,
-
     SetProjectAction,
 } from '../../interface';
 

@@ -44,9 +44,8 @@ export default class AddTask extends React.PureComponent<Props, States> {
                     transparent
                     title="Create task for a project"
                     disabled={showModal}
-                >
-                    <span className={iconNames.add} />
-                </PrimaryButton>
+                    iconName={iconNames.add}
+                />
                 {
                     showModal &&
                     <AddTaskModal

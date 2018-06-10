@@ -4,41 +4,15 @@ $header-height: 48px;
 $info-height: 144px;
 
 .profile {
-    display: grid;
-    height: 100%;
-    grid-template-areas:
-        "header userproject"
-        "info userproject"
-        "stats userproject"
-        "stats usergroup";
-    grid-template-columns: 3fr 7fr;
-    grid-template-rows: $header-height $info-height 3fr 2fr;
-
-    >* {
-        background-color: $color-foreground;
-    }
-
-    .header {
-        display: flex;
-        border-right: $width-separator-thin solid $color-separator;
-        border-bottom: $width-separator-thin solid $color-separator;
-        background-color: $color-background-row;
-        padding: $spacing-medium-alt;
-        grid-area: header;
-    }
+    @extend %main-content;
+    display: flex;
+    flex-direction: column;
 
     .info {
         display: flex;
-        align-items: flex-start;
-        border-right: $width-separator-thin solid $color-separator;
-        border-bottom: $width-separator-thin solid $color-separator;
-        background-color: $color-background-header;
         padding: $spacing-large;
-        grid-area: info;
 
         .detail {
-            padding: $spacing-medium $spacing-extra-large;
-
             .name {
                 display: flex;
                 justify-content: space-between;
@@ -52,15 +26,6 @@ $info-height: 144px;
                 .last {
                     color: $color-text;
                 }
-
-                button {
-                    margin-left: $spacing-medium;
-
-                    &:hover {
-                        background-color: $color-background-hover;
-                    }
-
-                }
             }
 
             .email {
@@ -70,17 +35,8 @@ $info-height: 144px;
         }
     }
 
-    .stats {
-        border-right: $width-separator-thin solid $color-separator;
-        background-color: $color-background-header;
-        padding: $spacing-medium;
-        grid-area: stats;
-    }
-
     .userproject {
         border-bottom: $width-separator-thin solid $color-separator;
-        background-color: $color-background-header;
-        grid-area: userproject;
 
         .header {
             display: flex;
@@ -90,14 +46,9 @@ $info-height: 144px;
             padding: $spacing-small $spacing-medium;
             height: $height-navbar;
         }
-
-
     }
 
     .usergroup {
-        background-color: $color-background-header;
-        grid-area: usergroup;
-
         .header {
             display: flex;
             align-items: center;
@@ -106,6 +57,5 @@ $info-height: 144px;
             padding: $spacing-small $spacing-medium;
             height: $height-navbar;
         }
-
     }
 }

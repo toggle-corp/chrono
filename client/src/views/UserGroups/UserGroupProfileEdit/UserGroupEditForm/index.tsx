@@ -1,43 +1,51 @@
-import React from 'react';
+import React, {
+    PureComponent,
+} from 'react';
 import Redux from 'redux';
 import { connect } from 'react-redux';
+
 import {
     RootState,
-    SetUserGroupAction,
-    ActiveUser,
-} from '../../../redux/interface';
-import { PostUserGroupBody } from '../../../rest/interface';
+    PatchUserGroupAction,
+} from '../../../../redux/interface';
+import {
+    PatchUserGroupBody,
+} from '../../../../rest/interface';
 
 import Faram, {
     FaramErrors,
-    FaramValues,
     FaramSchema,
-} from '../../../vendor/react-store/components/Input/Faram';
-import { requiredCondition } from '../../../vendor/react-store/components/Input/Faram/validations';
-import LoadingAnimation from '../../../vendor/react-store/components/View/LoadingAnimation';
-import NonFieldErrors from '../../../vendor/react-store/components/Input/NonFieldErrors';
-import TextInput from '../../../vendor/react-store/components/Input/TextInput';
-import TextArea from '../../../vendor/react-store/components/Input/TextArea';
-import PrimaryButton from '../../../vendor/react-store/components/Action/Button/PrimaryButton';
-import DangerButton from '../../../vendor/react-store/components/Action/Button/DangerButton';
-import { RestRequest } from '../../../vendor/react-store/utils/rest';
+    FaramValues,
+} from '../../../../vendor/react-store/components/Input/Faram';
+import {
+    requiredCondition,
+} from '../../../../vendor/react-store/components/Input/Faram/validations';
+import NonFieldErrors from '../../../../vendor/react-store/components/Input/NonFieldErrors';
+import LoadingAnimation from '../../../../vendor/react-store/components/View/LoadingAnimation';
+import TextInput from '../../../../vendor/react-store/components/Input/TextInput';
+import TextArea from '../../../../vendor/react-store/components/Input/TextArea';
+import PrimaryButton from '../../../../vendor/react-store/components/Action/Button/PrimaryButton';
+import DangerButton from '../../../../vendor/react-store/components/Action/Button/DangerButton';
+
+import { RestRequest } from '../../../../vendor/react-store/utils/rest';
+
+import UserGroupPatchRequest from '../../requests/UserGroupPatchRequest';
 
 import {
-    setUserGroupAction,
-    activeUserSelector,
-} from '../../../redux';
+    userGroupIdFromRouteSelector,
+    patchUserGroupAction,
+} from '../../../../redux';
 
-import UserGroupPostRequest from '../requests/UserGroupPostRequest';
 import * as styles from './styles.scss';
 
-interface OwnProps {
-    handleClose() : void;
+interface OwnProps{
+    handleClose(): void;
 }
-interface PropsFromState {
-    activeUser: ActiveUser;
+interface PropsFromState{
+    userGroupId?: number;
 }
-interface PropsFromDispatch {
-    setUserGroup(params: SetUserGroupAction): void;
+interface PropsFromDispatch{
+    patchUserGroup(params: PatchUserGroupAction): void;
 }
 
 type Props = OwnProps & PropsFromState & PropsFromDispatch;
@@ -49,20 +57,19 @@ interface States {
     pending: boolean;
 }
 
-export class UserUserGroupAdd extends React.PureComponent<Props, States> {
-    userGroupPostRequest: RestRequest;
+export class UserGroupEditForm extends PureComponent<Props, States> {
     schema: FaramSchema;
+    userGroupPatchRequest: RestRequest;
 
     constructor(props: Props) {
         super(props);
 
-        this.state = {
+        this.state  = {
             faramErrors: {},
             faramValues: {},
-            pending: false,
             pristine: true,
+            pending: false,
         };
-
         this.schema = {
             fields: {
                 title: [requiredCondition],
@@ -72,30 +79,28 @@ export class UserUserGroupAdd extends React.PureComponent<Props, States> {
     }
 
     componentWillUnmount() {
-        if (this.userGroupPostRequest) {
-            this.userGroupPostRequest.stop();
+        if (this.userGroupPatchRequest) {
+            this.userGroupPatchRequest.stop();
         }
     }
 
-    startRequestForUserGroupPost = (value: PostUserGroupBody) => {
-        if (this.userGroupPostRequest) {
-            this.userGroupPostRequest.stop();
+    requestForUserGroupPatch = (userGroupId: number, values: PatchUserGroupBody) => {
+        if (this.userGroupPatchRequest) {
+            this.userGroupPatchRequest.stop();
         }
-        const request = new UserGroupPostRequest({
-            userId: this.props.activeUser.userId,
-            setUserGroup: this.props.setUserGroup,
+
+        const request = new UserGroupPatchRequest({
+            userGroupId,
+            patchUserGroup: this.props.patchUserGroup,
             handleClose: this.props.handleClose,
-            setState: v => this.setState(v),
+            setState: states => this.setState(states),
         });
-        this.userGroupPostRequest = request.create(value);
-        this.userGroupPostRequest.start();
+
+        this.userGroupPatchRequest = request.create(values);
+        this.userGroupPatchRequest.start();
     }
 
-    // Faram RELATED
-
-    handleFaramChange = (
-        values: PostUserGroupBody, faramErrors: FaramErrors,
-    ) => {
+    handleFaramChange = (values: PatchUserGroupBody, faramErrors: FaramErrors) => {
         this.setState({
             faramErrors,
             faramValues: values,
@@ -110,16 +115,19 @@ export class UserUserGroupAdd extends React.PureComponent<Props, States> {
         });
     }
 
-    handleFaramSubmit = (value: PostUserGroupBody) => {
-        this.startRequestForUserGroupPost(value);
+    handleFaramSubmit = (values: PatchUserGroupBody) => {
+        const { userGroupId } = this.props;
+        if (userGroupId) {
+            this.requestForUserGroupPatch(userGroupId, values);
+        }
     }
 
     render() {
         const {
-            faramErrors,
-            faramValues,
             pending,
             pristine,
+            faramErrors,
+            faramValues,
         } = this.state;
 
         const {
@@ -128,7 +136,7 @@ export class UserUserGroupAdd extends React.PureComponent<Props, States> {
 
         return (
             <Faram
-                className={styles.userGroupAddForm}
+                className={styles.editUserGroupForm}
                 schema={this.schema}
                 value={faramValues}
                 error={faramErrors}
@@ -142,14 +150,13 @@ export class UserUserGroupAdd extends React.PureComponent<Props, States> {
                 <TextInput
                     faramElementName="title"
                     label="Title"
-                    placeholder=""
+                    placeholder={faramValues.title}
                     autoFocus
                 />
                 <TextArea
                     faramElementName="description"
                     label="Description"
-                    placeholder=""
-                    rows={3}
+                    placeholder={faramValues.description}
                 />
                 <div className={styles.actionButtons}>
                     <DangerButton
@@ -173,13 +180,13 @@ export class UserUserGroupAdd extends React.PureComponent<Props, States> {
 }
 
 const mapStateToProps = (state: RootState) => ({
-    activeUser: activeUserSelector(state),
+    userGroupId: userGroupIdFromRouteSelector(state),
 });
 
 const mapDispatchToProps = (dispatch: Redux.Dispatch<RootState>) => ({
-    setUserGroup: (params: SetUserGroupAction) => dispatch(setUserGroupAction(params)),
+    patchUserGroup: (params: PatchUserGroupAction) => dispatch(patchUserGroupAction(params)),
 });
 
 export default connect<PropsFromState, PropsFromDispatch, OwnProps>(
     mapStateToProps, mapDispatchToProps,
-)(UserUserGroupAdd);
+)(UserGroupEditForm);

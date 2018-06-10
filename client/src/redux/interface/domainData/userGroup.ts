@@ -28,9 +28,19 @@ export interface SetUserGroupAction {
     userGroup: UserGroup;
 }
 
+export interface PatchUserGroupAction {
+    userGroupId?: number;
+    userGroup: UserGroup;
+}
+
 export interface SetUserGroupProjectsAction {
     userGroupId?: number;
     projects: Project[];
+}
+
+export interface SetUserGroupMemberAction {
+    userGroupId?: number;
+    member: Member;
 }
 
 export interface UnsetUserGroupMemberAction {

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import Redux from 'redux';
 import { connect } from 'react-redux';
 import {
@@ -13,6 +13,7 @@ import Modal from '../../vendor/react-store/components/View/Modal';
 import ModalBody from '../../vendor/react-store/components/View/Modal/Body';
 import ModalHeader from '../../vendor/react-store/components/View/Modal/Header';
 import PrimaryButton from '../../vendor/react-store/components/Action/Button/PrimaryButton';
+import DangerButton from '../../vendor/react-store/components/Action/Button/DangerButton';
 import { RestRequest } from '../../vendor/react-store/utils/rest';
 import {
     userInformationSelector,
@@ -173,11 +174,12 @@ export class Profile extends React.PureComponent<Props, States> {
 
     renderProfileEdit = () => {
         if (this.props.userId !== this.props.activeUser.userId) {
-            return <div/>;
+            return null;
         }
+
         const { showEditProfileModal } = this.state;
         return (
-            <div>
+            <Fragment>
                 <PrimaryButton
                     onClick={this.handleEditProfileClick}
                     transparent
@@ -192,35 +194,34 @@ export class Profile extends React.PureComponent<Props, States> {
                         <ModalHeader
                             title="Edit Profile"
                             rightComponent={
-                                <PrimaryButton
+                                <DangerButton
                                     onClick={this.handleEditProfileModalClose}
+                                    title="Close Modal"
                                     transparent
-                                >
-                                    <span className={iconNames.close} />
-                                </PrimaryButton>
+                                    iconName={iconNames.close}
+                                />
                             }
                         />
                         <ModalBody>
-                            <ProfileEdit
-                                handleClose={this.handleEditProfileModalClose}
-                            />
+                            <ProfileEdit handleClose={this.handleEditProfileModalClose} />
                         </ModalBody>
                     </Modal>
                 }
-            </div>
+            </Fragment>
         );
     }
 
     renderUserUserGroup = () => {
         if (this.props.userId !== this.props.activeUser.userId) {
-            return <div/>;
+            return null;
         }
+
         const { showAddUserGroupModal } = this.state;
         return (
             <div className={styles.usergroup}>
                  <div className={styles.header}>
                     <h2>
-                        USER GROUPS
+                       User Groups
                     </h2>
                  <PrimaryButton
                     onClick={this.handleAddUserGroupClick}
@@ -238,12 +239,12 @@ export class Profile extends React.PureComponent<Props, States> {
                         <ModalHeader
                             title="Add User Group"
                             rightComponent={
-                                <PrimaryButton
+                                <DangerButton
                                     onClick={this.handleAddUserGroupModalClose}
                                     transparent
-                                >
-                                    <span className={iconNames.close} />
-                                </PrimaryButton>
+                                    title="Close Modal"
+                                    iconName={iconNames.close}
+                                />
                             }
                         />
                         <ModalBody>
@@ -261,12 +262,13 @@ export class Profile extends React.PureComponent<Props, States> {
         if (this.props.userId !== this.props.activeUser.userId) {
             return <div/>;
         }
+
         const { showAddProjectModal } = this.state;
         return (
             <div className={styles.userproject}>
                  <div className={styles.header}>
                     <h2>
-                        PROJECTS
+                        Projects
                     </h2>
                     <PrimaryButton
                         onClick={this.handleAddProjectClick}
@@ -284,12 +286,12 @@ export class Profile extends React.PureComponent<Props, States> {
                         <ModalHeader
                             title="Add Project"
                             rightComponent={
-                                <PrimaryButton
+                                <DangerButton
                                     onClick={this.handleAddProjectModalClose}
+                                    title="Close Modal"
                                     transparent
-                                >
-                                    <span className={iconNames.close} />
-                                </PrimaryButton>
+                                    iconName={iconNames.close}
+                                />
                             }
                         />
                         <ModalBody>
@@ -330,9 +332,6 @@ export class Profile extends React.PureComponent<Props, States> {
         return (
             <div className={styles.profile}>
                 {pending && <LoadingAnimation />}
-                <header className={styles.header}>
-                    <h2>Profile</h2>
-                </header>
                 <div className={styles.info}>
                     <div className={styles.detail}>
                         <div className={styles.name}>
@@ -351,12 +350,8 @@ export class Profile extends React.PureComponent<Props, States> {
                         </p>
                     </div>
                 </div>
-                <div className={styles.stats}>
-                    <h2>Stats</h2>
-                </div>
-
-                <UserUserGroup />
                 <UserProject />
+                <UserUserGroup />
             </div>
         );
     }
