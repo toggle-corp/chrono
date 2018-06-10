@@ -21,6 +21,7 @@ interface Props {
     onClose(): void;
     setState: AddTaskModal['setState'];
     setTask(value: Task): void;
+    onTaskCreate?(taskId: number): void;
 }
 
 export default class TaskPostRequest implements Request < {} > {
@@ -34,6 +35,9 @@ export default class TaskPostRequest implements Request < {} > {
         try {
             schema.validate(response, 'tasksPostResponse');
             this.props.setTask(response);
+            if (this.props.onTaskCreate) {
+                this.props.onTaskCreate(response.id);
+            }
             this.props.onClose();
         } catch (err) {
             console.error(err);

@@ -142,6 +142,27 @@ export class SlotEditor extends React.PureComponent<Props, States> {
         this.deleteSlotRequest.start();
     }
 
+    handleTaskCreate = (taskId: number) => {
+        const { activeWipTimeSlot } = this.props;
+        if (!activeWipTimeSlot) {
+            return;
+        }
+
+        const { faramValues, faramErrors } = activeWipTimeSlot;
+        // FIXME: do not access faramValues directly
+        this.props.changeTimeSlot({
+            faramValues: {
+                ...faramValues,
+                task: taskId,
+            },
+            faramErrors: {
+                ...faramErrors,
+                $internal: undefined,
+                task: undefined,
+            },
+        });
+    }
+
     handleFaramChange = (
         faramValues: WipTimeSlot['faramValues'], faramErrors: FaramErrors,
     ) => {
@@ -274,9 +295,15 @@ export class SlotEditor extends React.PureComponent<Props, States> {
                                 labelSelector={SlotEditor.labelSelector}
                             />
                             <AddTask
-                                // FIXME: don't access faramValues directly
+                                // FIXME: do not access faramValues directly
                                 projectId={faramValues.project}
-                                disabled={pending}
+                                disabledProjectChange
+                                disabled={
+                                    !faramValues.project ||
+                                    !faramValues.userGroup ||
+                                    pending
+                                }
+                                onTaskCreate={this.handleTaskCreate}
                             />
                             <TextInput
                                 className={styles.remarks}
