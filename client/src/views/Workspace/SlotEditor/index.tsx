@@ -200,11 +200,9 @@ export class SlotEditor extends React.PureComponent<Props, States> {
         // If there is no activeWipTimeSlot then we cannot continue
         if (!activeWipTimeSlot) {
             return (
-                <div className={styles.dayEditor}>
-                    <Message>
-                        Please select something, anything!
-                    </Message>
-                </div>
+                <Message className={styles.message}>
+                    Please select something, anything!
+                </Message>
             );
         }
 
