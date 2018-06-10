@@ -41,6 +41,8 @@ import * as styles from './styles.scss';
 interface OwnProps{
     onClose(): void;
     projectId?: number;
+    onTaskCreate?(taskId: number): void;
+    disabledProjectChange?: boolean;
 }
 interface PropsFromState{
     projects: Project[];
@@ -76,7 +78,6 @@ export class AddTaskModal extends React.PureComponent<Props, State> {
             },
         };
 
-        console.warn(props.projectId);
         let faramValues = {};
         if (props.projectId !== undefined) {
             faramValues = {
@@ -106,6 +107,7 @@ export class AddTaskModal extends React.PureComponent<Props, State> {
             onClose: this.props.onClose,
             setState: params => this.setState(params),
             setTask: this.props.setTask,
+            onTaskCreate: this.props.onTaskCreate,
         });
 
         this.addTaskRequest = addTaskRequest.create(values);
@@ -141,6 +143,7 @@ export class AddTaskModal extends React.PureComponent<Props, State> {
             pending,
             pristine,
         } = this.state;
+        const { disabledProjectChange } = this.props;
 
         const { projects } = this.props;
 
@@ -180,6 +183,7 @@ export class AddTaskModal extends React.PureComponent<Props, State> {
                             placeholder="Select a project"
                             keySelector={AddTaskModal.keySelector}
                             labelSelector={AddTaskModal.labelSelector}
+                            disabled={disabledProjectChange || pending}
                         />
                         <TextInput
                             faramElementName="title"

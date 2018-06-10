@@ -10,7 +10,9 @@ import AddTaskModal from './AddTaskModal';
 
 interface Props {
     disabled?: boolean;
+    disabledProjectChange?: boolean;
     projectId?: number;
+    onTaskCreate?(taskId: number): void;
 }
 
 interface States {
@@ -36,6 +38,7 @@ export default class AddTask extends React.PureComponent<Props, States> {
 
     render() {
         const { showModal } = this.state;
+        const { disabled } = this.props;
 
         return(
             <Fragment>
@@ -43,7 +46,7 @@ export default class AddTask extends React.PureComponent<Props, States> {
                     onClick={this.handleAddTaskButton}
                     transparent
                     title="Create task for a project"
-                    disabled={showModal}
+                    disabled={showModal || disabled}
                     iconName={iconNames.add}
                 />
                 {
@@ -51,6 +54,8 @@ export default class AddTask extends React.PureComponent<Props, States> {
                     <AddTaskModal
                         projectId={this.props.projectId}
                         onClose={this.handleAddTaskModalClose}
+                        onTaskCreate={this.props.onTaskCreate}
+                        disabledProjectChange={this.props.disabledProjectChange}
                     />
                 }
             </Fragment>
