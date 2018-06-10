@@ -1,9 +1,17 @@
 @import '../../../stylesheets/base';
 
+$slot-editor-height: 140px;
+
+.message {
+    @include background-color($color-foreground);
+    flex-shrink: 0;
+    height: $slot-editor-height;
+}
+
 .day-editor {
     @include background-color($color-foreground);
     position: relative;
-    min-height: 140px;
+    min-height: $slot-editor-height;
 
     .day-editor-form {
         display: flex;
