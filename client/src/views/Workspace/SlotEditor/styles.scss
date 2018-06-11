@@ -1,6 +1,6 @@
 @import '../../../stylesheets/base';
 
-$slot-editor-height: 140px;
+$slot-editor-height: 130px;
 
 .message {
     @include background-color($color-foreground);
@@ -11,17 +11,32 @@ $slot-editor-height: 140px;
 .day-editor {
     @include background-color($color-foreground);
     position: relative;
-    min-height: $slot-editor-height;
+    // min-height: $slot-editor-height;
 
     .day-editor-form {
         display: flex;
         flex-direction: column;
         padding: $spacing-small 0;
 
+        .title {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: $spacing-small;
+            padding: 0 $spacing-small;
+
+            .action-buttons {
+                display: flex;
+                align-items: flex-start;
+
+                button {
+                    margin-left: $spacing-small;
+                }
+            }
+        }
+
         .main-form {
             display: flex;
             justify-content: space-between;
-            padding: $spacing-small 0;
 
             .infowrapper {
                 display: flex;
@@ -39,21 +54,6 @@ $slot-editor-height: 140px;
 
                 .remarks {
                     flex-grow: 1;
-                }
-            }
-
-            .action-buttons {
-                display: flex;
-                align-items: flex-start;
-                margin-left: $spacing-medium;
-
-                button {
-                    margin-right: $spacing-medium;
-                }
-
-                .forgot-password-link {
-                    color: $color-text-label;
-                    font-size: $font-size-extra-small;
                 }
             }
         }

@@ -301,6 +301,10 @@ const discardTimeSlot = (
 
     const settings = {
         workspace: {
+            activeDate: {
+                day: { $set: undefined },
+            },
+            activeTimeSlotId: { $set: undefined },
             wipTimeSlots: {
                 [canonicalDate] : { $auto: {
                     [activeTimeSlotId || 0]: { $auto: {

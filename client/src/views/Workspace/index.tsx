@@ -195,7 +195,10 @@ export class Workspace extends React.PureComponent<Props, States> {
     }
 
     handleSlotClick = (
-        year: number, month: number, day: number, timeSlotId: number | undefined,
+        year: number,
+        month: number,
+        day: number,
+        timeSlotId?: number,
     ) => () => {
         this.props.setActiveSlot({
             year,
