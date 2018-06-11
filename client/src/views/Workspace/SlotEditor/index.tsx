@@ -12,7 +12,6 @@ import Faram, {
 } from '../../../vendor/react-store/components/Input/Faram';
 import { requiredCondition } from '../../../vendor/react-store/components/Input/Faram/validations';
 import NonFieldErrors from '../../../vendor/react-store/components/Input/NonFieldErrors';
-import SelectInput from '../../../vendor/react-store/components/Input/SelectInput';
 import TextInput from '../../../vendor/react-store/components/Input/TextInput';
 import LoadingAnimation from '../../../vendor/react-store/components/View/LoadingAnimation';
 import Message from '../../../vendor/react-store/components/View/Message';
@@ -43,12 +42,8 @@ import { getCanonicalDate } from '../../../utils/map';
 
 import SlotPostRequest from '../requests/SlotPostRequest';
 import SlotDeleteRequest from '../requests/SlotDeleteRequest';
+import Upt from './Upt';
 import * as styles from './styles.scss';
-
-interface WithIdAndTitle {
-    id: number;
-    title: string;
-}
 
 interface OwnProps {
     year: number;
@@ -82,9 +77,6 @@ export class SlotEditor extends React.PureComponent<Props, States> {
     schema: FaramSchema;
     submitSlotRequest: RestRequest;
     deleteSlotRequest: RestRequest;
-
-    static keySelector = (d: WithIdAndTitle) => d.id;
-    static labelSelector = (d: WithIdAndTitle) => d.title;
 
     constructor(props: Props) {
         super(props);
@@ -249,7 +241,32 @@ export class SlotEditor extends React.PureComponent<Props, States> {
                     onValidationFailure={this.handleFaramFailure}
                 >
                     {pending && <LoadingAnimation />}
-                    <NonFieldErrors faramElement />
+                    <div className={styles.title}>
+                        <NonFieldErrors faramElement />
+                        <div className={styles.actionButtons}>
+                            <PrimaryButton
+                                type="submit"
+                                disabled={pristine || pending || hasError}
+                            >
+                                Save
+                            </PrimaryButton>
+                            { activeWipTimeSlot && activeWipTimeSlot.id &&
+                                <DangerButton
+                                    onClick={this.handleDelete}
+                                    disabled={pending}
+                                >
+                                    Delete
+                                </DangerButton>
+                            }
+                            <WarningButton
+                                onClick={this.handleDiscard}
+                                disabled={pending}
+                            >
+                                Cancel
+                            </WarningButton>
+                        </div>
+
+                    </div>
                     <div className={styles.mainForm}>
                         <div className={styles.infowrapper} >
                              <TextInput
@@ -267,32 +284,12 @@ export class SlotEditor extends React.PureComponent<Props, States> {
                                 placeholder="5:00"
                                 type="time"
                             />
-                            <SelectInput
-                                faramElementName="userGroup"
-                                className={styles.usergroup}
-                                label="User Group"
-                                options={userGroups}
-                                placeholder="Select a user group"
-                                keySelector={SlotEditor.keySelector}
-                                labelSelector={SlotEditor.labelSelector}
-                            />
-                            <SelectInput
-                                faramElementName="project"
-                                label="Project"
-                                className={styles.project}
-                                options={projects}
-                                placeholder="Select a project"
-                                keySelector={SlotEditor.keySelector}
-                                labelSelector={SlotEditor.labelSelector}
-                            />
-                            <SelectInput
-                                className={styles.task}
-                                faramElementName="task"
-                                label="Task"
-                                options={tasks}
-                                placeholder="Select a task"
-                                keySelector={SlotEditor.keySelector}
-                                labelSelector={SlotEditor.labelSelector}
+                            <Upt
+                                userGroupId={faramValues.userGroup}
+                                projectId={faramValues.project}
+                                projects={projects}
+                                tasks={tasks}
+                                userGroups={userGroups}
                             />
                             <AddTask
                                 // FIXME: do not access faramValues directly
@@ -311,28 +308,6 @@ export class SlotEditor extends React.PureComponent<Props, States> {
                                 label="Remarks"
                                 placeholder="Some remarks here"
                             />
-                        </div>
-                        <div className={styles.actionButtons}>
-                            { activeWipTimeSlot && activeWipTimeSlot.id &&
-                                <DangerButton
-                                    onClick={this.handleDelete}
-                                    disabled={pending}
-                                >
-                                    Delete
-                                </DangerButton>
-                            }
-                            <PrimaryButton
-                                type="submit"
-                                disabled={pristine || pending || hasError}
-                            >
-                                Save
-                            </PrimaryButton>
-                            <WarningButton
-                                onClick={this.handleDiscard}
-                                disabled={pristine || pending || hasError}
-                            >
-                                Discard
-                            </WarningButton>
                         </div>
                     </div>
                     <div className={styles.bottom}>
