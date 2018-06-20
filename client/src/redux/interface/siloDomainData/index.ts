@@ -49,6 +49,30 @@ export interface WorkspaceView {
     timeSlots: TimeSlots<TimeSlot>;
 }
 
+// Slot Stats
+export interface SlotStat {
+    id: number;
+    userGroup: number;
+    project: number;
+    userGroupDisplayName: string;
+    projectDisplayName: string;
+    userDisplayName: string;
+    taskDisplayName: string;
+    taskDescription: string;
+    date: string;
+    startTime: string;
+    endTime: string;
+    totalTime: number;
+    remarks: string;
+    task: number;
+    user: number;
+}
+
+export interface SetSlotStatsAction {
+    slotStats: SlotStat[];
+}
+
 export interface SiloDomainData {
     workspace: WorkspaceView;
+    slotStats: SlotStat[];
 }

@@ -1,3 +1,4 @@
+from datetime import datetime
 from django.core.exceptions import ValidationError
 from django.db import models
 
@@ -88,6 +89,12 @@ class TimeSlot(models.Model):
         Timeslot can be accessed by the user who created it
         """
         return TimeSlot.objects.filter(user=user)
+
+    def total_time(self):
+        return (
+            datetime.combine(datetime.now(), self.end_time) -
+            datetime.combine(datetime.now(), self.start_time)
+        ).total_seconds()
 
     def can_get(self, user):
         return self.user == user

@@ -5,7 +5,13 @@ import createReducerWithMap from '../../utils/createReducerWithMap';
 import { getCanonicalDate } from '../../utils/map';
 
 import initialSiloDomainData from '../initial-state/siloDomainData';
-import { SiloDomainData, TimeSlot, ReducerGroup, WipTimeSlot } from '../interface';
+import {
+    SiloDomainData,
+    TimeSlot,
+    ReducerGroup,
+    WipTimeSlot,
+    SetSlotStatsAction,
+} from '../interface';
 
 // ACTION-TYPE
 
@@ -16,6 +22,7 @@ export const enum TIME_SLOT_ACTION {
     saveTimeSlot = 'siloDomainData/SAVE_TIME_SLOT',
     discardTimeSlot = 'siloDomainData/DISCARD_TIME_SLOT',
     deleteTimeSlot = 'siloDomainData/DELETE_TIME_SLOT',
+    setSlotStats = 'siloDomainData/SET_SLOT_STATS',
 }
 
 // HELPER
@@ -85,6 +92,10 @@ export const deleteTimeSlotAction = () => ({
     type: TIME_SLOT_ACTION.deleteTimeSlot,
 });
 
+export const setSlotStatsAction = ({ slotStats }: SetSlotStatsAction) => ({
+    slotStats,
+    type: TIME_SLOT_ACTION.setSlotStats,
+});
 // REDUCER
 
 const setActiveSlot = (
@@ -325,6 +336,15 @@ const discardTimeSlot = (
     return update(state, settings);
 };
 
+const setSlotStats = (state: SiloDomainData, { slotStats }: SetSlotStatsAction) => {
+    const settings = {
+        slotStats: { $autoArray: {
+            $set: slotStats,
+        } },
+    };
+    return update(state, settings);
+};
+
 export const siloDomainDataReducers: ReducerGroup<SiloDomainData> = {
     [TIME_SLOT_ACTION.setActiveSlot]: setActiveSlot,
     [TIME_SLOT_ACTION.setTimeSlots]: setTimeSlots,
@@ -332,5 +352,6 @@ export const siloDomainDataReducers: ReducerGroup<SiloDomainData> = {
     [TIME_SLOT_ACTION.saveTimeSlot]: saveTimeSlot,
     [TIME_SLOT_ACTION.discardTimeSlot]: discardTimeSlot,
     [TIME_SLOT_ACTION.deleteTimeSlot]: deleteTimeSlot,
+    [TIME_SLOT_ACTION.setSlotStats]: setSlotStats,
 };
 export default createReducerWithMap(siloDomainDataReducers, initialSiloDomainData);

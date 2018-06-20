@@ -42,3 +42,25 @@ class TimeSlotSerializer(DynamicFieldsMixin, serializers.ModelSerializer):
         instance = TimeSlot(**attrs)
         instance.clean()
         return attrs
+
+
+class TimeSlotStatsSerializer(TimeSlotSerializer):
+    # user group
+    user_group_display_name = serializers.CharField(
+        source='task.project.user_group.title'
+    )
+    # project
+    project_display_name = serializers.CharField(source='task.project.title')
+    # user
+    user_display_name = serializers.CharField(
+        source='user.profile.get_display_name'
+    )
+    # task
+    task_display_name = serializers.CharField(source='task.title')
+    task_description = serializers.CharField(source='task.description')
+    # Time
+    total_time = serializers.IntegerField()
+
+    class Meta:
+        model = TimeSlot
+        exclude = ()

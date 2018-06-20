@@ -144,6 +144,15 @@ export class Workspace extends React.PureComponent<Props, States> {
         if (this.userGroupRequest) {
             this.userGroupRequest.stop();
         }
+        if (this.projectsRequest) {
+            this.projectsRequest.stop();
+        }
+        if (this.tasksRequest) {
+            this.tasksRequest.stop();
+        }
+        if (this.slotsRequest) {
+            this.slotsRequest.stop();
+        }
     }
 
     startRequestForSlots = () => {

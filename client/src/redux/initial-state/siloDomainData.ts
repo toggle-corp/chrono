@@ -138,6 +138,8 @@ const initialState: SiloDomainData = {
              */
         },
     },
+
+    slotStats: [],
 };
 
 export default initialState;

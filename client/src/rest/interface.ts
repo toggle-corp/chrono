@@ -62,3 +62,19 @@ export interface AddTaskParams {
     title: string;
     description: string;
 }
+
+export type ProjectUrlParams = {
+    fields?: string[];
+    user?: number;
+    user_group?:number;
+};
+
+export type SlotStatsUrlParams = {
+    project?: number;
+    userGroup?: number;
+    task?: number;
+    date?: number;
+    user?: number;
+    dateGt?: string;
+    dateLt?: string;
+};

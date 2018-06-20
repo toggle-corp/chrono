@@ -7,6 +7,7 @@ import {
 import {
     RootState,
     WorkspaceView,
+    SlotStat,
 } from '../interface';
 
 const createPropsSelector = <T>(name: string) => (
@@ -20,6 +21,10 @@ const timeSlotIdFromProps = createPropsSelector<number|undefined>('timeSlotId');
 
 const workspaceViewSelector = ({ siloDomainData }: RootState): WorkspaceView => (
     siloDomainData.workspace
+);
+
+export const timeSlotStatsSelector = ({ siloDomainData }: RootState): SlotStat[] => (
+    siloDomainData.slotStats
 );
 
 interface Ymd {
