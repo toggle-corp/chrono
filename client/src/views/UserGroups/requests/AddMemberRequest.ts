@@ -35,11 +35,11 @@ export default class AddMemberRequest implements Request<PostGroupMembershipBody
         this.props = props;
     }
 
-    success = (response: Member) => {
+    success = (userGroupId: number) => (response: Member) => {
         try {
             schema.validate(response, 'groupMembershipPostResponse');
             this.props.setMember({
-                userGroupId: this.props.userGroupId,
+                userGroupId,
                 member: response,
             });
             this.props.handleClose();
@@ -69,7 +69,7 @@ export default class AddMemberRequest implements Request<PostGroupMembershipBody
             .params(createParamsForPostGroupMembership(body))
             .preLoad(() => { this.props.setState({ pending: true }); })
             .postLoad(() => { this.props.setState({ pending: false }); })
-            .success(this.success)
+            .success(this.success(body.group))
             .failure(this.failure)
             .fatal(this.fatal)
             .build();

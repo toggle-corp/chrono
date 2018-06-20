@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-// import SelectInput from '../../../vendor/react-store/components/Input/SelectInput';
+import SelectInput from '../../../vendor/react-store/components/Input/SelectInput';
 import PrimaryButton from '../../../vendor/react-store/components/Action/Button/PrimaryButton';
 // import WarningButton from '../../../vendor/react-store/components/Action/Button/WarningButton';
 import LoadingAnimation from '../../../vendor/react-store/components/View/LoadingAnimation';
@@ -17,6 +17,7 @@ import {
     userGroupsSelector,
     projectsSelector,
     tasksSelector,
+    usersSelector,
 } from '../../../redux';
 
 import {
@@ -24,13 +25,14 @@ import {
     UserGroup,
     Project,
     Task,
+    UserPartialInformation,
 } from '../../../redux/interface';
 
 import Upt from '../../Workspace/SlotEditor/Upt';
 // import * as styles from './styles.scss';
 
 interface FilterParams {
-    user: number[];
+    user: number;
     userGroup: number;
     project: number;
     task: number;
@@ -50,6 +52,7 @@ interface PropsFromState {
     userGroups: UserGroup[];
     projects: Project[];
     tasks: Task[];
+    users: UserPartialInformation[];
 }
 
 interface PropsFromDispatch {}
@@ -61,6 +64,9 @@ interface State {
     faramErrors: FaramErrors;
     pristine: boolean;
 }
+
+const userKeySelector = (user: UserPartialInformation) => user.id;
+const userLabelSelector = (user: UserPartialInformation) => user.displayName;
 
 export class Filter extends React.PureComponent<Props, State>{
     schema: FaramSchema;
@@ -125,6 +131,7 @@ export class Filter extends React.PureComponent<Props, State>{
             userGroups,
             projects,
             tasks,
+            users,
             loading,
         } = this.props;
 
@@ -136,7 +143,6 @@ export class Filter extends React.PureComponent<Props, State>{
 
         // const isFilterEmpty = isObjectEmpty(faramValues);
 
-        // TODO: ADD Users
         return (
             <Faram
                 onChange={this.handleFaramChange}
@@ -150,6 +156,15 @@ export class Filter extends React.PureComponent<Props, State>{
                 <div>
                     {loading && <LoadingAnimation />}
                     <NonFieldErrors faramElement />
+                    <SelectInput
+                        faramElementName="user"
+                        // className={styles.usergroup}
+                        label="User"
+                        options={users}
+                        placeholder="Select a user"
+                        keySelector={userKeySelector}
+                        labelSelector={userLabelSelector}
+                    />
                     <Upt
                         userGroupId={faramValues.userGroup}
                         projectId={faramValues.project}
@@ -181,6 +196,7 @@ const mapStateToProps = (state: RootState) => ({
     userGroups: userGroupsSelector(state),
     projects: projectsSelector(state),
     tasks: tasksSelector(state),
+    users: usersSelector(state),
 });
 
 export default connect<PropsFromState, PropsFromDispatch, OwnProps>(

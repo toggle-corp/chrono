@@ -106,7 +106,6 @@ class TimeSlotStatsViewSet(generics.ListAPIView):
     search_fields = ('title', 'description')
 
     """
-    TODO: FIXME
     def filter_queryset(self, queryset):
         qs = super(TimeSlotStatsViewSet, self)\
             .filter_queryset(queryset)\

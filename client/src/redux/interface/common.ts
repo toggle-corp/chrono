@@ -15,3 +15,17 @@ export interface RootState {
 export interface ReducerGroup<T> {
     [key: string]: ((state: T, action: object) => T);
 }
+
+export interface Ymd {
+    year: number;
+    month: number;
+    day?: number;
+}
+
+export interface Dictionary<T> {
+    [key: string]: T;
+}
+
+export const createPropsSelector = <T>(name: string) => (
+    (state: RootState, props: object): T => props[name]
+);

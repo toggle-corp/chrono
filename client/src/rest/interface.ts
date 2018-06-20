@@ -38,7 +38,7 @@ export interface PostProjectBody {
 
 export interface PostGroupMembershipBody {
     member: number;
-    group?: number;
+    group: number;
     role: string;
 }
 

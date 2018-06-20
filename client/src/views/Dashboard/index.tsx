@@ -12,12 +12,14 @@ import {
     Project,
     Task,
     SetSlotStatsAction,
+    SetUsersAction,
 } from '../../redux/interface';
 import {
     setUserGroupsAction,
     setProjectsAction,
     setTasksAction,
     setSlotStatsAction,
+    setUsersAction,
     timeSlotStatsSelector,
 }  from '../../redux';
 
@@ -27,6 +29,7 @@ import GetSlotStatsRequest from './requests/GetSlotStatsRequest';
 import GetUserGroupsRequest from './requests/GetUserGroupsRequest';
 import GetProjectsRequest from './requests/GetProjectsRequest';
 import GetTasksRequest from './requests/GetTasksRequest';
+import GetUsersRequest from './requests/GetUsersRequest';
 
 import Filter from './Filter';
 import headers from './headers';
@@ -42,7 +45,7 @@ interface PropsFromDispatch {
     setUserProjects(params: Project[]): void;
     setUserTasks(params: Task[]): void;
     setTimeSlotStats(params: SetSlotStatsAction): void;
-    // setUsers(params: User[]): void;
+    setUsers(params: SetUsersAction): void;
 }
 
 type Props = OwnProps & PropsFromState & PropsFromDispatch;
@@ -59,7 +62,8 @@ const keyExtractor = (slotStat: SlotStat) => slotStat.id;
 
 export class Dashboard extends React.PureComponent<Props, States> {
     slotStatsRequest: RestRequest;
-    userGroupRequest: RestRequest;
+    userGroupsRequest: RestRequest;
+    usersRequest: RestRequest;
     projectsRequest: RestRequest;
     tasksRequest: RestRequest;
     slotsRequest: RestRequest;
@@ -77,7 +81,8 @@ export class Dashboard extends React.PureComponent<Props, States> {
     }
 
     componentWillMount() {
-        this.startRequestForUserGroup();
+        this.startRequestForUserGroups();
+        this.startRequestForUsers();
         this.startRequestForProjects();
         this.startRequestForTasks();
         this.startRequestForSlotStats({});
@@ -87,8 +92,11 @@ export class Dashboard extends React.PureComponent<Props, States> {
         if (this.slotStatsRequest) {
             this.slotStatsRequest.stop();
         }
-        if (this.userGroupRequest) {
-            this.userGroupRequest.stop();
+        if (this.userGroupsRequest) {
+            this.userGroupsRequest.stop();
+        }
+        if (this.usersRequest) {
+            this.usersRequest.stop();
         }
         if (this.projectsRequest) {
             this.projectsRequest.stop();
@@ -134,16 +142,28 @@ export class Dashboard extends React.PureComponent<Props, States> {
         this.tasksRequest.start();
     }
 
-    startRequestForUserGroup = () => {
-        if (this.userGroupRequest) {
-            this.userGroupRequest.stop();
+    startRequestForUserGroups = () => {
+        if (this.userGroupsRequest) {
+            this.userGroupsRequest.stop();
         }
         const request = new GetUserGroupsRequest({
             setUserGroups: this.props.setUserGroups,
             setState: params => this.setState(params),
         });
-        this.userGroupRequest = request.create();
-        this.userGroupRequest.start();
+        this.userGroupsRequest = request.create();
+        this.userGroupsRequest.start();
+    }
+
+    startRequestForUsers = () => {
+        if (this.usersRequest) {
+            this.usersRequest.stop();
+        }
+        const request = new GetUsersRequest({
+            setUsers: this.props.setUsers,
+            setState: params => this.setState(params),
+        });
+        this.usersRequest = request.create();
+        this.usersRequest.start();
     }
 
     onFilterChange = (params: SlotStatsUrlParams) => {
@@ -175,7 +195,7 @@ const mapStateToProps = (state: RootState) => ({
 
 const mapDispatchToProps = (dispatch: Redux.Dispatch<RootState>) => ({
     setUserGroups: (params: UserGroup[]) => dispatch(setUserGroupsAction(params)),
-    // setUsers: (params: User[]) => dispatch(setUsersAction(params)),
+    setUsers: (params: SetUsersAction) => dispatch(setUsersAction(params)),
     setUserProjects: (params: Project[]) => dispatch(setProjectsAction(params)),
     setUserTasks: (params: Task[]) => dispatch(setTasksAction(params)),
     setTimeSlotStats: (params: SetSlotStatsAction) =>

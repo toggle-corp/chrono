@@ -104,20 +104,24 @@ export class MemberAdd extends PureComponent<Props, States> {
             this.addUserRequest.stop();
         }
 
-        const user = {
+        const { userGroupId } = this.props;
+        if (!userGroupId) {
+            return;
+        }
+
+        const member = {
             member: values.userId,
             role: 'normal',
-            group: this.props.userGroupId,
+            group: userGroupId,
         };
 
         const request = new AddMemberRequest({
-            userGroupId: this.props.userGroupId,
             setMember: this.props.setMember,
             setState: params => this.setState(params),
             handleClose: this.props.handleClose,
         });
 
-        this.addUserRequest = request.create(user);
+        this.addUserRequest = request.create(member);
         this.addUserRequest.start();
     }
 

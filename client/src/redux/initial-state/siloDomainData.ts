@@ -1,6 +1,10 @@
 import { SiloDomainData } from '../interface';
 
 const initialState: SiloDomainData = {
+    users: {},
+    userGroups: {},
+    projects: {},
+
     workspace: {
         activeDate: {
             /*

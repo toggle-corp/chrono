@@ -120,8 +120,11 @@ export class UserGroupMembers extends PureComponent<Props, States> {
         if (this.memberDeleteRequest) {
             this.memberDeleteRequest.stop();
         }
-
         const { userGroupId } = this.props;
+
+        if (!userGroupId) {
+            return;
+        }
         const memberDeleteRequest = new MemberDeleteRequest({
             unsetMember: this.props.unsetMember,
             setState: states => this.setState(states),

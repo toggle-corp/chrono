@@ -13,3 +13,8 @@ export * from './reducers/domainData/user';
 export * from './reducers/domainData/userGroup';
 export * from './reducers/domainData/project';
 export * from './reducers/domainData/task';
+
+export * from './reducers/siloDomainData/user';
+export * from './reducers/siloDomainData/slot';
+export * from './reducers/siloDomainData/project';
+export * from './reducers/siloDomainData/userGroup';
