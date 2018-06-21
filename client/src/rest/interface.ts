@@ -71,10 +71,9 @@ export type ProjectUrlParams = {
 
 export type SlotStatsUrlParams = {
     project?: number;
-    userGroup?: number;
+    user_group?: number;
     task?: number;
-    date?: number;
     user?: number;
-    dateGt?: string;
-    dateLt?: string;
+    date_gt?: string;
+    date_lt?: string;
 };

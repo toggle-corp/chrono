@@ -1,0 +1,10 @@
+@import '../../../../stylesheets/base';
+
+.filter {
+    display: flex;
+    align-items: center;
+
+    .form-element {
+        padding: 0 $spacing-small;
+    }
+}

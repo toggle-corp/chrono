@@ -3,15 +3,16 @@ import { Link } from 'react-router-dom';
 
 import {
     compareString,
+    compareNumber,
     reverseRoute,
-} from '../../vendor/react-store/utils/common';
-import { Header } from '../../vendor/react-store/components/View/Table';
+} from '../../../vendor/react-store/utils/common';
+import { Header } from '../../../vendor/react-store/components/View/Table';
 
-import { SlotStat } from '../../redux/interface';
+import { OverviewSlotStat } from '../../../redux/interface';
 
-import { pathNames } from '../../constants';
+import { pathNames } from '../../../constants';
 
-const headers: Header<SlotStat>[] = [
+const headers: Header<OverviewSlotStat>[] = [
     {
         key: 'userGroupDisplayName',
         label: 'User Group',
@@ -28,16 +29,9 @@ const headers: Header<SlotStat>[] = [
         ),
     },
     {
-        key: 'projectDisplayName',
-        label: 'Project',
-        order: 2,
-        sortable: true,
-        comparator: (a, b) => compareString(a.projectDisplayName, b.projectDisplayName),
-    },
-    {
         key: 'userDisplayName',
         label: 'User',
-        order: 3,
+        order: 2,
         sortable: true,
         comparator: (a, b) => compareString(a.userDisplayName, b.userDisplayName),
         modifier: row => (
@@ -50,11 +44,21 @@ const headers: Header<SlotStat>[] = [
         ),
     },
     {
+        key: 'projectDisplayName',
+        label: 'Project',
+        order: 3,
+        sortable: true,
+        comparator: (a, b) => compareString(a.projectDisplayName, b.projectDisplayName),
+    },
+    {
         key: 'taskDisplayName',
         label: 'Task',
         order: 4,
         sortable: true,
         comparator: (a, b) => compareString(a.taskDisplayName, b.taskDisplayName),
+        modifier: row => (
+            <span>{row.taskDisplayName}</span>
+        ),
     },
     {
         key: 'taskDescription',
@@ -85,9 +89,16 @@ const headers: Header<SlotStat>[] = [
         comparator: (a, b) => compareString(a.endTime, b.endTime),
     },
     {
+        key: 'totalTime',
+        label: 'Total Time',
+        order: 9,
+        sortable: true,
+        comparator: (a, b) => compareNumber(a.totalTimeInSeconds, b.totalTimeInSeconds),
+    },
+    {
         key: 'remarks',
         label: 'Remarks',
-        order: 9,
+        order: 10,
         sortable: true,
         comparator: (a, b) => compareString(a.remarks, b.remarks),
     },

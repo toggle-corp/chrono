@@ -36,25 +36,24 @@ export interface TimeSlots<T> {
     };
 }
 
-// Slot Stats
-export interface SlotStat {
-    id: number;
-    userGroup: number;
-    project: number;
-    userGroupDisplayName: string;
-    projectDisplayName: string;
-    userDisplayName: string;
-    taskDisplayName: string;
-    taskDescription: string;
-    date: string;
-    startTime: string;
-    endTime: string;
-    totalTime: number;
-    remarks: string;
-    task: number;
-    user: number;
+// ACTION-CREATOR INTERFACE
+
+export interface SetActiveSlotAction  {
+    year: number;
+    month: number;
+    day: number;
+    timeSlotId?: number;
 }
 
-export interface SetSlotStatsAction {
-    slotStats: SlotStat[];
+export interface SetTimeSlotsAction {
+    timeSlots: TimeSlot[];
+}
+
+export interface ChangeTimeSlotAction {
+    faramValues?: WipTimeSlot['faramValues'];
+    faramErrors: WipTimeSlot['faramErrors'];
+}
+
+export interface SaveTimeSlotAction {
+    timeSlot: TimeSlot;
 }

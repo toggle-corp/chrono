@@ -4,8 +4,10 @@ import {
 } from '../../../vendor/react-store/utils/rest';
 
 import { Request } from '../../../rest/interface';
-import {  TimeSlot } from '../../../redux/interface';
-import { SetTimeSlotsAction } from '../../../redux';
+import {
+    TimeSlot,
+    SetTimeSlotsAction,
+} from '../../../redux/interface';
 import {
     urlForSlots,
     commonParamsForGet,

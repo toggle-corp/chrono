@@ -1,20 +1,21 @@
 import {
     RestRequest,
     FgRestBuilder,
-} from '../../../vendor/react-store/utils/rest';
+} from '../../../../vendor/react-store/utils/rest';
 
-import { Dashboard } from '../index';
-
-import { Request } from '../../../rest/interface';
+import { Request } from '../../../../rest/interface';
 import {
     urlForProjects,
     commonParamsForGet,
-} from '../../../rest';
-import { Project } from '../../../redux/interface';
-import schema from '../../../schema';
+} from '../../../../rest';
+import {
+    Project,
+    SetDashboardLoadingsAction,
+} from '../../../../redux/interface';
+import schema from '../../../../schema';
 
 interface Props {
-    setState: Dashboard['setState'];
+    setLoadings(params: SetDashboardLoadingsAction): void;
     setUserProjects(params: Project[]): void;
 }
 
@@ -36,8 +37,8 @@ export default class GetUserProjectsRequest implements Request<{}> {
         const request = new FgRestBuilder()
             .url(urlForProjects)
             .params(commonParamsForGet)
-            .preLoad(() => { this.props.setState({ pendingProjects: true }); })
-            .postLoad(() => { this.props.setState({ pendingProjects: false }); })
+            .preLoad(() => { this.props.setLoadings({ projectsLoading: true }); })
+            .postLoad(() => { this.props.setLoadings({ projectsLoading: false }); })
             .success((response: ProjectsGetResponse) => {
                 try {
                     schema.validate(response, 'projectsGetResponse');

@@ -20,9 +20,6 @@ import {
     activeTimeSlotsSelector,
     setActiveSlotAction,
     setTimeSlotsAction,
-
-    SetActiveSlotAction,
-    SetTimeSlotsAction,
 } from '../../redux';
 import {
     RootState,
@@ -31,6 +28,8 @@ import {
     Task,
     TimeSlots,
     TimeSlot,
+    SetActiveSlotAction,
+    SetTimeSlotsAction,
 } from '../../redux/interface';
 import SlotEditor from './SlotEditor';
 import * as styles from './styles.scss';

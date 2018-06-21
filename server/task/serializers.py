@@ -59,7 +59,8 @@ class TimeSlotStatsSerializer(TimeSlotSerializer):
     task_display_name = serializers.CharField(source='task.title')
     task_description = serializers.CharField(source='task.description')
     # Time
-    total_time = serializers.IntegerField()
+    total_time = serializers.DurationField()
+    total_time_in_seconds = serializers.IntegerField()
 
     class Meta:
         model = TimeSlot

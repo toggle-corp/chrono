@@ -18,3 +18,7 @@ export * from './reducers/siloDomainData/user';
 export * from './reducers/siloDomainData/slot';
 export * from './reducers/siloDomainData/project';
 export * from './reducers/siloDomainData/userGroup';
+export * from './reducers/siloDomainData/dashboard';
+
+export * from './selectors/siloDomainData/dashboard';
+export * from './selectors/siloDomainData/workspace';

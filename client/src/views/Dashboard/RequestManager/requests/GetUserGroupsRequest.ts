@@ -1,20 +1,21 @@
 import {
     RestRequest,
     FgRestBuilder,
-} from '../../../vendor/react-store/utils/rest';
+} from '../../../../vendor/react-store/utils/rest';
 
-import { Request } from '../../../rest/interface';
-import { UserGroup } from '../../../redux/interface';
-import schema from '../../../schema';
+import { Request } from '../../../../rest/interface';
+import {
+    UserGroup,
+    SetDashboardLoadingsAction,
+} from '../../../../redux/interface';
+import schema from '../../../../schema';
 import {
     urlForUserGroups,
     commonParamsForGet,
-} from '../../../rest';
-
-import { Dashboard } from '../index';
+} from '../../../../rest';
 
 interface Props {
-    setState: Dashboard['setState'];
+    setLoadings(params: SetDashboardLoadingsAction): void;
     setUserGroups(params: UserGroup[]): void;
 }
 
@@ -36,8 +37,8 @@ export default class GetUserGroupsRequest implements Request<{}> {
         const userGroupsRequest = new FgRestBuilder()
             .url(urlForUserGroups)
             .params(commonParamsForGet)
-            .preLoad(() => { this.props.setState({ pendingUsergroups: true }); })
-            .postLoad(() => { this.props.setState({ pendingUsergroups: false }); })
+            .preLoad(() => { this.props.setLoadings({ userGroupsLoading: true }); })
+            .postLoad(() => { this.props.setLoadings({ userGroupsLoading: false }); })
             .success((response: UserGroupsGetResponse) => {
                 try {
                     schema.validate(response, 'userGroupsResponse');

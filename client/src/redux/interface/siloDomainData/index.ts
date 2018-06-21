@@ -1,6 +1,6 @@
 import {
     Projects,
-    SlotStat,
+    Dashboard,
     Users,
     UserGroups,
     WorkspaceView,
@@ -8,7 +8,7 @@ import {
 
 export interface SiloDomainData {
     workspace: WorkspaceView;
-    slotStats: SlotStat[];
+    dashboard: Dashboard;
     userGroups: UserGroups;
     users: Users;
     projects: Projects;

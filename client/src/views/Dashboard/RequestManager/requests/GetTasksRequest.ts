@@ -1,20 +1,21 @@
 import {
     RestRequest,
     FgRestBuilder,
-} from '../../../vendor/react-store/utils/rest';
+} from '../../../../vendor/react-store/utils/rest';
 
-import { Request } from '../../../rest/interface';
-import { Task } from '../../../redux/interface';
-import schema from '../../../schema';
+import { Request } from '../../../../rest/interface';
+import {
+    Task,
+    SetDashboardLoadingsAction,
+} from '../../../../redux/interface';
+import schema from '../../../../schema';
 import {
     urlForTasks,
     commonParamsForGet,
-} from '../../../rest';
-
-import { Dashboard } from '../index';
+} from '../../../../rest';
 
 interface Props {
-    setState: Dashboard['setState'];
+    setLoadings(params: SetDashboardLoadingsAction): void;
     setUserTasks(params: Task[]): void;
 }
 
@@ -36,8 +37,8 @@ export default class GetTasksRequest implements Request<{}> {
         const request = new FgRestBuilder()
             .url(urlForTasks)
             .params(commonParamsForGet)
-            .preLoad(() => { this.props.setState({ pendingTasks: true }); })
-            .postLoad(() => { this.props.setState({ pendingTasks: false }); })
+            .preLoad(() => { this.props.setLoadings({ tasksLoading: true }); })
+            .postLoad(() => { this.props.setLoadings({ tasksLoading: false }); })
             .success((response: TasksGetResponse) => {
                 try {
                     schema.validate(response, 'tasksGetResponse');

@@ -14,3 +14,4 @@ export * from './domainData/task';
 export * from './siloDomainData/user';
 export * from './siloDomainData/slot';
 export * from './siloDomainData/workspace';
+export * from './siloDomainData/dashboard';

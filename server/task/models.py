@@ -94,7 +94,10 @@ class TimeSlot(models.Model):
         return (
             datetime.combine(datetime.now(), self.end_time) -
             datetime.combine(datetime.now(), self.start_time)
-        ).total_seconds()
+        )
+
+    def total_time_in_seconds(self):
+        return self.total_time().total_seconds()
 
     def can_get(self, user):
         return self.user == user

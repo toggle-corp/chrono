@@ -3,8 +3,12 @@ import {
     FgRestBuilder,
 } from '../../../vendor/react-store/utils/rest';
 
-import { SaveTimeSlotAction, ChangeTimeSlotAction } from '../../../redux';
-import { WipTimeSlot, TimeSlot } from '../../../redux/interface';
+import {
+    SaveTimeSlotAction,
+    ChangeTimeSlotAction,
+    WipTimeSlot,
+    TimeSlot,
+} from '../../../redux/interface';
 import { Request, ErrorsFromServer } from '../../../rest/interface';
 import schema from '../../../schema';
 import {

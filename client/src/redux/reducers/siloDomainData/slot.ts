@@ -8,7 +8,11 @@ import {
     TimeSlot,
     ReducerGroup,
     WipTimeSlot,
-    SetSlotStatsAction,
+
+    SetActiveSlotAction,
+    SetTimeSlotsAction,
+    ChangeTimeSlotAction,
+    SaveTimeSlotAction,
 } from '../../interface';
 
 // ACTION-TYPE
@@ -20,7 +24,6 @@ export const enum SILO_TIME_SLOT_ACTION {
     saveTimeSlot = 'siloDomainData/SLOT/SAVE_TIME_SLOT',
     discardTimeSlot = 'siloDomainData/SLOT/DISCARD_TIME_SLOT',
     deleteTimeSlot = 'siloDomainData/SLOT/DELETE_TIME_SLOT',
-    setSlotStats = 'siloDomainData/SLOT/SET_SLOT_STATS',
 }
 
 // HELPER
@@ -33,28 +36,6 @@ const getFaramValuesFromTimeSlot = (timeSlot: TimeSlot): WipTimeSlot['faramValue
     userGroup: timeSlot.userGroup,
     project: timeSlot.project,
 });
-
-// ACTION-CREATOR INTERFACE
-
-export interface SetActiveSlotAction  {
-    year: number;
-    month: number;
-    day: number;
-    timeSlotId?: number;
-}
-
-export interface SetTimeSlotsAction {
-    timeSlots: TimeSlot[];
-}
-
-export interface ChangeTimeSlotAction {
-    faramValues?: WipTimeSlot['faramValues'];
-    faramErrors: WipTimeSlot['faramErrors'];
-}
-
-export interface SaveTimeSlotAction {
-    timeSlot: TimeSlot;
-}
 
 // ACTION-CREATOR
 
@@ -90,10 +71,6 @@ export const deleteTimeSlotAction = () => ({
     type: SILO_TIME_SLOT_ACTION.deleteTimeSlot,
 });
 
-export const setSlotStatsAction = ({ slotStats }: SetSlotStatsAction) => ({
-    slotStats,
-    type: SILO_TIME_SLOT_ACTION.setSlotStats,
-});
 // REDUCER
 
 const setActiveSlot = (
@@ -334,15 +311,6 @@ const discardTimeSlot = (
     return update(state, settings);
 };
 
-const setSlotStats = (state: SiloDomainData, { slotStats }: SetSlotStatsAction) => {
-    const settings = {
-        slotStats: { $autoArray: {
-            $set: slotStats,
-        } },
-    };
-    return update(state, settings);
-};
-
 const reducer: ReducerGroup<SiloDomainData> = {
     [SILO_TIME_SLOT_ACTION.setActiveSlot]: setActiveSlot,
     [SILO_TIME_SLOT_ACTION.setTimeSlots]: setTimeSlots,
@@ -350,7 +318,6 @@ const reducer: ReducerGroup<SiloDomainData> = {
     [SILO_TIME_SLOT_ACTION.saveTimeSlot]: saveTimeSlot,
     [SILO_TIME_SLOT_ACTION.discardTimeSlot]: discardTimeSlot,
     [SILO_TIME_SLOT_ACTION.deleteTimeSlot]: deleteTimeSlot,
-    [SILO_TIME_SLOT_ACTION.setSlotStats]: setSlotStats,
 };
 
 export default reducer;

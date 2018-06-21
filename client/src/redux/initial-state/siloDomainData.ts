@@ -1,4 +1,7 @@
-import { SiloDomainData } from '../interface';
+import {
+    SiloDomainData,
+    OverviewParams,
+} from '../interface';
 
 const initialState: SiloDomainData = {
     users: {},
@@ -143,7 +146,25 @@ const initialState: SiloDomainData = {
         },
     },
 
-    slotStats: [],
+    dashboard: {
+        activeView: 'overview',
+        loadings: {
+            overviewLoading: true,
+            projectsLoading: true,
+            tasksLoading: true,
+            userGroupsLoading: true,
+            usersLoading: true,
+        },
+        overview: {
+            data: [],
+            faram: {
+                filters: {} as OverviewParams,
+                faramValues: {} as OverviewParams,
+                faramErrors: {},
+                pristine: true,
+            },
+        },
+    },
 };
 
 export default initialState;

@@ -97,7 +97,9 @@ class TimeSlotViewSet(viewsets.ModelViewSet):
 
 
 class TimeSlotStatsViewSet(generics.ListAPIView):
-    queryset = TimeSlot.objects.all()
+    queryset = TimeSlot.objects.order_by(
+        'task__project__user_group', 'user', 'task__project', 'task', 'date',
+    )
     serializer_class = TimeSlotStatsSerializer
     permission_classes = [permissions.IsAuthenticated, ModifyPermission]
     filter_backends = (django_filters.rest_framework.DjangoFilterBackend,
