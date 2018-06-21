@@ -1,11 +1,11 @@
-import { Users } from './user';
 import { UserGroup } from './userGroup';
 import { Project } from './project';
 import { Task } from './task';
+import { UserPartialInformation } from './user';
 
 export interface DomainData {
-    projects: Project[];
     tasks: Task[];
+    projects: Project[];
     userGroups: UserGroup[];
-    users: Users;
+    users: UserPartialInformation[];
 }

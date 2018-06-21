@@ -1,6 +1,10 @@
 import { SiloDomainData } from '../interface';
 
 const initialState: SiloDomainData = {
+    users: {},
+    userGroups: {},
+    projects: {},
+
     workspace: {
         activeDate: {
             /*
@@ -138,6 +142,8 @@ const initialState: SiloDomainData = {
              */
         },
     },
+
+    slotStats: [],
 };
 
 export default initialState;

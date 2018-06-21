@@ -23,7 +23,7 @@ import { RestRequest } from '../../../vendor/react-store/utils/rest';
 
 import {
     userIdFromRouteSelector,
-    userInformationSelector,
+    userProfileInformationSelector,
     setUserAction,
 } from '../../../redux';
 
@@ -176,7 +176,7 @@ export class ProfileEdit extends React.PureComponent<Props, States> {
 }
 
 const mapStateToProps = (state: RootState) => ({
-    information: userInformationSelector(state),
+    information: userProfileInformationSelector(state),
     userId: userIdFromRouteSelector(state),
 });
 

@@ -1,4 +1,7 @@
-import { Project } from './project';
+import {
+    Project,
+    Dictionary,
+} from '../../interface';
 
 export interface Member {
     id: number;
@@ -21,6 +24,8 @@ export interface UserGroupProject {
     id: number;
 }
 
+export type UserGroups = Dictionary<UserGroup>;
+
 // ACTION INTERFACE
 
 export interface SetUserGroupAction {
@@ -29,7 +34,7 @@ export interface SetUserGroupAction {
 }
 
 export interface PatchUserGroupAction {
-    userGroupId?: number;
+    userGroupId: number;
     userGroup: UserGroup;
 }
 
@@ -39,12 +44,12 @@ export interface SetUserGroupProjectsAction {
 }
 
 export interface SetUserGroupMemberAction {
-    userGroupId?: number;
+    userGroupId: number;
     member: Member;
 }
 
 export interface UnsetUserGroupMemberAction {
-    userGroupId?: number;
+    userGroupId: number;
     memberId: number;
 }
 

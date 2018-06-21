@@ -9,6 +9,7 @@ import {
 } from './interface';
 
 export const urlForUsers: string = `${wsEndpoint}/users/`;
+export const urlForUsersSimplified: string = `${wsEndpoint}/users/?fields=display_name,email,id`;
 
 export const createUrlForUser = (userId: number): string => (
     `${wsEndpoint}/users/${userId}/`

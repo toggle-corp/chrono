@@ -1,11 +1,36 @@
 import {
-    wsEndpoint,
     Rest,
     commonHeaderForPost,
+    p,
+    PP,
+    wsEndpoint,
 } from '../config/rest';
-import { RestPostBody } from './interface';
+import {
+    RestPostBody,
+    SlotStatsUrlParams,
+} from './interface';
+
+// helper
+
+const stringToUnderscore = (text: string): string => (
+    text.replace(
+        /([A-Z])/g,
+        a => ('_' + a.toLowerCase()),
+    )
+);
+
+const toUnderscore = (params: object): PP => (
+    Object.keys(params).length ? Object.keys(params).reduce(
+        (acc, key) => {
+            acc[stringToUnderscore(key)] = params[key];
+            return acc;
+        },
+        {}) : {}
+);
 
 export const urlForSlots: string = `${wsEndpoint}/time-slots/`;
+export const createUrlForSlotStats = (params: SlotStatsUrlParams): string =>
+    `${wsEndpoint}/time-slots-stats/?${p(toUnderscore(params))}`;
 
 export const createUrlForSlot = (slotId: number): string => `${wsEndpoint}/time-slots/${slotId}/`;
 

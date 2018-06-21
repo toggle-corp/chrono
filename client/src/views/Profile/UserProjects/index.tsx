@@ -2,9 +2,7 @@ import React from 'react';
 import Redux from 'redux';
 import { connect } from 'react-redux';
 
-import {
-    compareString,
-} from '../../../vendor/react-store/utils/common';
+import { compareString } from '../../../vendor/react-store/utils/common';
 import Table, { Header } from '../../../vendor/react-store/components/View/Table';
 import Confirm from '../../../vendor/react-store/components/View/Modal/Confirm';
 import LoadingAnimation from '../../../vendor/react-store/components/View/LoadingAnimation';
