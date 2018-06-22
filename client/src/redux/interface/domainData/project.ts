@@ -1,3 +1,5 @@
+import { Dictionary } from '../../interface';
+
 export interface Project {
     id: number;
     title: string;
@@ -10,6 +12,9 @@ export interface Project {
     modifiedByName: string;
     description: string;
 }
+
+// For Silo
+export type Projects = Dictionary<Project>;
 
 export interface SetProjectAction {
     userId?: number;

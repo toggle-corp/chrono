@@ -1,6 +1,15 @@
-import { SiloDomainData } from '../interface';
+import {
+    SiloDomainData,
+    OverviewParams,
+    ProjectWiseParams,
+    DayWiseParams,
+} from '../interface';
 
 const initialState: SiloDomainData = {
+    users: {},
+    userGroups: {},
+    projects: {},
+
     workspace: {
         activeDate: {
             /*
@@ -136,6 +145,46 @@ const initialState: SiloDomainData = {
                 },
             },
              */
+        },
+    },
+
+    dashboard: {
+        activeView: 'overview',
+        loadings: {
+            overviewLoading: true,
+            projectsLoading: true,
+            tasksLoading: true,
+            userGroupsLoading: true,
+            usersLoading: true,
+            projectWiseLoading: true,
+            dayWiseLoading: true,
+        },
+        overview: {
+            data: [],
+            faram: {
+                filters: {} as OverviewParams,
+                faramValues: {} as OverviewParams,
+                faramErrors: {},
+                pristine: true,
+            },
+        },
+        projectWise: {
+            data: [],
+            faram: {
+                filters: {} as ProjectWiseParams,
+                faramValues: {} as ProjectWiseParams,
+                faramErrors: {},
+                pristine: true,
+            },
+        },
+        dayWise: {
+            data: [],
+            faram: {
+                filters: {} as DayWiseParams,
+                faramValues: {} as DayWiseParams,
+                faramErrors: {},
+                pristine: true,
+            },
         },
     },
 };

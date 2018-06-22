@@ -10,3 +10,8 @@ export * from './domainData/user';
 export * from './domainData/userGroup';
 export * from './domainData/project';
 export * from './domainData/task';
+
+export * from './siloDomainData/user';
+export * from './siloDomainData/slot';
+export * from './siloDomainData/workspace';
+export * from './siloDomainData/dashboard';

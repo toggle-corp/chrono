@@ -1,11 +1,24 @@
 import {
-    wsEndpoint,
     Rest,
     commonHeaderForPost,
+    p,
+    wsEndpoint,
 } from '../config/rest';
-import { RestPostBody } from './interface';
+import {
+    RestPostBody,
+    SlotStatsUrlParams,
+} from './interface';
 
 export const urlForSlots: string = `${wsEndpoint}/time-slots/`;
+
+export const createUrlForSlotStats = (params: SlotStatsUrlParams): string =>
+    `${wsEndpoint}/time-slots-stats/?${p(params)}`;
+
+export const createUrlForProjectWiseSlotStats = (params: SlotStatsUrlParams): string =>
+    `${wsEndpoint}/time-slots-stats/project-wise/?${p(params)}`;
+
+export const createUrlForDayWiseSlotStats = (params: SlotStatsUrlParams): string =>
+    `${wsEndpoint}/time-slots-stats/day-wise/?${p(params)}`;
 
 export const createUrlForSlot = (slotId: number): string => `${wsEndpoint}/time-slots/${slotId}/`;
 

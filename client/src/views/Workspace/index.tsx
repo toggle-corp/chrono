@@ -20,9 +20,6 @@ import {
     activeTimeSlotsSelector,
     setActiveSlotAction,
     setTimeSlotsAction,
-
-    SetActiveSlotAction,
-    SetTimeSlotsAction,
 } from '../../redux';
 import {
     RootState,
@@ -31,6 +28,8 @@ import {
     Task,
     TimeSlots,
     TimeSlot,
+    SetActiveSlotAction,
+    SetTimeSlotsAction,
 } from '../../redux/interface';
 import SlotEditor from './SlotEditor';
 import * as styles from './styles.scss';
@@ -143,6 +142,15 @@ export class Workspace extends React.PureComponent<Props, States> {
     componentWillUnmount() {
         if (this.userGroupRequest) {
             this.userGroupRequest.stop();
+        }
+        if (this.projectsRequest) {
+            this.projectsRequest.stop();
+        }
+        if (this.tasksRequest) {
+            this.tasksRequest.stop();
+        }
+        if (this.slotsRequest) {
+            this.slotsRequest.stop();
         }
     }
 

@@ -16,7 +16,7 @@ import PrimaryButton from '../../vendor/react-store/components/Action/Button/Pri
 import DangerButton from '../../vendor/react-store/components/Action/Button/DangerButton';
 import { RestRequest } from '../../vendor/react-store/utils/rest';
 import {
-    userInformationSelector,
+    userProfileInformationSelector,
     userIdFromRouteSelector,
     activeUserSelector,
 
@@ -359,7 +359,7 @@ export class Profile extends React.PureComponent<Props, States> {
 
 const mapStateToProps = (state: RootState) => ({
     activeUser: activeUserSelector(state),
-    information: userInformationSelector(state),
+    information: userProfileInformationSelector(state),
     userId: userIdFromRouteSelector(state),
 });
 

@@ -6,13 +6,9 @@ import {
 } from '../config/rest';
 import {
     RestPostBody,
+    ProjectUrlParams,
     PostProjectBody,
 } from './interface';
-export type ProjectUrlParams = {
-    fields?: string[];
-    user?: number;
-    user_group?:number;
-};
 
 // get all projects
 export const urlForProjects: string = `${wsEndpoint}/projects/`;

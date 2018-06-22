@@ -1,7 +1,8 @@
 import { DomainData } from '../interface';
 
 const initialDomainDataState: DomainData = {
-    users: {},
+    // all users
+    users: [],
 
     // all user groups
     userGroups: [],

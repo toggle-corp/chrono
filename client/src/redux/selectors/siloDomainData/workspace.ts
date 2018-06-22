@@ -1,17 +1,16 @@
 import { createSelector } from 'reselect';
+
 import {
+    filterObject,
     getCanonicalDate,
     matchesCanonicalDate,
-    filterObject,
-} from '../../utils/map';
+} from '../../../utils/map';
 import {
     RootState,
+    createPropsSelector,
     WorkspaceView,
-} from '../interface';
-
-const createPropsSelector = <T>(name: string) => (
-    (state: RootState, props: object): T => props[name]
-);
+    Ymd,
+} from '../../interface';
 
 const yearFromProps = createPropsSelector<number>('year');
 const monthFromProps = createPropsSelector<number>('month');
@@ -21,12 +20,6 @@ const timeSlotIdFromProps = createPropsSelector<number|undefined>('timeSlotId');
 const workspaceViewSelector = ({ siloDomainData }: RootState): WorkspaceView => (
     siloDomainData.workspace
 );
-
-interface Ymd {
-    year: number;
-    month: number;
-    day?: number;
-}
 
 export const activeDateSelector = createSelector(
     workspaceViewSelector,

@@ -25,11 +25,9 @@ import {
     projectsSelector,
     tasksSelector,
     changeTimeSlotAction,
-    ChangeTimeSlotAction,
     discardTimeSlotAction,
     deleteTimeSlotAction,
     saveTimeSlotAction,
-    SaveTimeSlotAction,
 } from '../../../redux';
 import {
     RootState,
@@ -37,6 +35,8 @@ import {
     Project,
     Task,
     WipTimeSlot,
+    ChangeTimeSlotAction,
+    SaveTimeSlotAction,
 } from '../../../redux/interface';
 import { getCanonicalDate } from '../../../utils/map';
 

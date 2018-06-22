@@ -28,7 +28,10 @@ from project.views import (
 )
 from task.views import (
     TaskViewSet,
+    TimeSlotStatsViewSet,
     TimeSlotViewSet,
+    TimeSlotStatsProjectWiseViewSet,
+    TimeSlotStatsDayWiseViewSet,
 )
 
 router = routers.DefaultRouter()
@@ -50,6 +53,7 @@ router.register(r'projects', ProjectViewSet,
 # Task, Time Slot routers
 router.register(r'tasks', TaskViewSet,
                 base_name='task')
+
 router.register(r'time-slots', TimeSlotViewSet,
                 base_name='time-slot')
 
@@ -99,6 +103,17 @@ urlpatterns = [
     url(r'^password/change/done/$',
         auth_views.password_change,
         name="password_change_done"),
+
+    # Slot Stats API
+    url(get_api_path(r'time-slots-stats/$'),
+        TimeSlotStatsViewSet.as_view(),
+        name='time-slot-stat'),
+    url(get_api_path(r'time-slots-stats/project-wise/$'),
+        TimeSlotStatsProjectWiseViewSet.as_view(),
+        name='time-slot-stat-project-wise'),
+    url(get_api_path(r'time-slots-stats/day-wise/$'),
+        TimeSlotStatsDayWiseViewSet.as_view(),
+        name='time-slot-stat-day-wise'),
 
     # Viewsets
     url(get_api_path(''), include(router.urls)),

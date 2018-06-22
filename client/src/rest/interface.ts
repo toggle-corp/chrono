@@ -38,7 +38,7 @@ export interface PostProjectBody {
 
 export interface PostGroupMembershipBody {
     member: number;
-    group?: number;
+    group: number;
     role: string;
 }
 
@@ -62,3 +62,18 @@ export interface AddTaskParams {
     title: string;
     description: string;
 }
+
+export type ProjectUrlParams = {
+    fields?: string[];
+    user?: number;
+    user_group?:number;
+};
+
+export type SlotStatsUrlParams = {
+    project?: number;
+    user_group?: number;
+    task?: number;
+    user?: number;
+    date_gt?: string;
+    date_lt?: string;
+};

@@ -1,21 +1,29 @@
-import update from '../../vendor/react-store/utils/immutable-update';
-import { analyzeErrors } from '../../vendor/react-store/components/Input/Faram/validator';
-import { randomString } from '../../vendor/react-store/utils/common';
-import createReducerWithMap from '../../utils/createReducerWithMap';
-import { getCanonicalDate } from '../../utils/map';
+import update from '../../../vendor/react-store/utils/immutable-update';
+import { analyzeErrors } from '../../../vendor/react-store/components/Input/Faram/validator';
+import { randomString } from '../../../vendor/react-store/utils/common';
+import { getCanonicalDate } from '../../../utils/map';
 
-import initialSiloDomainData from '../initial-state/siloDomainData';
-import { SiloDomainData, TimeSlot, ReducerGroup, WipTimeSlot } from '../interface';
+import {
+    SiloDomainData,
+    TimeSlot,
+    ReducerGroup,
+    WipTimeSlot,
+
+    SetActiveSlotAction,
+    SetTimeSlotsAction,
+    ChangeTimeSlotAction,
+    SaveTimeSlotAction,
+} from '../../interface';
 
 // ACTION-TYPE
 
-export const enum TIME_SLOT_ACTION {
-    setActiveSlot = 'siloDomainData/SET_ACTIVE_SLOT',
-    setTimeSlots = 'siloDomainData/SET_TIME_SLOTS',
-    changeTimeSlot = 'siloDomainData/CHANGE_TIME_SLOT',
-    saveTimeSlot = 'siloDomainData/SAVE_TIME_SLOT',
-    discardTimeSlot = 'siloDomainData/DISCARD_TIME_SLOT',
-    deleteTimeSlot = 'siloDomainData/DELETE_TIME_SLOT',
+export const enum SILO_TIME_SLOT_ACTION {
+    setActiveSlot = 'siloDomainData/SLOT/SET_ACTIVE_SLOT',
+    setTimeSlots = 'siloDomainData/SLOT/SET_TIME_SLOTS',
+    changeTimeSlot = 'siloDomainData/SLOT/CHANGE_TIME_SLOT',
+    saveTimeSlot = 'siloDomainData/SLOT/SAVE_TIME_SLOT',
+    discardTimeSlot = 'siloDomainData/SLOT/DISCARD_TIME_SLOT',
+    deleteTimeSlot = 'siloDomainData/SLOT/DELETE_TIME_SLOT',
 }
 
 // HELPER
@@ -29,28 +37,6 @@ const getFaramValuesFromTimeSlot = (timeSlot: TimeSlot): WipTimeSlot['faramValue
     project: timeSlot.project,
 });
 
-// ACTION-CREATOR INTERFACE
-
-export interface SetActiveSlotAction  {
-    year: number;
-    month: number;
-    day: number;
-    timeSlotId?: number;
-}
-
-export interface SetTimeSlotsAction {
-    timeSlots: TimeSlot[];
-}
-
-export interface ChangeTimeSlotAction {
-    faramValues?: WipTimeSlot['faramValues'];
-    faramErrors: WipTimeSlot['faramErrors'];
-}
-
-export interface SaveTimeSlotAction {
-    timeSlot: TimeSlot;
-}
-
 // ACTION-CREATOR
 
 export const setActiveSlotAction = ({ year, month, day, timeSlotId }: SetActiveSlotAction) => ({
@@ -58,31 +44,31 @@ export const setActiveSlotAction = ({ year, month, day, timeSlotId }: SetActiveS
     month,
     day,
     timeSlotId,
-    type: TIME_SLOT_ACTION.setActiveSlot,
+    type: SILO_TIME_SLOT_ACTION.setActiveSlot,
 });
 
 export const setTimeSlotsAction = ({ timeSlots }: SetTimeSlotsAction) => ({
     timeSlots,
-    type: TIME_SLOT_ACTION.setTimeSlots,
+    type: SILO_TIME_SLOT_ACTION.setTimeSlots,
 });
 
 export const changeTimeSlotAction = ({ faramValues, faramErrors }: ChangeTimeSlotAction) => ({
     faramValues,
     faramErrors,
-    type: TIME_SLOT_ACTION.changeTimeSlot,
+    type: SILO_TIME_SLOT_ACTION.changeTimeSlot,
 });
 
 export const saveTimeSlotAction = ({ timeSlot }: SaveTimeSlotAction) => ({
     timeSlot,
-    type: TIME_SLOT_ACTION.saveTimeSlot,
+    type: SILO_TIME_SLOT_ACTION.saveTimeSlot,
 });
 
 export const discardTimeSlotAction = () => ({
-    type: TIME_SLOT_ACTION.discardTimeSlot,
+    type: SILO_TIME_SLOT_ACTION.discardTimeSlot,
 });
 
 export const deleteTimeSlotAction = () => ({
-    type: TIME_SLOT_ACTION.deleteTimeSlot,
+    type: SILO_TIME_SLOT_ACTION.deleteTimeSlot,
 });
 
 // REDUCER
@@ -325,12 +311,13 @@ const discardTimeSlot = (
     return update(state, settings);
 };
 
-export const siloDomainDataReducers: ReducerGroup<SiloDomainData> = {
-    [TIME_SLOT_ACTION.setActiveSlot]: setActiveSlot,
-    [TIME_SLOT_ACTION.setTimeSlots]: setTimeSlots,
-    [TIME_SLOT_ACTION.changeTimeSlot]: changeTimeSlot,
-    [TIME_SLOT_ACTION.saveTimeSlot]: saveTimeSlot,
-    [TIME_SLOT_ACTION.discardTimeSlot]: discardTimeSlot,
-    [TIME_SLOT_ACTION.deleteTimeSlot]: deleteTimeSlot,
+const reducer: ReducerGroup<SiloDomainData> = {
+    [SILO_TIME_SLOT_ACTION.setActiveSlot]: setActiveSlot,
+    [SILO_TIME_SLOT_ACTION.setTimeSlots]: setTimeSlots,
+    [SILO_TIME_SLOT_ACTION.changeTimeSlot]: changeTimeSlot,
+    [SILO_TIME_SLOT_ACTION.saveTimeSlot]: saveTimeSlot,
+    [SILO_TIME_SLOT_ACTION.discardTimeSlot]: discardTimeSlot,
+    [SILO_TIME_SLOT_ACTION.deleteTimeSlot]: deleteTimeSlot,
 };
-export default createReducerWithMap(siloDomainDataReducers, initialSiloDomainData);
+
+export default reducer;

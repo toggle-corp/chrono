@@ -13,6 +13,14 @@ const userSchema: Schema[] = [
         },
     },
     {
+        doc: { name: 'simplifiedUser' },
+        fields: {
+            id: { type: 'uint', required: 'true' },
+            email: { type: 'email', required: 'true' },
+            displayName: { type: 'string' },
+        },
+    },
+    {
         doc: { name: 'userGetResponse' },
         extends: 'user',
     },
@@ -27,6 +35,15 @@ const userSchema: Schema[] = [
             next: { type: 'string' },
             previous: { type: 'string' },
             results: { type: 'array.user', required: true },
+        },
+    },
+    {
+        doc: { name: 'simplifiedUsersGetResponse' },
+        fields: {
+            count: { type: 'uint', required: true },
+            next: { type: 'string' },
+            previous: { type: 'string' },
+            results: { type: 'array.simplifiedUser', required: true },
         },
     },
 ];
