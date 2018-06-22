@@ -30,6 +30,8 @@ from task.views import (
     TaskViewSet,
     TimeSlotStatsViewSet,
     TimeSlotViewSet,
+    TimeSlotStatsProjectWiseViewSet,
+    TimeSlotStatsDayWiseViewSet,
 )
 
 router = routers.DefaultRouter()
@@ -102,9 +104,16 @@ urlpatterns = [
         auth_views.password_change,
         name="password_change_done"),
 
+    # Slot Stats API
     url(get_api_path(r'time-slots-stats/$'),
         TimeSlotStatsViewSet.as_view(),
         name='time-slot-stat'),
+    url(get_api_path(r'time-slots-stats/project-wise/$'),
+        TimeSlotStatsProjectWiseViewSet.as_view(),
+        name='time-slot-stat-project-wise'),
+    url(get_api_path(r'time-slots-stats/day-wise/$'),
+        TimeSlotStatsDayWiseViewSet.as_view(),
+        name='time-slot-stat-day-wise'),
 
     # Viewsets
     url(get_api_path(''), include(router.urls)),

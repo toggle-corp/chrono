@@ -10,9 +10,13 @@ import {
     Project,
     Task,
     OverviewParams,
+    ProjectWiseParams,
+    DayWiseParams,
     SetDashboardLoadingsAction,
     SetUsersAction,
     SetOverviewSlotStatsAction,
+    SetProjectWiseSlotStatsAction,
+    SetDayWiseSlotStatsAction,
 } from '../../../redux/interface';
 import {
     setUserGroupsAction,
@@ -21,28 +25,41 @@ import {
     setDashboardLoadingsAction,
     setUsersAction,
     setOverviewSlotStatsAction,
+    setProjectWiseSlotStatsAction,
+    setDayWiseSlotStatsAction,
+    dashboardActiveViewSelector,
     overviewFilterSelector,
+    projectWiseFilterSelector,
+    dayWiseFilterSelector,
 }  from '../../../redux';
 
+import { Dashboard } from '../index';
+
 import GetOverviewSlotStatsRequest from './requests/GetOverviewSlotStatsRequest';
+import GetProjectWiseSlotStatsRequest from './requests/GetProjectWiseSlotStatsRequest';
+import GetDayWiseSlotStatsRequest from './requests/GetDayWiseSlotStatsRequest';
+
 import GetUserGroupsRequest from './requests/GetUserGroupsRequest';
 import GetProjectsRequest from './requests/GetProjectsRequest';
 import GetTasksRequest from './requests/GetTasksRequest';
 import GetUsersRequest from './requests/GetUsersRequest';
 
-interface OwnProps {
-    type: string;
-}
+interface OwnProps {}
 interface PropsFromState {
+    activeView: string;
     overviewFilter: OverviewParams;
+    projectWiseFilter: ProjectWiseParams;
+    dayWiseFilter: DayWiseParams;
 }
 interface PropsFromDispatch {
     setUserGroups(params: UserGroup[]): void;
     setUserProjects(params: Project[]): void;
     setUserTasks(params: Task[]): void;
-    setOverviewSlotStats(params: SetOverviewSlotStatsAction): void;
     setUsers(params: SetUsersAction): void;
     setLoadings(params: SetDashboardLoadingsAction): void;
+    setOverviewSlotStats(params: SetOverviewSlotStatsAction): void;
+    setProjectWiseSlotStats(params: SetProjectWiseSlotStatsAction): void;
+    setDayWiseSlotStats(params: SetDayWiseSlotStatsAction): void;
 }
 
 type Props = OwnProps & PropsFromState & PropsFromDispatch;
@@ -58,16 +75,38 @@ export class RequestManger extends React.PureComponent<Props, States> {
     slotsRequest: RestRequest;
 
     componentWillMount() {
+        const {
+            activeView,
+            overviewFilter,
+            projectWiseFilter,
+            dayWiseFilter,
+        } = this.props;
         this.startRequestForUserGroups();
         this.startRequestForUsers();
         this.startRequestForProjects();
         this.startRequestForTasks();
-        this.startRequestForOverviewSlotStats(this.props.overviewFilter);
+        this.startRequestForOverviewSlotStats(overviewFilter, activeView);
+        this.startRequestForProjectWiseSlotStats(projectWiseFilter, activeView);
+        this.startRequestForDayWiseSlotStats(dayWiseFilter, activeView);
     }
 
     componentWillReceiveProps(nextProps: Props) {
-        if (this.props.overviewFilter !== nextProps.overviewFilter) {
-            this.startRequestForOverviewSlotStats(nextProps.overviewFilter);
+        const {
+            activeView,
+            overviewFilter,
+            projectWiseFilter,
+            dayWiseFilter,
+        } = nextProps;
+        const forceUpdate = this.props.activeView !== nextProps.activeView;
+
+        if (forceUpdate || this.props.overviewFilter !== overviewFilter) {
+            this.startRequestForOverviewSlotStats(overviewFilter, activeView);
+        }
+        if (forceUpdate || this.props.projectWiseFilter !== projectWiseFilter) {
+            this.startRequestForProjectWiseSlotStats(projectWiseFilter, activeView);
+        }
+        if (forceUpdate || this.props.dayWiseFilter !== dayWiseFilter) {
+            this.startRequestForDayWiseSlotStats(dayWiseFilter, activeView);
         }
     }
 
@@ -89,8 +128,8 @@ export class RequestManger extends React.PureComponent<Props, States> {
         }
     }
 
-    startRequestForOverviewSlotStats = (params: OverviewParams) => {
-        if (this.props.type !== 'overview') {
+    startRequestForOverviewSlotStats = (params: OverviewParams, activeView: string) => {
+        if (activeView !== Dashboard.views.overview) {
             return;
         }
         if (this.slotStatsRequest) {
@@ -99,6 +138,36 @@ export class RequestManger extends React.PureComponent<Props, States> {
         const slotStatsRequest = new GetOverviewSlotStatsRequest({
             setLoadings: this.props.setLoadings,
             setOverviewSlotStats: this.props.setOverviewSlotStats,
+        });
+        this.slotStatsRequest = slotStatsRequest.create(params);
+        this.slotStatsRequest.start();
+    }
+
+    startRequestForProjectWiseSlotStats = (params: ProjectWiseParams, activeView: string) => {
+        if (activeView !== Dashboard.views.projectWise) {
+            return;
+        }
+        if (this.slotStatsRequest) {
+            this.slotStatsRequest.stop();
+        }
+        const slotStatsRequest = new GetProjectWiseSlotStatsRequest({
+            setLoadings: this.props.setLoadings,
+            setProjectWiseSlotStats: this.props.setProjectWiseSlotStats,
+        });
+        this.slotStatsRequest = slotStatsRequest.create(params);
+        this.slotStatsRequest.start();
+    }
+
+    startRequestForDayWiseSlotStats = (params: DayWiseParams, activeView: string) => {
+        if (activeView !== Dashboard.views.dayWise) {
+            return;
+        }
+        if (this.slotStatsRequest) {
+            this.slotStatsRequest.stop();
+        }
+        const slotStatsRequest = new GetDayWiseSlotStatsRequest({
+            setLoadings: this.props.setLoadings,
+            setDayWiseSlotStats: this.props.setDayWiseSlotStats,
         });
         this.slotStatsRequest = slotStatsRequest.create(params);
         this.slotStatsRequest.start();
@@ -158,7 +227,10 @@ export class RequestManger extends React.PureComponent<Props, States> {
 }
 
 const mapStateToProps = (state: RootState) => ({
+    activeView: dashboardActiveViewSelector(state),
     overviewFilter: overviewFilterSelector(state),
+    projectWiseFilter: projectWiseFilterSelector(state),
+    dayWiseFilter: dayWiseFilterSelector(state),
 });
 
 const mapDispatchToProps = (dispatch: Redux.Dispatch<RootState>) => ({
@@ -170,6 +242,10 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<RootState>) => ({
     setUserTasks: (params: Task[]) => dispatch(setTasksAction(params)),
     setOverviewSlotStats: (params: SetOverviewSlotStatsAction) =>
         dispatch(setOverviewSlotStatsAction(params)),
+    setProjectWiseSlotStats: (params: SetProjectWiseSlotStatsAction) =>
+        dispatch(setProjectWiseSlotStatsAction(params)),
+    setDayWiseSlotStats: (params: SetDayWiseSlotStatsAction) =>
+        dispatch(setDayWiseSlotStatsAction(params)),
 });
 
 export default connect<PropsFromState, PropsFromDispatch, OwnProps>(

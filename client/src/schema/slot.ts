@@ -37,6 +37,37 @@ const slotSchemas: Schema[] = [
             remarks: { type: 'string' },
         },
     },
+    {
+        doc: { name: 'projectWiseSlotStat' },
+        // extends: 'dbentity',
+        fields: {
+            // NOTE: id is userId
+            id: { type: 'uint', required: true },
+            userDisplayName: { type: 'string' },
+            totalTasks: { type: 'number' },
+            totalTime: { type: 'string' },
+            totalTimeInSeconds: { type: 'number' },
+        },
+    },
+    {
+        doc: { name: 'dayWiseUser' },
+        // extends: 'dbentity',
+        fields: {
+            // NOTE: id is userId
+            id: { type: 'uint', required: true },
+            totalTime: { type: 'string' },
+            totalTimeInSeconds: { type: 'number' },
+        },
+    },
+    {
+        doc: { name: 'dayWiseSlotStat' },
+        // extends: 'dbentity',
+        fields: {
+            // NOTE: id is userId
+            date: { type: 'string', required: true },
+            users: { type: 'array.dayWiseUser', required: true },
+        },
+    },
 
     {
         doc: { name: 'slotsGetResponse' },
@@ -58,6 +89,26 @@ const slotSchemas: Schema[] = [
             count: { type: 'uint', required: true },
             next: { type: 'string' },
             previous: { type: 'string' },
+        },
+    },
+    {
+        doc: { name: 'projectWiseSlotStatsGetResponse' },
+        fields: {
+            results: { type: 'array.projectWiseSlotStat', required: true },
+            count: { type: 'uint', required: true },
+            next: { type: 'string' },
+            previous: { type: 'string' },
+        },
+    },
+    {
+        doc: { name: 'dayWiseSlotStatsGetResponse' },
+        fields: {
+            results: { type: 'array.dayWiseSlotStat', required: true },
+            /*
+            count: { type: 'uint', required: true },
+            next: { type: 'string' },
+            previous: { type: 'string' },
+             */
         },
     },
 ];

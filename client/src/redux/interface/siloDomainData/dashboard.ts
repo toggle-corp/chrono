@@ -2,6 +2,8 @@ import { FaramErrors } from '../../../vendor/react-store/components/Input/Faram'
 
 export interface Dashboard {
     overview: View<OverviewSlotStat, OverviewParams>;
+    projectWise: View<ProjectWiseSlotStat, ProjectWiseParams>;
+    dayWise: View<DayWiseSlotStat, DayWiseParams>;
     loadings: DashboardLoadings;
     activeView: string;
 }
@@ -24,11 +26,13 @@ interface Date {
 }
 
 export interface DashboardLoadings {
-    overviewLoading: boolean;
     projectsLoading: boolean;
     tasksLoading: boolean;
     userGroupsLoading: boolean;
     usersLoading: boolean;
+    overviewLoading: boolean;
+    projectWiseLoading: boolean;
+    dayWiseLoading: boolean;
 }
 
 // OVERVIEW VIEW
@@ -59,7 +63,40 @@ export interface OverviewSlotStat {
     user: number;
 }
 
+// PROJECT WISE VIEW
+export interface ProjectWiseParams {
+    project: number;
+    date: Date;
+}
+
+export interface ProjectWiseSlotStat {
+    // NOTE: id is userId
+    id: number;
+    user: number;
+    userDisplayName: string;
+    totalTasks: number;
+    totalTime: string;
+    totalTimeInSeconds: number;
+}
+
+// DAY WISE VIEW
+export interface DayWiseParams {
+    date: Date;
+}
+
+export interface DayWiseSlotStat {
+    // NOTE: id is userId
+    date: string;
+    users: {
+        id: number;
+        totalTime: string;
+        totalTimeInSeconds: number;
+    }[];
+}
+
 export type OverviewFilter = DashboardFilter<OverviewParams>;
+export type ProjectWiseFilter = DashboardFilter<ProjectWiseParams>;
+export type DayWiseFilter = DashboardFilter<DayWiseParams>;
 
 // ACTION-CREATOR INTERFACE
 
@@ -68,5 +105,13 @@ export type SetDashboardLoadingsAction = Partial<DashboardLoadings>;
 export interface SetOverviewSlotStatsAction {
     slotStats: OverviewSlotStat[];
 }
+export interface SetProjectWiseSlotStatsAction {
+    slotStats: ProjectWiseSlotStat[];
+}
+export interface SetDayWiseSlotStatsAction {
+    slotStats: DayWiseSlotStat[];
+}
 
 export type SetOverviewFiltersAction = Partial<OverviewFilter>;
+export type SetProjectWiseFiltersAction = Partial<ProjectWiseFilter>;
+export type SetDayWiseFiltersAction = Partial<DayWiseFilter>;

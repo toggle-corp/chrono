@@ -2,6 +2,7 @@ from drf_dynamic_fields import DynamicFieldsMixin
 from rest_framework import serializers
 
 from .models import (Task, TimeSlot)
+from user.models import User
 from user_resource.serializers import UserResourceSerializer
 
 
@@ -65,3 +66,38 @@ class TimeSlotStatsSerializer(TimeSlotSerializer):
     class Meta:
         model = TimeSlot
         exclude = ()
+
+
+class SecondsField(serializers.Field):
+    def to_representation(self, dt):
+        return int(dt.total_seconds())
+
+
+class TimeSlotStatsProjectWiseSerializer(serializers.ModelSerializer):
+    user_display_name = serializers.CharField(
+        source='profile.get_display_name'
+    )
+    total_tasks = serializers.IntegerField()
+    total_time = serializers.DurationField()
+    total_time_in_seconds = SecondsField(source='total_time')
+
+    class Meta:
+        model = User
+        fields = (
+            'id', 'total_tasks', 'user_display_name',
+            'total_time', 'total_time_in_seconds',
+        )
+
+
+class UserStatsSerializer(serializers.ModelSerializer):
+    total_time = serializers.DurationField()
+    total_time_in_seconds = SecondsField(source='total_time')
+
+    class Meta:
+        model = User
+        fields = ('id', 'total_time', 'total_time_in_seconds')
+
+
+class TimeSlotStatsDayWiseSerializer(serializers.Serializer):
+    date = serializers.DateField()
+    users = UserStatsSerializer(many=True)

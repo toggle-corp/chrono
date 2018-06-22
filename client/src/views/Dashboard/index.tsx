@@ -11,6 +11,10 @@ import {
 }  from '../../redux';
 
 import Overview from './Overview';
+import ProjectWise from './ProjectWise';
+import DayWise from './DayWise';
+
+import RequestManager from './RequestManager';
 
 // import * as styles from './styles.scss';
 
@@ -28,6 +32,12 @@ interface States{}
 
 export class Dashboard extends React.PureComponent<Props, States> {
 
+    static views = {
+        overview: 'overview',
+        projectWise: 'projectWise',
+        dayWise: 'dayWise',
+    };
+
     constructor(props: Props) {
         super(props);
     }
@@ -36,9 +46,44 @@ export class Dashboard extends React.PureComponent<Props, States> {
         this.props.setActiveView(view);
     }
 
-    renderView = ({ activeView }: {activeView: string }) => {
+    renderTabs = () => {
+        // TODO: Add Tabs
+        const { activeView } = this.props;
+        return (
+            <div>
+                <PrimaryButton
+                    onClick={this.handleViewClick(Dashboard.views.overview)}
+                    disabled={activeView === Dashboard.views.overview}
+                >
+                    Overview
+                </PrimaryButton>
+                <PrimaryButton
+                    onClick={this.handleViewClick(Dashboard.views.projectWise)}
+                    disabled={activeView === Dashboard.views.projectWise}
+                >
+                    Project Wise
+                </PrimaryButton>
+                <PrimaryButton
+                    onClick={this.handleViewClick(Dashboard.views.dayWise)}
+                    disabled={activeView === Dashboard.views.dayWise}
+                >
+                    Day Wise
+                </PrimaryButton>
+            </div>
+        );
+    }
+
+    renderView = () => {
+        const { activeView } = this.props;
         switch (activeView) {
-            // case 'overview':
+            case Dashboard.views.dayWise:
+                return (
+                    <DayWise />
+                );
+            case Dashboard.views.projectWise:
+                return (
+                    <ProjectWise />
+                );
             default:
                 return (
                     <Overview />
@@ -47,22 +92,16 @@ export class Dashboard extends React.PureComponent<Props, States> {
     }
 
     render() {
-        const { activeView } = this.props;
-
         // tslint:disable-next-line variable-name
         const RenderView = this.renderView;
+        // tslint:disable-next-line variable-name
+        const RenderTabs = this.renderTabs;
 
         return (
             <div>
-                <PrimaryButton
-                    onClick={this.handleViewClick('overview')}
-                    disabled={activeView === 'overview'}
-                >
-                    Overview
-                </PrimaryButton>
-                <RenderView
-                    activeView={activeView}
-                />
+                <RenderTabs />
+                <RenderView />
+                <RequestManager />
             </div>
         );
     }
