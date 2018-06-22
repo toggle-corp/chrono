@@ -38,6 +38,7 @@ export class Dashboard extends React.PureComponent<Props, States> {
         dayWise: 'dayWise',
     };
 
+    // FIXME: non useful constructor
     constructor(props: Props) {
         super(props);
     }

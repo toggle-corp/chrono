@@ -66,6 +66,7 @@ type Props = OwnProps & PropsFromState & PropsFromDispatch;
 
 interface States {}
 
+// FIXME: Rename RequestManger to RequestManager
 export class RequestManger extends React.PureComponent<Props, States> {
     slotStatsRequest: RestRequest;
     userGroupsRequest: RestRequest;

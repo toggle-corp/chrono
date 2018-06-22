@@ -187,6 +187,7 @@ const unsetUserGroupMember = (state: SiloDomainData, action: UnsetUserGroupMembe
 
     const memberIndex = findIndexOfMemberOfUserGroup(userGroups, userGroupId, memberId);
 
+    // FIXME: use $filter
     const settings = {
         userGroups: {
             [userGroupId]: {

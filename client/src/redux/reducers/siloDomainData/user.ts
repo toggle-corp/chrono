@@ -52,6 +52,7 @@ export const unsetUserProjectAction = (
 const setUser = (state: SiloDomainData, action: SetUserAction) => {
     const { userId, information, userGroups, projects } = action;
 
+    // FIXME: $merge should be used instead of $if-$set pair
     const settings = {
         users: {
             [userId]: { $auto: {
@@ -79,6 +80,7 @@ const setUser = (state: SiloDomainData, action: SetUserAction) => {
     return update(state, settings);
 };
 
+// FIXME: rename uest to unset
 const usetUserUserGroup = (state: SiloDomainData, action: UnsetUserUserGroupAction) => {
     const { userId, userGroup } = action;
 
@@ -90,6 +92,7 @@ const usetUserUserGroup = (state: SiloDomainData, action: UnsetUserUserGroupActi
         return state;
     }
 
+    // FIXME: if you want to remove a certain element, prefer $filter
     const settings = {
         users: {
             [userId]: { $auto: {

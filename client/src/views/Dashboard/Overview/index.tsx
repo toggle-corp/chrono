@@ -34,8 +34,10 @@ const getTotalTime = (data: OverviewSlotStat[]) => (
     )
 );
 
+// FIXME: Rename Dashboard to Overview
 export class Dashboard extends React.PureComponent<Props, States> {
 
+    // FIXME: unnecessary constructor
     constructor(props: Props) {
         super(props);
     }
