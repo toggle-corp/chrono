@@ -80,80 +80,64 @@ export const setDayWiseFiltersAction = (
     type: SILO_DASHBOARD_ACTION.setDayWiseFilters,
 });
 
-// HELPER
-
-const setIfDefined = (data: any) => {
-    return { $if: [data !== undefined, { $set: data }] };
-};
-
 // REDUCER
 
-const setDashboardActiveView = (state: SiloDomainData, { view } : { view: string }) => {
+const setDashboardActiveView = (
+    state: SiloDomainData,
+    action : { view: string, type: string },
+) => {
+    const { view } = action;
     const settings = {
         dashboard: { $auto: {
-            activeView: {
-                $set: view,
-            },
+            activeView: { $set: view },
         } },
     };
     return update(state, settings);
 };
 
-const setDashboardLoadings = (state: SiloDomainData, action: SetDashboardLoadingsAction) => {
-    const {
-        projectsLoading,
-        tasksLoading,
-        userGroupsLoading,
-        usersLoading,
-        overviewLoading,
-        projectWiseLoading,
-        dayWiseLoading,
-    } = action;
+const setDashboardLoadings = (
+    state: SiloDomainData,
+    action: SetDashboardLoadingsAction & { type: string },
+) => {
+    const { type, ...otherProps } = action;
     const settings = {
         dashboard: { $auto: {
             loadings: { $auto: {
-                projectsLoading: setIfDefined(projectsLoading),
-                tasksLoading: setIfDefined(tasksLoading),
-                userGroupsLoading: setIfDefined(userGroupsLoading),
-                usersLoading: setIfDefined(usersLoading),
-                overviewLoading: setIfDefined(overviewLoading),
-                projectWiseLoading: setIfDefined(projectWiseLoading),
-                dayWiseLoading: setIfDefined(dayWiseLoading),
+                $merge: otherProps,
             } },
         } },
     };
     return update(state, settings);
 };
 
-const setOverviewSlotStats = (state: SiloDomainData, action: SetOverviewSlotStatsAction) => {
+const setOverviewSlotStats = (
+    state: SiloDomainData,
+    action: SetOverviewSlotStatsAction & { type: string },
+) => {
     const { slotStats } = action;
     const settings = {
         dashboard: { $auto: {
             overview: { $auto: {
-                data: { $autoArray: {
-                    $set: slotStats,
-                } },
+                data: { $set: slotStats },
             } },
         } },
     };
     return update(state, settings);
 };
 
-const setOverviewFilters = (state: SiloDomainData, action: SetOverviewFiltersAction) => {
+const setOverviewFilters = (
+    state: SiloDomainData,
+    action: SetOverviewFiltersAction & { type: string },
+) => {
     const {
-        filters,
-        faramValues,
-        faramErrors,
-        pristine,
+        type,
+        ...otherProps,
     } = action;
     const settings = {
         dashboard: { $auto: {
             overview: { $auto: {
                 faram: { $auto: {
-                    filters: setIfDefined(filters),
-                    faramValues: setIfDefined(faramValues),
-                    faramErrors: setIfDefined(faramErrors),
-                    pristine: setIfDefined(pristine),
+                    $merge: otherProps,
                 } },
             } },
         } },
@@ -161,35 +145,35 @@ const setOverviewFilters = (state: SiloDomainData, action: SetOverviewFiltersAct
     return update(state, settings);
 };
 
-const setProjectWiseSlotStats = (state: SiloDomainData, action: SetProjectWiseSlotStatsAction) => {
+const setProjectWiseSlotStats = (
+    state: SiloDomainData,
+    action: SetProjectWiseSlotStatsAction & { type: string },
+) => {
     const { slotStats } = action;
     const settings = {
         dashboard: { $auto: {
             projectWise: { $auto: {
-                data: { $autoArray: {
-                    $set: slotStats,
-                } },
+                data: { $set: slotStats },
             } },
         } },
     };
     return update(state, settings);
 };
 
-const setProjectWiseFilters = (state: SiloDomainData, action: SetProjectWiseFiltersAction) => {
+const setProjectWiseFilters = (
+    state: SiloDomainData,
+    action: SetProjectWiseFiltersAction & { type: string },
+) => {
     const {
-        filters,
-        faramValues,
-        faramErrors,
-        pristine,
+        type,
+        ...otherProps,
     } = action;
+
     const settings = {
         dashboard: { $auto: {
             projectWise: { $auto: {
                 faram: { $auto: {
-                    filters: setIfDefined(filters),
-                    faramValues: setIfDefined(faramValues),
-                    faramErrors: setIfDefined(faramErrors),
-                    pristine: setIfDefined(pristine),
+                    $merge: otherProps,
                 } },
             } },
         } },
@@ -197,35 +181,34 @@ const setProjectWiseFilters = (state: SiloDomainData, action: SetProjectWiseFilt
     return update(state, settings);
 };
 
-const setDayWiseSlotStats = (state: SiloDomainData, action: SetDayWiseSlotStatsAction) => {
+const setDayWiseSlotStats = (
+    state: SiloDomainData,
+    action: SetDayWiseSlotStatsAction & { type: string },
+) => {
     const { slotStats } = action;
     const settings = {
         dashboard: { $auto: {
             dayWise: { $auto: {
-                data: { $autoArray: {
-                    $set: slotStats,
-                } },
+                data: { $set: slotStats },
             } },
         } },
     };
     return update(state, settings);
 };
 
-const setDayWiseFilters = (state: SiloDomainData, action: SetDayWiseFiltersAction) => {
+const setDayWiseFilters = (
+    state: SiloDomainData,
+    action: SetDayWiseFiltersAction & { type: string },
+) => {
     const {
-        filters,
-        faramValues,
-        faramErrors,
-        pristine,
+        type,
+        ...otherProps,
     } = action;
     const settings = {
         dashboard: { $auto: {
             dayWise: { $auto: {
                 faram: { $auto: {
-                    filters: setIfDefined(filters),
-                    faramValues: setIfDefined(faramValues),
-                    faramErrors: setIfDefined(faramErrors),
-                    pristine: setIfDefined(pristine),
+                    $merge: otherProps,
                 } },
             } },
         } },
