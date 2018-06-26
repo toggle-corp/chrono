@@ -66,8 +66,7 @@ type Props = OwnProps & PropsFromState & PropsFromDispatch;
 
 interface States {}
 
-// FIXME: Rename RequestManger to RequestManager
-export class RequestManger extends React.PureComponent<Props, States> {
+export class RequestManager extends React.PureComponent<Props, States> {
     slotStatsRequest: RestRequest;
     userGroupsRequest: RestRequest;
     usersRequest: RestRequest;
@@ -251,4 +250,4 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<RootState>) => ({
 
 export default connect<PropsFromState, PropsFromDispatch, OwnProps>(
     mapStateToProps, mapDispatchToProps,
-)(RequestManger);
+)(RequestManager);

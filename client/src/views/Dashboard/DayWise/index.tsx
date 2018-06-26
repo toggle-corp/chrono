@@ -51,7 +51,7 @@ const getTotalTime = (data: DayWiseSlotStat[]) => (
         (acc, stat) => {
             let newAcc = acc;
             stat.users.forEach((user) => {
-                newAcc = acc + user.totalTimeInSeconds;
+                newAcc += user.totalTimeInSeconds;
             });
             return newAcc;
         },

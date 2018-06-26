@@ -34,13 +34,7 @@ const getTotalTime = (data: OverviewSlotStat[]) => (
     )
 );
 
-// FIXME: Rename Dashboard to Overview
-export class Dashboard extends React.PureComponent<Props, States> {
-
-    // FIXME: unnecessary constructor
-    constructor(props: Props) {
-        super(props);
-    }
+export class Overview extends React.PureComponent<Props, States> {
 
     render() {
         const { slotStats } = this.props;
@@ -67,4 +61,4 @@ const mapStateToProps = (state: RootState) => ({
 
 export default connect<PropsFromState, PropsFromDispatch, OwnProps>(
     mapStateToProps,
-)(Dashboard);
+)(Overview);
