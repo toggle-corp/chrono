@@ -11,6 +11,7 @@ import { Header } from '../../../vendor/react-store/components/View/Table';
 import { OverviewSlotStat } from '../../../redux/interface';
 
 import { pathNames } from '../../../constants';
+import { getHumanReadableTime } from '../../../utils/common';
 
 const headers: Header<OverviewSlotStat>[] = [
     {
@@ -94,6 +95,7 @@ const headers: Header<OverviewSlotStat>[] = [
         order: 9,
         sortable: true,
         comparator: (a, b) => compareNumber(a.totalTimeInSeconds, b.totalTimeInSeconds),
+        modifier: row => getHumanReadableTime(row.totalTimeInSeconds),
     },
     {
         key: 'remarks',

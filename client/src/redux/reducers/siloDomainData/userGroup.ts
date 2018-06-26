@@ -5,7 +5,6 @@ import {
     SiloDomainData,
     ReducerGroup,
     UserGroup,
-    UserGroups,
     Member,
     Users,
     SetUserGroupAction,
@@ -29,14 +28,14 @@ export const enum SILO_USERGROUP_ACTION {
 
 // HELPER
 
-const findIndexOfMemberOfUserGroup = (
-    userGroups: UserGroups,
-    userGroupId: number | undefined,
-    memberId: number,
+const findIndexOfUserGroupOfUser = (
+    users: Users, userId: number | undefined, userGroupId: number,
 ) => {
-    const members: Member[] = getObjectChildren(userGroups, [userGroupId, 'memberships']) || [];
-    return members.findIndex(member => member.id === memberId);
+    // XXX: getObjectChildren is unsafe
+    const userGroups: UserGroup[] = getObjectChildren(users, [userId, 'userGroups']) || [];
+    return userGroups.findIndex(userGroup => userGroup.id === userGroupId);
 };
+
 // ACTION-CREATOR
 
 export const setUserGroupAction = ({ userId, userGroup }: SetUserGroupAction) => ({
@@ -75,16 +74,6 @@ export const unsetUserGroupMemberAction = (
         memberId,
         type: SILO_USERGROUP_ACTION.unsetUserGroupMember,
     });
-
-// HELPER
-
-const findIndexOfUserGroupOfUser = (
-    users: Users, userId: number | undefined, userGroupId: number,
-) => {
-    // XXX: getObjectChildren is unsafe
-    const userGroups: UserGroup[] = getObjectChildren(users, [userId, 'userGroups']) || [];
-    return userGroups.findIndex(userGroup => userGroup.id === userGroupId);
-};
 
 // REDUCER
 
@@ -179,23 +168,12 @@ const setUserGroupMember = (state: SiloDomainData, action: SetUserGroupMemberAct
 };
 
 const unsetUserGroupMember = (state: SiloDomainData, action: UnsetUserGroupMemberAction) => {
-    const { userGroups } = state;
-    const {
-        userGroupId,
-        memberId,
-    } = action;
-
-    const memberIndex = findIndexOfMemberOfUserGroup(userGroups, userGroupId, memberId);
-
-    // FIXME: use $filter
+    const { userGroupId, memberId } = action;
     const settings = {
         userGroups: {
             [userGroupId]: {
                 memberships: {
-                    $if: [
-                        memberIndex !== -1,
-                        { $splice: [[memberIndex, 1]] },
-                    ],
+                    $filter: (m: Member) => m.id !== memberId,
                 },
             },
         },

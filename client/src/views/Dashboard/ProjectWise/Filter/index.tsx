@@ -137,7 +137,7 @@ export class Filter extends React.PureComponent<Props, State>{
                     className={styles.formElement}
                     label="Project"
                     options={projects}
-                    placeholder="Select a user"
+                    placeholder="Select a project"
                     keySelector={projectKeySelector}
                     labelSelector={projectLabelSelector}
                 />
