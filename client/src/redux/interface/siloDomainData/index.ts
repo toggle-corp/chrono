@@ -1,5 +1,5 @@
 import {
-    Projects,
+    ProjectsView,
     Dashboard,
     Users,
     UserGroups,
@@ -11,5 +11,5 @@ export interface SiloDomainData {
     dashboard: Dashboard;
     userGroups: UserGroups;
     users: Users;
-    projects: Projects;
+    projects: ProjectsView;
 }

@@ -69,6 +69,11 @@ export type ProjectUrlParams = {
     user_group?:number;
 };
 
+export type TaskUrlParams = {
+    fields?: string[];
+    project?: number;
+};
+
 export type SlotStatsUrlParams = {
     project?: number;
     user_group?: number;

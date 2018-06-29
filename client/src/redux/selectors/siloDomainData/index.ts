@@ -2,6 +2,7 @@ import { createSelector } from 'reselect';
 import {
     userIdFromRouteSelector,
     userGroupIdFromRouteSelector,
+    projectIdFromRouteSelector,
 } from '../route';
 import { activeUserSelector } from '../auth';
 import {
@@ -10,8 +11,11 @@ import {
     UserProject,
     UserGroup,
     UserGroups,
-    Projects,
+    ProjectView,
+    ProjectsView,
+    Project,
     Member,
+    Task,
 } from '../../interface';
 
 const emptyObject = {};
@@ -25,7 +29,7 @@ const userGroupsSelector = ({ siloDomainData }: RootState): UserGroups => (
     siloDomainData.userGroups || emptyObject
 );
 
-const projectsSelector = ({ siloDomainData }: RootState): Projects => (
+const projectsSelector = ({ siloDomainData }: RootState): ProjectsView => (
     siloDomainData.projects || emptyObject
 );
 
@@ -34,8 +38,8 @@ const projectsSelector = ({ siloDomainData }: RootState): Projects => (
 const projectsListSelector = createSelector(
     projectsSelector,
     projects => Object.keys(projects).map(
-        projectId => projects[projectId],
-    ),
+        projectId => projects[projectId] ? projects[projectId].detail : undefined,
+    ).filter(project => project) as Project[],
 );
 
 // userIdFromRouteSelector
@@ -87,4 +91,20 @@ export const isUserAdminSelector = createSelector(
             member.member === activeUser.userId && member.role === 'admin'
         ))
     ),
+);
+
+export const projectViewSelector = createSelector(
+    projectIdFromRouteSelector,
+    projectsSelector,
+    (projectId, projects) => projects[projectId || 0] || emptyObject as ProjectView,
+);
+
+export const projectSelector = createSelector(
+    projectViewSelector,
+    project => project.detail,
+);
+
+export const projectTasksSelector = createSelector(
+    projectViewSelector,
+    project => project.tasks || emptyArray as Task[],
 );

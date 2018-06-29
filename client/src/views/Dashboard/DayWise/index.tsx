@@ -2,17 +2,20 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 import Table, { Header }  from '../../../vendor/react-store/components/View/Table';
+import LoadingAnimation from '../../../vendor/react-store/components/View/LoadingAnimation';
 
 import {
     RootState,
     DayWiseSlotStat,
     DayWiseParams,
     UserPartialInformation,
+    DashboardLoadings,
 } from '../../../redux/interface';
 import {
     dayWiseSlotStatsSelector,
     dayWiseFilterSelector,
     usersSelector,
+    dashboardLoadingSelector,
 }  from '../../../redux';
 import { getHumanReadableTime } from '../../../utils/common';
 
@@ -29,6 +32,7 @@ interface PropsFromState {
     slotStats: DayWiseSlotStat[];
     users: UserPartialInformation[];
     filter: DayWiseParams;
+    loadings: DashboardLoadings;
 }
 interface PropsFromDispatch {}
 
@@ -107,14 +111,30 @@ export class Dashboard extends React.PureComponent<Props, States> {
     }
 
     render() {
-        const { slotStats } = this.props;
+        const {
+            slotStats,
+            loadings: {
+                projectsLoading,
+                tasksLoading,
+                userGroupsLoading,
+                usersLoading,
+                dayWiseLoading,
+            },
+        } = this.props;
+
         const {
             headers,
             data,
         } = this.state;
 
+        const loading = (
+            projectsLoading || tasksLoading || userGroupsLoading ||
+            usersLoading || dayWiseLoading
+        );
+
         return (
             <div>
+                {loading && <LoadingAnimation message="Loading Data" />}
                 <Filter />
                 {
                     (data && headers) ?
@@ -137,6 +157,7 @@ const mapStateToProps = (state: RootState) => ({
     slotStats: dayWiseSlotStatsSelector(state),
     filter: dayWiseFilterSelector(state),
     users: usersSelector(state),
+    loadings: dashboardLoadingSelector(state),
 });
 
 export default connect<PropsFromState, PropsFromDispatch, OwnProps>(

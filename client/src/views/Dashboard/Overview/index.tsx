@@ -2,12 +2,17 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 import Table from '../../../vendor/react-store/components/View/Table';
+import LoadingAnimation from '../../../vendor/react-store/components/View/LoadingAnimation';
 
 import {
     RootState,
     OverviewSlotStat,
+    DashboardLoadings,
 } from '../../../redux/interface';
-import { overviewSlotStatsSelector }  from '../../../redux';
+import {
+    overviewSlotStatsSelector,
+    dashboardLoadingSelector,
+}  from '../../../redux';
 import { getHumanReadableTime } from '../../../utils/common';
 
 import Filter from './Filter';
@@ -18,6 +23,7 @@ import * as styles from './styles.scss';
 interface OwnProps {}
 interface PropsFromState {
     slotStats: OverviewSlotStat[];
+    loadings: DashboardLoadings;
 }
 interface PropsFromDispatch {}
 
@@ -37,10 +43,25 @@ const getTotalTime = (data: OverviewSlotStat[]) => (
 export class Overview extends React.PureComponent<Props, States> {
 
     render() {
-        const { slotStats } = this.props;
+        const {
+            slotStats,
+            loadings: {
+                projectsLoading,
+                tasksLoading,
+                userGroupsLoading,
+                usersLoading,
+                overviewLoading,
+            },
+        } = this.props;
+
+        const loading = (
+            projectsLoading || tasksLoading || userGroupsLoading ||
+            usersLoading || overviewLoading
+        );
 
         return (
             <div>
+                {loading && <LoadingAnimation message="Loading Data" />}
                 <Filter />
                 <Table
                     data={slotStats}
@@ -57,6 +78,7 @@ export class Overview extends React.PureComponent<Props, States> {
 
 const mapStateToProps = (state: RootState) => ({
     slotStats: overviewSlotStatsSelector(state),
+    loadings: dashboardLoadingSelector(state),
 });
 
 export default connect<PropsFromState, PropsFromDispatch, OwnProps>(

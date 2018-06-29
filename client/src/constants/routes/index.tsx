@@ -61,8 +61,7 @@ export const routes: Map<RouteSetting> = {
         order: 6,
         type: ROUTE.private,
         path: '/project/:projectId/',
-        // TODO: create project view
-        loader: () => import('../../views/Dashboard'),
+        loader: () => import('../../views/Project'),
         links: allLinks,
         name: 'Project',
     },
