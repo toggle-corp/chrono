@@ -103,7 +103,7 @@ const setDashboardLoadings = (
     const settings = {
         dashboard: { $auto: {
             loadings: { $auto: {
-                $merge: otherProps,
+                $mergeIfDefined: otherProps,
             } },
         } },
     };
@@ -137,7 +137,7 @@ const setOverviewFilters = (
         dashboard: { $auto: {
             overview: { $auto: {
                 faram: { $auto: {
-                    $merge: otherProps,
+                    $mergeIfDefined: otherProps,
                 } },
             } },
         } },
@@ -173,7 +173,7 @@ const setProjectWiseFilters = (
         dashboard: { $auto: {
             projectWise: { $auto: {
                 faram: { $auto: {
-                    $merge: otherProps,
+                    $mergeIfDefined: otherProps,
                 } },
             } },
         } },
@@ -208,7 +208,7 @@ const setDayWiseFilters = (
         dashboard: { $auto: {
             dayWise: { $auto: {
                 faram: { $auto: {
-                    $merge: otherProps,
+                    $mergeIfDefined: otherProps,
                 } },
             } },
         } },

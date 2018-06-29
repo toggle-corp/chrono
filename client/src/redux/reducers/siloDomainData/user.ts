@@ -51,11 +51,10 @@ export const unsetUserProjectAction = (
 
 const setUser = (state: SiloDomainData, action: SetUserAction) => {
     const { userId, information, userGroups, projects } = action;
-
     const settings = {
         users: {
             [userId]: { $auto: {
-                $merge: {
+                $mergeIfDefined: {
                     information,
                     userGroups,
                     projects,
