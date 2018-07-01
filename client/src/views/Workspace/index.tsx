@@ -2,13 +2,16 @@ import React from 'react';
 import Redux from 'redux';
 import { connect } from 'react-redux';
 
-import FormattedDate from '../../vendor/react-store/components/View/FormattedDate';
-import LoadingAnimation from '../../vendor/react-store/components/View/LoadingAnimation';
 import Button from '../../vendor/react-store/components/Action/Button';
+import SelectInput from '../../vendor/react-store/components/Input/SelectInput';
+import FormattedDate from '../../vendor/react-store/components/View/FormattedDate';
 import ListView from '../../vendor/react-store/components/View/List/ListView';
-import { RestRequest } from '../../vendor/react-store/utils/rest';
+import LoadingAnimation from '../../vendor/react-store/components/View/LoadingAnimation';
 import { getNumDaysInMonthX } from '../../vendor/react-store/utils/common';
+import { RestRequest } from '../../vendor/react-store/utils/rest';
+
 import { getCanonicalDate } from '../../utils/map';
+import { iconNames } from '../../constants';
 
 import {
     setUserGroupsAction,
@@ -89,6 +92,7 @@ export class Workspace extends React.PureComponent<Props, States> {
     static keyExtractor = (listData: ListData) => String(listData.day);
 
     static calculateListData = (activeDate: Ymd) => {
+        console.warn(activeDate);
         const { year, month } = activeDate;
         const numberOfDays = getNumDaysInMonthX(year, month);
 
@@ -127,7 +131,7 @@ export class Workspace extends React.PureComponent<Props, States> {
 
     componentWillReceiveProps(nextProps: Props) {
         if (this.props.activeDate !== nextProps.activeDate) {
-            const listData = Workspace.calculateListData(this.props.activeDate);
+            const listData = Workspace.calculateListData(nextProps.activeDate);
             this.setState({ listData });
         }
     }
@@ -213,6 +217,68 @@ export class Workspace extends React.PureComponent<Props, States> {
             month,
             day,
             timeSlotId,
+        });
+    }
+
+    handleNextMonth = () => {
+        let {
+            month,
+            year,
+        } = this.props.activeDate;
+
+        month += 1;
+        if (month > 12) {
+            month = 1;
+            year += 1;
+        }
+
+        this.props.setActiveSlot({
+            year,
+            month,
+            day: 1,
+        });
+    }
+
+    handlePrevMonth = () => {
+        let {
+            month,
+            year,
+        } = this.props.activeDate;
+
+        month -= 1;
+        if (month < 1) {
+            month = 1;
+            year -= 1;
+        }
+
+        this.props.setActiveSlot({
+            year,
+            month,
+            day: 1,
+        });
+    }
+
+    handleCurrentMonth = () => {
+        this.props.setActiveSlot({
+            year: this.state.today.year,
+            month: this.state.today.month,
+            day: this.state.today.day,
+        });
+    }
+
+    handleYearChange = (year: number) => {
+        this.props.setActiveSlot({
+            year,
+            month: this.props.activeDate.month,
+            day: 1,
+        });
+    }
+
+    handleMonthChange = (month: number) => {
+        this.props.setActiveSlot({
+            month,
+            year:  this.props.activeDate.year,
+            day: 1,
         });
     }
 
@@ -303,6 +369,7 @@ export class Workspace extends React.PureComponent<Props, States> {
             pendingTasks,
             pendingUsergroups,
             pendingSlots,
+            today,
         } = this.state;
         const {
             activeDate,
@@ -315,15 +382,71 @@ export class Workspace extends React.PureComponent<Props, States> {
                 </div>
             );
         }
+
+        const currentButtonDisabled = (
+            today.year === activeDate.year && today.month === activeDate.month
+        );
         return (
             <div className={styles.workspace}>
                 <div className={styles.datebar}>
-                    <span className={styles.date}>
-                        <FormattedDate
-                            date={`${activeDate.year}-${activeDate.month}-${activeDate.day || 1}`}
-                            mode="MMM, yyyy"
+                    <div className={styles.date}>
+                        <Button
+                            onClick={this.handlePrevMonth}
+                            iconName={iconNames.prev}
+                            title="Previous"
+                            transparent
                         />
-                    </span>
+                        <Button
+                            onClick={this.handleNextMonth}
+                            iconName={iconNames.next}
+                            title="Next"
+                            transparent
+                        />
+                        <Button
+                            onClick={this.handleCurrentMonth}
+                            iconName={iconNames.circle}
+                            title="Current"
+                            disabled={currentButtonDisabled}
+                            transparent
+                        />
+                        <SelectInput
+                            className={styles.year}
+                            label="Year"
+                            options={[
+                                { key: 2017, label: '2017' },
+                                { key: 2018, label: '2018' },
+                                { key: 2019, label: '2019' },
+                            ]}
+                            value={activeDate.year}
+                            placeholder="Select year"
+                            showHintAndError={false}
+                            hideClearButton
+                            onChange={this.handleYearChange}
+                        />
+                        <SelectInput
+                            className={styles.month}
+                            label="Month"
+                            options={[
+                                { key: 1, label: 'Jan' },
+                                { key: 2, label: 'Feb' },
+                                { key: 3, label: 'Mar' },
+                                { key: 4, label: 'Apr' },
+                                { key: 5, label: 'May' },
+                                { key: 6, label: 'Jun' },
+                                { key: 7, label: 'Jul' },
+                                { key: 8, label: 'Aug' },
+                                { key: 9, label: 'Sep' },
+                                { key: 10, label: 'Oct' },
+                                { key: 11, label: 'Nov' },
+                                { key: 12, label: 'Dec' },
+                            ]}
+                            value={activeDate.month}
+                            placeholder="Select month"
+                            showHintAndError={false}
+                            hideClearButton
+                            onChange={this.handleMonthChange}
+                        />
+                    </div>
                 </div>
                 <div className={styles.information}>
                     <ListView
