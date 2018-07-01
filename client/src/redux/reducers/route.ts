@@ -6,6 +6,8 @@ import initialRouteState from '../initial-state/route';
 import { isTruthy } from '../../vendor/react-store/utils/common';
 import { Route, ReducerGroup } from '../interface';
 
+import { AUTH_ACTION } from './auth';
+
 // TYPE
 
 export const enum ROUTE_ACTION {
@@ -72,9 +74,12 @@ const clearRouteState = (state: Route) => {
     return newState;
 };
 
+const logout = () => initialRouteState;
+
 export const routeReducers: ReducerGroup<Route> = {
     [ROUTE_ACTION.setParams]: setRouteParams,
     [ROUTE_ACTION.clearParams]: clearRouteState,
+    [AUTH_ACTION.logout]: logout,
 };
 
 const routeReducer = createReducerWithMap(routeReducers, initialRouteState);

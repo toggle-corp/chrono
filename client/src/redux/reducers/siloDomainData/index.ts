@@ -6,7 +6,11 @@ import projectReducer from './project';
 import userGroupReducer from './userGroup';
 import dashboardReducer from './dashboard';
 
+import { AUTH_ACTION } from '../auth';
+
 import initialSiloDomainData from '../../initial-state/siloDomainData';
+
+const logout = () => initialSiloDomainData;
 
 const reducers = {
     ...userReducer,
@@ -14,6 +18,7 @@ const reducers = {
     ...projectReducer,
     ...userGroupReducer,
     ...dashboardReducer,
+    [AUTH_ACTION.logout]: logout,
 };
 
 const reducer = createReducerWithMap(reducers, initialSiloDomainData);

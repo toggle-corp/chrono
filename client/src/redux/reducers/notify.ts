@@ -2,6 +2,8 @@ import createReducerWithMap from '../../utils/createReducerWithMap';
 import initialNotifyState from '../initial-state/notify';
 import { Notify, Notification, ReducerGroup } from '../interface';
 
+import { AUTH_ACTION } from './auth';
+
 // TYPE
 
 export const enum NOTIFY_ACTION {
@@ -41,9 +43,12 @@ const notifyHide = (state: Notify) => {
     return newState;
 };
 
+const logout = () => initialNotifyState;
+
 export const notifyReducers: ReducerGroup<Notify> = {
     [NOTIFY_ACTION.send]: notifySend,
     [NOTIFY_ACTION.hide]: notifyHide,
+    [AUTH_ACTION.logout]: logout,
 };
 
 const notifyReducer = createReducerWithMap(notifyReducers, initialNotifyState);
