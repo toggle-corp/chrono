@@ -33,8 +33,6 @@ import {
     dayWiseFilterSelector,
 }  from '../../../redux';
 
-import { Dashboard } from '../index';
-
 import GetOverviewSlotStatsRequest from './requests/GetOverviewSlotStatsRequest';
 import GetProjectWiseSlotStatsRequest from './requests/GetProjectWiseSlotStatsRequest';
 import GetDayWiseSlotStatsRequest from './requests/GetDayWiseSlotStatsRequest';
@@ -74,13 +72,14 @@ export class RequestManager extends React.PureComponent<Props, States> {
     tasksRequest: RestRequest;
     slotsRequest: RestRequest;
 
-    componentWillMount() {
+    componentDidMount() {
         const {
             activeView,
             overviewFilter,
             projectWiseFilter,
             dayWiseFilter,
         } = this.props;
+
         this.startRequestForUserGroups();
         this.startRequestForUsers();
         this.startRequestForProjects();
@@ -129,7 +128,7 @@ export class RequestManager extends React.PureComponent<Props, States> {
     }
 
     startRequestForOverviewSlotStats = (params: OverviewParams, activeView: string) => {
-        if (activeView !== Dashboard.views.overview) {
+        if (activeView !== 'overview') {
             return;
         }
         if (this.slotStatsRequest) {
@@ -144,7 +143,7 @@ export class RequestManager extends React.PureComponent<Props, States> {
     }
 
     startRequestForProjectWiseSlotStats = (params: ProjectWiseParams, activeView: string) => {
-        if (activeView !== Dashboard.views.projectWise) {
+        if (activeView !== 'projectWise') {
             return;
         }
         if (this.slotStatsRequest) {
@@ -159,7 +158,7 @@ export class RequestManager extends React.PureComponent<Props, States> {
     }
 
     startRequestForDayWiseSlotStats = (params: DayWiseParams, activeView: string) => {
-        if (activeView !== Dashboard.views.dayWise) {
+        if (activeView !== 'dayWise') {
             return;
         }
         if (this.slotStatsRequest) {

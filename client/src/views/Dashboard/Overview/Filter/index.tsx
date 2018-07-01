@@ -111,12 +111,14 @@ export class Filter extends React.PureComponent<Props, State>{
         });
     }
 
+    /*
     handleFaramDiscard = () => {
         this.props.setFilters({
             faramValues: this.props.faram.filters,
             pristine: true,
         });
     }
+    */
 
     render() {
         const {
@@ -184,12 +186,14 @@ export class Filter extends React.PureComponent<Props, State>{
                 >
                     Clear
                 </WarningButton>
+                {/*
                 <WarningButton
                     onClick={this.handleFaramDiscard}
                     disabled={pristine || loading}
                 >
                     Discard
                 </WarningButton>
+                */}
             </Faram>
         );
     }

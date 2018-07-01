@@ -92,7 +92,6 @@ export class Workspace extends React.PureComponent<Props, States> {
     static keyExtractor = (listData: ListData) => String(listData.day);
 
     static calculateListData = (activeDate: Ymd) => {
-        console.warn(activeDate);
         const { year, month } = activeDate;
         const numberOfDays = getNumDaysInMonthX(year, month);
 
