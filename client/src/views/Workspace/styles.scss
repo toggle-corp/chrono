@@ -15,7 +15,15 @@ $color-text-on-primary: get-text-color($color-primary);
         padding: $spacing-small;
 
         .date {
-            font-family: $font-family-monospace;
+            display: flex;
+
+            >*{
+                margin-right: $spacing-small;
+            }
+
+            .year, .month {
+                flex-basis: 48px;
+            }
         }
     }
 

@@ -12,6 +12,7 @@ import Numeral from '../../../vendor/react-store/components/View/Numeral';
 import { ProjectWiseSlotStat } from '../../../redux/interface';
 
 import { pathNames } from '../../../constants';
+import { getHumanReadableTime } from '../../../utils/common';
 
 const headers: Header<ProjectWiseSlotStat>[] = [
     {
@@ -48,6 +49,7 @@ const headers: Header<ProjectWiseSlotStat>[] = [
         order: 3,
         sortable: true,
         comparator: (a, b) => compareNumber(a.totalTimeInSeconds, b.totalTimeInSeconds),
+        modifier: row => getHumanReadableTime(row.totalTimeInSeconds),
     },
 ];
 

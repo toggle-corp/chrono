@@ -1,0 +1,9 @@
+@import '../../stylesheets/base';
+
+.dashboard {
+    @extend %main-content;
+
+    .content {
+        margin-top: $spacing-medium;
+    }
+}

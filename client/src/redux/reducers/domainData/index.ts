@@ -5,13 +5,18 @@ import userGroupReducer from './userGroup';
 import projectReducer from './project';
 import taskReducer from './task';
 
+import { AUTH_ACTION } from '../auth';
+
 import initialDomainData from '../../initial-state/domainData';
+
+const logout = () => initialDomainData;
 
 const reducers = {
     ...userReducer,
     ...userGroupReducer,
     ...projectReducer,
     ...taskReducer,
+    [AUTH_ACTION.logout]: logout,
 };
 
 const reducer = createReducerWithMap(reducers, initialDomainData);

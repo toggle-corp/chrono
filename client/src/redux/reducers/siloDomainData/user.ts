@@ -3,13 +3,13 @@ import update from '../../../vendor/react-store/utils/immutable-update';
 import {
     SiloDomainData,
     ReducerGroup,
+    UserGroup,
+    Project,
 
     UnsetUserUserGroupAction,
     UnsetUserProjectAction,
     SetUserAction,
 } from '../../interface';
-
-const emptyObject = {};
 
 // ACTION-TYPE
 
@@ -51,28 +51,13 @@ export const unsetUserProjectAction = (
 
 const setUser = (state: SiloDomainData, action: SetUserAction) => {
     const { userId, information, userGroups, projects } = action;
-
-    // FIXME: $merge should be used instead of $if-$set pair
     const settings = {
         users: {
             [userId]: { $auto: {
-                information: {
-                    $if: [
-                        information,
-                        { $set: information },
-                    ],
-                },
-                userGroups: {
-                    $if: [
-                        userGroups,
-                        { $set: userGroups },
-                    ],
-                },
-                projects: {
-                    $if: [
-                        projects,
-                        { $set: projects },
-                    ],
+                $mergeIfDefined: {
+                    information,
+                    userGroups,
+                    projects,
                 },
             } },
         },
@@ -80,24 +65,13 @@ const setUser = (state: SiloDomainData, action: SetUserAction) => {
     return update(state, settings);
 };
 
-// FIXME: rename uest to unset
-const usetUserUserGroup = (state: SiloDomainData, action: UnsetUserUserGroupAction) => {
+const unsetUserUserGroup = (state: SiloDomainData, action: UnsetUserUserGroupAction) => {
     const { userId, userGroup } = action;
-
-    const { users } = state;
-    const { userGroups } = users[userId] || emptyObject;
-
-    const userGroupIndex = userGroups.findIndex(userG => userG.id === userGroup.id);
-    if (userGroupIndex === -1) {
-        return state;
-    }
-
-    // FIXME: if you want to remove a certain element, prefer $filter
     const settings = {
         users: {
             [userId]: { $auto: {
                 userGroups: {
-                    $splice: [[userGroupIndex, 1]],
+                    $filter: (ug: UserGroup) => ug.id !== userGroup.id,
                 },
             } },
         },
@@ -107,20 +81,11 @@ const usetUserUserGroup = (state: SiloDomainData, action: UnsetUserUserGroupActi
 
 const usetUserProject = (state: SiloDomainData, action: UnsetUserProjectAction) => {
     const { userId, project } = action;
-
-    const { users } = state;
-    const { projects } = users[userId] || emptyObject;
-
-    const projectIndex = projects.findIndex(p => p.id === project.id);
-    if (projectIndex === -1) {
-        return state;
-    }
-
     const settings = {
         users: {
             [userId]: { $auto: {
                 projects: {
-                    $splice: [[projectIndex, 1]],
+                    $filter: (p: Project) => p.id !== project.id,
                 },
             } },
         },
@@ -130,7 +95,7 @@ const usetUserProject = (state: SiloDomainData, action: UnsetUserProjectAction) 
 
 const reducer: ReducerGroup<SiloDomainData> = {
     [SILO_USER_PROFILE_ACTION.setUser]: setUser,
-    [SILO_USER_PROFILE_ACTION.unsetUserGroup]: usetUserUserGroup,
+    [SILO_USER_PROFILE_ACTION.unsetUserGroup]: unsetUserUserGroup,
     [SILO_USER_PROFILE_ACTION.unsetProject]: usetUserProject,
 };
 

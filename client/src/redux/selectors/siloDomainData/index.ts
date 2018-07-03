@@ -31,12 +31,11 @@ const projectsSelector = ({ siloDomainData }: RootState): Projects => (
 
 // COMPLEX
 
-// FIXME: use $unset to unuset project to avoid using filter(project => project)
 const projectsListSelector = createSelector(
     projectsSelector,
     projects => Object.keys(projects).map(
         projectId => projects[projectId],
-    ).filter(project => project),
+    ),
 );
 
 // userIdFromRouteSelector
@@ -80,13 +79,12 @@ export const userGroupMembersSelector = createSelector(
     userGroup => (userGroup ? userGroup.memberships : undefined) || (emptyArray as Member[]),
 );
 
-// FIXME: instead of ternary operator use !!
 export const isUserAdminSelector = createSelector(
     activeUserSelector,
     userGroupMembersSelector,
     (activeUser, userMembers) => (
-        userMembers.find(member => (
+        !!userMembers.find(member => (
             member.member === activeUser.userId && member.role === 'admin'
-        )) ? true : false
+        ))
     ),
 );

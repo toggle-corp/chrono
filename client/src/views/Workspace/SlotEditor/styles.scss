@@ -2,7 +2,7 @@
 
 $slot-editor-height: 130px;
 
-.message {
+.message-box {
     @include background-color($color-foreground);
     flex-shrink: 0;
     height: $slot-editor-height;

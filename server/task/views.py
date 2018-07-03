@@ -168,21 +168,23 @@ class TimeSlotStatsDayWiseViewSet(views.APIView):
             queryset=TimeSlot.objects.all(),
         ).qs.order_by('date')
 
-        min = filtered_slots.first().date
-        max = filtered_slots.last().date
-
-        filtered_slots = filtered_slots\
-            .values_list('id', flat=True)
-
         data = []
-        date = min
-        delta = datetime.timedelta(days=1)
-        while date <= max:
-            data.append({
-                'date': date,
-                'users': self.get_for_date(filtered_slots, date)
-            })
-            date += delta
+
+        if filtered_slots.exists():
+            min = filtered_slots.first().date
+            max = filtered_slots.last().date
+
+            filtered_slots = filtered_slots\
+                .values_list('id', flat=True)
+
+            date = min
+            delta = datetime.timedelta(days=1)
+            while date <= max:
+                data.append({
+                    'date': date,
+                    'users': self.get_for_date(filtered_slots, date)
+                })
+                date += delta
 
         return response.Response(
             TimeSlotStatsDayWiseSerializer(data, many=True).data

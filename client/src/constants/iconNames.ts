@@ -85,6 +85,7 @@ const iconNames: Readonly<{
 
     next: 'ion-chevron-right',
     prev: 'ion-chevron-left',
+    circle: 'ion-record',
 
     chart: 'fa fa-sitemap',
     eye: 'ion-eye',

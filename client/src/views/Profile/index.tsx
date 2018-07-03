@@ -308,11 +308,7 @@ export class Profile extends React.PureComponent<Props, States> {
     render() {
         const {
             // FIXME: move this to default props later
-            information = {
-                firstName: 'N/a',
-                lastName: 'N/a',
-                email: 'N/a',
-            },
+            information,
         } = this.props;
 
         const {
@@ -334,20 +330,24 @@ export class Profile extends React.PureComponent<Props, States> {
                 {pending && <LoadingAnimation />}
                 <div className={styles.info}>
                     <div className={styles.detail}>
-                        <div className={styles.name}>
-                            <div>
-                                <span className={styles.first}>
-                                    {information.firstName}
-                                </span>
-                                <span className={styles.last}>
-                                    {information.lastName}
-                                </span>
-                            </div>
-                            <ProfileEdit />
-                        </div>
-                        <p className={styles.email}>
-                            {information.email}
-                        </p>
+                        { information &&
+                            <Fragment>
+                                <div className={styles.name}>
+                                    <div>
+                                        <span className={styles.first}>
+                                            {information.firstName}
+                                        </span>
+                                        <span className={styles.last}>
+                                            {information.lastName}
+                                        </span>
+                                    </div>
+                                    <ProfileEdit />
+                                </div>
+                                <p className={styles.email}>
+                                    {information.email}
+                                </p>
+                            </Fragment>
+                        }
                     </div>
                 </div>
                 <UserProject />
