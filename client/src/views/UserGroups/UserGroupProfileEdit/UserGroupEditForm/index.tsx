@@ -6,6 +6,7 @@ import { connect } from 'react-redux';
 
 import {
     RootState,
+    UserGroup,
     PatchUserGroupAction,
 } from '../../../../redux/interface';
 import {
@@ -39,6 +40,7 @@ import {
 import * as styles from './styles.scss';
 
 interface OwnProps{
+    userGroup?: UserGroup;
     handleClose(): void;
 }
 interface PropsFromState{
@@ -66,7 +68,7 @@ export class UserGroupEditForm extends PureComponent<Props, States> {
 
         this.state  = {
             faramErrors: {},
-            faramValues: {},
+            faramValues: props.userGroup || {},
             pristine: true,
             pending: false,
         };

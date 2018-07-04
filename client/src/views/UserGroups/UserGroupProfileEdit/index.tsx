@@ -2,6 +2,7 @@ import React, {
     SFC, Fragment,
 } from 'react';
 
+import { UserGroup } from '../../../redux/interface';
 import PrimaryButton from '../../../vendor/react-store/components/Action/Button/PrimaryButton';
 import Modal from '../../../vendor/react-store/components/View/Modal';
 import ModalBody from '../../../vendor/react-store/components/View/Modal/Body';
@@ -12,6 +13,7 @@ import UserGroupEditForm from './UserGroupEditForm';
 interface OwnProps {
     onClick(): void;
     onClose(): void;
+    userGroup: UserGroup;
     userGroupId?: number;
     showEditModal: boolean;
 }
@@ -45,6 +47,7 @@ const UserGroupProfileEdit: SFC<OwnProps> = props => (
                 <ModalBody>
                     <UserGroupEditForm
                         handleClose={props.onClose}
+                        userGroup={props.userGroup}
                     />
                 </ModalBody>
             </Modal>

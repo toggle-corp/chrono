@@ -6,11 +6,14 @@ import { connect } from 'react-redux';
 
 import {
     RootState,
-    UserInformation,
+    SetUsersAction,
+    UserPartialInformation,
     SetUserGroupMemberAction,
 } from '../../../redux/interface';
 
 import {
+    setUsersAction,
+    usersSelector,
     setUserGroupMemberAction,
 } from '../../../redux';
 
@@ -36,8 +39,11 @@ interface OwnProps {
     userGroupId?: number;
     handleClose() : void;
 }
-interface PropsFromState {}
+interface PropsFromState {
+    users: UserPartialInformation[];
+}
 interface PropsFromDispatch {
+    setUsers(params: SetUsersAction): void;
     setMember(params: SetUserGroupMemberAction): void;
 }
 
@@ -48,7 +54,6 @@ interface States {
     faramValues: FaramValues;
     pristine: boolean;
     pending: boolean;
-    users: UserInformation[];
 }
 
 export class MemberAdd extends PureComponent<Props, States> {
@@ -56,8 +61,8 @@ export class MemberAdd extends PureComponent<Props, States> {
     addUserRequest: RestRequest;
     userGroupMembersRequest: RestRequest;
 
-    static keySelector = (d: UserInformation)  => d.id;
-    static labelSelector = (d: UserInformation) => d.displayName;
+    static keySelector = (d: UserPartialInformation)  => d.id;
+    static labelSelector = (d: UserPartialInformation) => d.displayName;
 
     state = {
         faramErrors: {},
@@ -93,6 +98,7 @@ export class MemberAdd extends PureComponent<Props, States> {
 
         const request = new UsersGetRequest({
             setState: params => this.setState(params),
+            setUsers: this.props.setUsers,
         });
 
         this.usersGetRequest = request.create();
@@ -153,12 +159,9 @@ export class MemberAdd extends PureComponent<Props, States> {
         } = this.state;
 
         const {
+            users,
             handleClose,
         } = this.props;
-
-        const {
-            users,
-        } = this.state;
 
         return (
             <Faram
@@ -202,10 +205,15 @@ export class MemberAdd extends PureComponent<Props, States> {
     }
 }
 
+const mapStateToProps = (state: RootState) => ({
+    users: usersSelector(state),
+});
+
 const mapDispatchToProps = (dispatch: Redux.Dispatch<RootState>) => ({
+    setUsers: (params: SetUsersAction) => dispatch(setUsersAction(params)),
     setMember: (params: SetUserGroupMemberAction) => dispatch(setUserGroupMemberAction(params)),
 });
 
 export default connect<PropsFromState, PropsFromDispatch, OwnProps>(
-    undefined, mapDispatchToProps,
+    mapStateToProps, mapDispatchToProps,
 )(MemberAdd);
