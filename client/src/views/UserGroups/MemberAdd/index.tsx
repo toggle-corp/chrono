@@ -5,29 +5,32 @@ import Redux from 'redux';
 import { connect } from 'react-redux';
 
 import {
+    Member,
     RootState,
+    SetUserGroupMemberAction,
     SetUsersAction,
     UserPartialInformation,
-    SetUserGroupMemberAction,
 } from '../../../redux/interface';
 
 import {
+    setUserGroupMemberAction,
     setUsersAction,
     usersSelector,
-    setUserGroupMemberAction,
+    userGroupMembersSelector,
 } from '../../../redux';
 
 import Faram, {
     FaramErrors,
-    FaramValues,
     FaramSchema,
+    FaramValues,
 } from '../../../vendor/react-store/components/Input/Faram';
-import { requiredCondition } from '../../../vendor/react-store/components/Input/Faram/validations';
-import LoadingAnimation from '../../../vendor/react-store/components/View/LoadingAnimation';
-import SelectInput from '../../../vendor/react-store/components/Input/SelectInput';
-import NonFieldErrors from '../../../vendor/react-store/components/Input/NonFieldErrors';
-import PrimaryButton from '../../../vendor/react-store/components/Action/Button/PrimaryButton';
+
 import DangerButton from '../../../vendor/react-store/components/Action/Button/DangerButton';
+import PrimaryButton from '../../../vendor/react-store/components/Action/Button/PrimaryButton';
+import { requiredCondition } from '../../../vendor/react-store/components/Input/Faram/validations';
+import NonFieldErrors from '../../../vendor/react-store/components/Input/NonFieldErrors';
+import SelectInput from '../../../vendor/react-store/components/Input/SelectInput';
+import LoadingAnimation from '../../../vendor/react-store/components/View/LoadingAnimation';
 import { RestRequest } from '../../../vendor/react-store/utils/rest';
 
 import UsersGetRequest from '../requests/UsersGetRequest';
@@ -40,6 +43,7 @@ interface OwnProps {
     handleClose() : void;
 }
 interface PropsFromState {
+    members: Member[];
     users: UserPartialInformation[];
 }
 interface PropsFromDispatch {
@@ -52,6 +56,7 @@ type Props = OwnProps & PropsFromState & PropsFromDispatch;
 interface States {
     faramErrors: FaramErrors;
     faramValues: FaramValues;
+    nonMembers: UserPartialInformation[];
     pristine: boolean;
     pending: boolean;
 }
@@ -69,7 +74,7 @@ export class MemberAdd extends PureComponent<Props, States> {
         faramValues: {},
         pending: false,
         pristine: true,
-        users: [],
+        nonMembers: [],
     };
 
     schema : FaramSchema = {
@@ -77,6 +82,17 @@ export class MemberAdd extends PureComponent<Props, States> {
             userId: [requiredCondition],
         },
     };
+
+    componentWillReceiveProps(nextProps: Props) {
+        if (this.props.members !== nextProps.members ||
+            this.props.users !== nextProps.users
+        ) {
+            const nonMembers = nextProps.users.filter((user) => {
+                return !nextProps.members.find(members => members.member === user.id);
+            });
+            this.setState({ nonMembers });
+        }
+    }
 
     componentWillMount() {
         this.startRequestForUsers();
@@ -154,12 +170,12 @@ export class MemberAdd extends PureComponent<Props, States> {
         const {
             faramErrors,
             faramValues,
+            nonMembers,
             pending,
             pristine,
         } = this.state;
 
         const {
-            users,
             handleClose,
         } = this.props;
 
@@ -179,7 +195,7 @@ export class MemberAdd extends PureComponent<Props, States> {
                 <SelectInput
                     faramElementName="userId"
                     label="User"
-                    options={users}
+                    options={nonMembers}
                     placeholder="Select a user"
                     labelSelector={MemberAdd.labelSelector}
                     keySelector={MemberAdd.keySelector}
@@ -206,6 +222,7 @@ export class MemberAdd extends PureComponent<Props, States> {
 }
 
 const mapStateToProps = (state: RootState) => ({
+    members: userGroupMembersSelector(state),
     users: usersSelector(state),
 });
 
