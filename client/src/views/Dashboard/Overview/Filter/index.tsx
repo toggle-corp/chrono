@@ -2,7 +2,7 @@ import React from 'react';
 import Redux from 'redux';
 import { connect } from 'react-redux';
 
-import SelectInput from '../../../../vendor/react-store/components/Input/SelectInput';
+import MultiSelectInput from '../../../../vendor/react-store/components/Input/MultiSelectInput';
 import PrimaryButton from '../../../../vendor/react-store/components/Action/Button/PrimaryButton';
 import WarningButton from '../../../../vendor/react-store/components/Action/Button/WarningButton';
 import LoadingAnimation from '../../../../vendor/react-store/components/View/LoadingAnimation';
@@ -151,7 +151,7 @@ export class Filter extends React.PureComponent<Props, State>{
             >
                 {loading && <LoadingAnimation />}
                 <NonFieldErrors faramElement />
-                <SelectInput
+                <MultiSelectInput
                     faramElementName="user"
                     className={styles.formElement}
                     label="User"

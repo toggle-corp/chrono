@@ -63,6 +63,16 @@ const getTotalTime = (data: DayWiseSlotStat[]) => (
     )
 );
 
+const getFilteredUser = (usersId: number[] = [], users: UserPartialInformation[]) => {
+    if (usersId.length) {
+        const filteredUsers = users.filter(
+            user => usersId.findIndex(id => id === user.id) !== -1,
+        );
+        return filteredUsers;
+    }
+    return users;
+};
+
 export class Dashboard extends React.PureComponent<Props, States> {
 
     constructor(props: Props) {
@@ -74,6 +84,7 @@ export class Dashboard extends React.PureComponent<Props, States> {
             filter,
         } = props;
         const { date } = filter;
+        const fUsers = getFilteredUser(filter.users, users);
 
         if (date) {
             this.state = {
@@ -83,7 +94,7 @@ export class Dashboard extends React.PureComponent<Props, States> {
                     end: date ? date.endDate : '2018-06-21',
                     data: slotStats,
                 }),
-                headers: getHeaders({ users }),
+                headers: getHeaders({ users: fUsers }),
             };
         } else {
             this.state = {};
@@ -98,6 +109,7 @@ export class Dashboard extends React.PureComponent<Props, States> {
         } = nextProps;
         const { date } = filter;
         if (this.props.slotStats !== slotStats && filter.date) {
+            const fUsers = getFilteredUser(filter.users, users);
             this.setState({
                 data: getData({
                     users,
@@ -105,7 +117,7 @@ export class Dashboard extends React.PureComponent<Props, States> {
                     end: date.endDate,
                     data: slotStats,
                 }),
-                headers: getHeaders({ users }),
+                headers: getHeaders({ users: fUsers }),
             });
         }
     }

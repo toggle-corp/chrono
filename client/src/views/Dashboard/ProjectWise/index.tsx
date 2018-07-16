@@ -31,7 +31,7 @@ type Props = OwnProps & PropsFromState & PropsFromDispatch;
 
 interface States{}
 
-const keyExtractor = (slotStat: ProjectWiseSlotStat) => slotStat.id;
+const keyExtractor = (slotStat: ProjectWiseSlotStat) => `${slotStat.id}-${slotStat.project}`;
 
 const getTotalTime = (data: ProjectWiseSlotStat[]) => (
     data.reduce(

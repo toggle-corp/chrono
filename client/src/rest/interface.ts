@@ -75,10 +75,10 @@ export type TaskUrlParams = {
 };
 
 export type SlotStatsUrlParams = {
-    project?: number;
-    user_group?: number;
-    task?: number;
-    user?: number;
+    project?: (number | number[]);
+    user_group?: (number | number[]);
+    task?: (number | number[]);
+    user?: (number | number[]);
     date_gt?: string;
     date_lt?: string;
 };

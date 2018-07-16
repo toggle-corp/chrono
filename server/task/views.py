@@ -120,12 +120,12 @@ class TimeSlotStatsProjectWiseViewSet(generics.ListAPIView):
     serializer_class = TimeSlotStatsProjectWiseSerializer
     permission_classes = [permissions.IsAuthenticated, ModifyPermission]
 
-    def get_queryset(self):
+    def _get_queryset(self, project):
         qs = User.objects.all()
 
         filtered_slots = TimeSlotFilterSet(
             self.request.GET,
-            queryset=TimeSlot.objects.all(),
+            queryset=TimeSlot.objects.filter(task__project=project),
         ).qs.values_list('id', flat=True)
 
         total_tasks = models.Count(
@@ -144,6 +144,14 @@ class TimeSlotStatsProjectWiseViewSet(generics.ListAPIView):
             total_time=total_time,
         ).filter(total_tasks__gt=0)
 
+        return qs
+
+    def get_queryset(self):
+        qs = []
+        for project in Project.objects.all():
+            for slot in self._get_queryset(project):
+                slot.project = project
+                qs.append(slot)
         return qs
 
 

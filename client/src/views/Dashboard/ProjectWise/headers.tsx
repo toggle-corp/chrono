@@ -31,9 +31,24 @@ const headers: Header<ProjectWiseSlotStat>[] = [
         ),
     },
     {
+        key: 'projectTitle',
+        label: 'Project',
+        order: 2,
+        sortable: true,
+        comparator: (a, b) => compareString(a.projectTitle, b.projectTitle),
+        modifier: row => (
+            <Link
+                key={row.project}
+                to={reverseRoute(pathNames.project, { projectId: row.project })}
+            >
+                {row.projectTitle}
+            </Link>
+        ),
+    },
+    {
         key: 'numberOfTask',
         label: 'Tasks',
-        order: 2,
+        order: 3,
         sortable: true,
         comparator: (a, b) => compareNumber(a.totalTasks, b.totalTasks),
         modifier: row => (
@@ -46,7 +61,7 @@ const headers: Header<ProjectWiseSlotStat>[] = [
     {
         key: 'totalTime',
         label: 'Total Time',
-        order: 3,
+        order: 4,
         sortable: true,
         comparator: (a, b) => compareNumber(a.totalTimeInSeconds, b.totalTimeInSeconds),
         modifier: row => getHumanReadableTime(row.totalTimeInSeconds),

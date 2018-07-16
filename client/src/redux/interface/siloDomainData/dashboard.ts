@@ -74,6 +74,8 @@ export interface ProjectWiseSlotStat {
     id: number;
     user: number;
     userDisplayName: string;
+    project: number;
+    projectTitle: string;
     totalTasks: number;
     totalTime: string;
     totalTimeInSeconds: number;
@@ -82,6 +84,7 @@ export interface ProjectWiseSlotStat {
 // DAY WISE VIEW
 export interface DayWiseParams {
     date: Date;
+    users: number[];
 }
 
 export interface DayWiseSlotStat {
