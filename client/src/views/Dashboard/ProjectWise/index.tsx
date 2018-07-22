@@ -2,12 +2,17 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 import Table from '../../../vendor/react-store/components/View/Table';
+import LoadingAnimation from '../../../vendor/react-store/components/View/LoadingAnimation';
 
 import {
     RootState,
     ProjectWiseSlotStat,
+    DashboardLoadings,
 } from '../../../redux/interface';
-import { projectWiseSlotStatsSelector }  from '../../../redux';
+import {
+    projectWiseSlotStatsSelector,
+    dashboardLoadingSelector,
+}  from '../../../redux';
 import { getHumanReadableTime } from '../../../utils/common';
 
 import Filter from './Filter';
@@ -18,6 +23,7 @@ import * as styles from './styles.scss';
 interface OwnProps {}
 interface PropsFromState {
     slotStats: ProjectWiseSlotStat[];
+    loadings: DashboardLoadings;
 }
 interface PropsFromDispatch {}
 
@@ -25,7 +31,7 @@ type Props = OwnProps & PropsFromState & PropsFromDispatch;
 
 interface States{}
 
-const keyExtractor = (slotStat: ProjectWiseSlotStat) => slotStat.id;
+const keyExtractor = (slotStat: ProjectWiseSlotStat) => `${slotStat.id}-${slotStat.project}`;
 
 const getTotalTime = (data: ProjectWiseSlotStat[]) => (
     data.reduce(
@@ -41,10 +47,25 @@ export class Dashboard extends React.PureComponent<Props, States> {
     }
 
     render() {
-        const { slotStats } = this.props;
+        const {
+            slotStats,
+            loadings: {
+                projectsLoading,
+                tasksLoading,
+                userGroupsLoading,
+                usersLoading,
+                projectWiseLoading,
+            },
+        } = this.props;
+
+        const loading = (
+            projectsLoading || tasksLoading || userGroupsLoading ||
+            usersLoading || projectWiseLoading
+        );
 
         return (
             <div>
+                {loading && <LoadingAnimation message="Loading Data" />}
                 <Filter />
                 <Table
                     data={slotStats}
@@ -61,6 +82,7 @@ export class Dashboard extends React.PureComponent<Props, States> {
 
 const mapStateToProps = (state: RootState) => ({
     slotStats: projectWiseSlotStatsSelector(state),
+    loadings: dashboardLoadingSelector(state),
 });
 
 export default connect<PropsFromState, PropsFromDispatch, OwnProps>(

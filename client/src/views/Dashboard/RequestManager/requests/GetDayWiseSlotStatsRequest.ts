@@ -30,11 +30,11 @@ export default class GetDayWiseSlotsRequest implements Request<{}> {
 
     create = (params: DayWiseParams): RestRequest => {
         const filters = {
+            user: params.users,
             date_gt: params.date ? params.date.startDate : undefined,
             date_lt: params.date ? params.date.endDate : undefined,
         };
 
-        console.warn(filters);
         const request = new FgRestBuilder()
             .url(createUrlForDayWiseSlotStats(filters))
             .params(commonParamsForGet)

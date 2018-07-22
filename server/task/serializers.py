@@ -77,6 +77,8 @@ class TimeSlotStatsProjectWiseSerializer(serializers.ModelSerializer):
     user_display_name = serializers.CharField(
         source='profile.get_display_name'
     )
+    project_title = serializers.CharField(source='project.title')
+    project = serializers.IntegerField(source='project.id')
     total_tasks = serializers.IntegerField()
     total_time = serializers.DurationField()
     total_time_in_seconds = SecondsField(source='total_time')
@@ -86,6 +88,7 @@ class TimeSlotStatsProjectWiseSerializer(serializers.ModelSerializer):
         fields = (
             'id', 'total_tasks', 'user_display_name',
             'total_time', 'total_time_in_seconds',
+            'project', 'project_title',
         )
 
 

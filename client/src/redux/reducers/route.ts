@@ -31,9 +31,11 @@ export const clearRouteStateAction = () => ({
 
 // HELPER
 
+// NOTE: Route HERE
 const urlValues = [
     'userId',
     'userGroupId',
+    'projectId',
 ];
 
 const transform = (params: object) => {

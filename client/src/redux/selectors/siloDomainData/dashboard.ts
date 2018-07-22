@@ -32,6 +32,11 @@ export const dashboardActiveViewSelector = createSelector(
     dashboard => dashboard.activeView,
 );
 
+export const dashboardLoadingSelector = createSelector(
+    dashboardSelector,
+    dashboard => dashboard.loadings,
+);
+
 // DASHBOARD OVERVIEW SELECTORS
 const overviewSelector = createSelector(
     dashboardSelector,

@@ -2,17 +2,20 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 import Table, { Header }  from '../../../vendor/react-store/components/View/Table';
+import LoadingAnimation from '../../../vendor/react-store/components/View/LoadingAnimation';
 
 import {
     RootState,
     DayWiseSlotStat,
     DayWiseParams,
     UserPartialInformation,
+    DashboardLoadings,
 } from '../../../redux/interface';
 import {
     dayWiseSlotStatsSelector,
     dayWiseFilterSelector,
     usersSelector,
+    dashboardLoadingSelector,
 }  from '../../../redux';
 import { getHumanReadableTime } from '../../../utils/common';
 
@@ -29,6 +32,7 @@ interface PropsFromState {
     slotStats: DayWiseSlotStat[];
     users: UserPartialInformation[];
     filter: DayWiseParams;
+    loadings: DashboardLoadings;
 }
 interface PropsFromDispatch {}
 
@@ -59,6 +63,16 @@ const getTotalTime = (data: DayWiseSlotStat[]) => (
     )
 );
 
+const getFilteredUser = (usersId: number[] = [], users: UserPartialInformation[]) => {
+    if (usersId.length) {
+        const filteredUsers = users.filter(
+            user => usersId.findIndex(id => id === user.id) !== -1,
+        );
+        return filteredUsers;
+    }
+    return users;
+};
+
 export class Dashboard extends React.PureComponent<Props, States> {
 
     constructor(props: Props) {
@@ -70,6 +84,7 @@ export class Dashboard extends React.PureComponent<Props, States> {
             filter,
         } = props;
         const { date } = filter;
+        const fUsers = getFilteredUser(filter.users, users);
 
         if (date) {
             this.state = {
@@ -79,7 +94,7 @@ export class Dashboard extends React.PureComponent<Props, States> {
                     end: date ? date.endDate : '2018-06-21',
                     data: slotStats,
                 }),
-                headers: getHeaders({ users }),
+                headers: getHeaders({ users: fUsers }),
             };
         } else {
             this.state = {};
@@ -94,6 +109,7 @@ export class Dashboard extends React.PureComponent<Props, States> {
         } = nextProps;
         const { date } = filter;
         if (this.props.slotStats !== slotStats && filter.date) {
+            const fUsers = getFilteredUser(filter.users, users);
             this.setState({
                 data: getData({
                     users,
@@ -101,20 +117,36 @@ export class Dashboard extends React.PureComponent<Props, States> {
                     end: date.endDate,
                     data: slotStats,
                 }),
-                headers: getHeaders({ users }),
+                headers: getHeaders({ users: fUsers }),
             });
         }
     }
 
     render() {
-        const { slotStats } = this.props;
+        const {
+            slotStats,
+            loadings: {
+                projectsLoading,
+                tasksLoading,
+                userGroupsLoading,
+                usersLoading,
+                dayWiseLoading,
+            },
+        } = this.props;
+
         const {
             headers,
             data,
         } = this.state;
 
+        const loading = (
+            projectsLoading || tasksLoading || userGroupsLoading ||
+            usersLoading || dayWiseLoading
+        );
+
         return (
             <div>
+                {loading && <LoadingAnimation message="Loading Data" />}
                 <Filter />
                 {
                     (data && headers) ?
@@ -137,6 +169,7 @@ const mapStateToProps = (state: RootState) => ({
     slotStats: dayWiseSlotStatsSelector(state),
     filter: dayWiseFilterSelector(state),
     users: usersSelector(state),
+    loadings: dashboardLoadingSelector(state),
 });
 
 export default connect<PropsFromState, PropsFromDispatch, OwnProps>(

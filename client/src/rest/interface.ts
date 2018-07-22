@@ -69,11 +69,16 @@ export type ProjectUrlParams = {
     user_group?:number;
 };
 
-export type SlotStatsUrlParams = {
+export type TaskUrlParams = {
+    fields?: string[];
     project?: number;
-    user_group?: number;
-    task?: number;
-    user?: number;
+};
+
+export type SlotStatsUrlParams = {
+    project?: (number | number[]);
+    user_group?: (number | number[]);
+    task?: (number | number[]);
+    user?: (number | number[]);
     date_gt?: string;
     date_lt?: string;
 };

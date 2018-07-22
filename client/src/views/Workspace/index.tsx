@@ -449,6 +449,7 @@ export class Workspace extends React.PureComponent<Props, States> {
                 </div>
                 <div className={styles.information}>
                     <ListView
+                        className={styles.listView}
                         data={listData}
                         modifier={this.renderDay}
                         keyExtractor={Workspace.keyExtractor}

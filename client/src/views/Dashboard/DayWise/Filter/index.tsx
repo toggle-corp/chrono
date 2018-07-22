@@ -6,14 +6,19 @@ import PrimaryButton from '../../../../vendor/react-store/components/Action/Butt
 import WarningButton from '../../../../vendor/react-store/components/Action/Button/WarningButton';
 import LoadingAnimation from '../../../../vendor/react-store/components/View/LoadingAnimation';
 import DateFilter from '../../../../vendor/react-store/components/Input/DateFilter';
+import MultiSelectInput from '../../../../vendor/react-store/components/Input/MultiSelectInput';
 import Faram, {
     FaramErrors,
     FaramSchema,
 } from '../../../../vendor/react-store/components/Input/Faram';
+import {
+    requiredCondition,
+} from '../../../../vendor/react-store/components/Input/Faram/validations';
 import NonFieldErrors from '../../../../vendor/react-store/components/Input/NonFieldErrors';
 import { isObjectEmpty } from '../../../../vendor/react-store/utils/common';
 
 import {
+    usersSelector,
     setDayWiseFiltersAction,
     dayWiseFaramSelector,
 } from '../../../../redux';
@@ -22,6 +27,7 @@ import {
     RootState,
     DayWiseFilter,
     DayWiseParams,
+    UserPartialInformation,
     SetDayWiseFiltersAction,
 } from '../../../../redux/interface';
 
@@ -33,6 +39,7 @@ interface OwnProps {
 }
 
 interface PropsFromState {
+    users: UserPartialInformation[];
     faram: DayWiseFilter;
 }
 
@@ -44,6 +51,9 @@ type Props = OwnProps & PropsFromState & PropsFromDispatch;
 
 interface State { }
 
+const userKeySelector = (user: UserPartialInformation) => user.id;
+const userLabelSelector = (user: UserPartialInformation) => user.displayName;
+
 export class Filter extends React.PureComponent<Props, State>{
     schema: FaramSchema;
 
@@ -52,7 +62,8 @@ export class Filter extends React.PureComponent<Props, State>{
 
         this.schema = {
             fields: {
-                date: [],
+                users: [],
+                date: [requiredCondition],
             },
         };
     }
@@ -101,6 +112,7 @@ export class Filter extends React.PureComponent<Props, State>{
     render() {
         const {
             loading,
+            users,
             faram,
         } = this.props;
 
@@ -131,6 +143,16 @@ export class Filter extends React.PureComponent<Props, State>{
                     label="Date"
                     showHintAndError={false}
                     showLabel
+                    hideClearButton
+                />
+                <MultiSelectInput
+                    faramElementName="users"
+                    className={styles.formElement}
+                    label="User"
+                    options={users}
+                    placeholder="Select a user"
+                    keySelector={userKeySelector}
+                    labelSelector={userLabelSelector}
                 />
                 <PrimaryButton
                     type="submit"
@@ -158,6 +180,7 @@ export class Filter extends React.PureComponent<Props, State>{
 }
 
 const mapStateToProps = (state: RootState) => ({
+    users: usersSelector(state),
     faram: dayWiseFaramSelector(state),
 });
 

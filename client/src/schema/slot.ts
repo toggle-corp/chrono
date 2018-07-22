@@ -44,6 +44,8 @@ const slotSchemas: Schema[] = [
             // NOTE: id is userId
             id: { type: 'uint', required: true },
             userDisplayName: { type: 'string' },
+            project: { type: 'uint', required: true },
+            projectTitle: { type: 'string' },
             totalTasks: { type: 'number' },
             totalTime: { type: 'string' },
             totalTimeInSeconds: { type: 'number' },

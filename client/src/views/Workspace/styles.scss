@@ -33,6 +33,10 @@ $color-text-on-primary: get-text-color($color-primary);
         flex-grow: 1;
         border-bottom: $width-separator-thin solid $color-separator-alt;
 
+        .list-view {
+            overflow-y: auto;
+        }
+
         .datewrapper {
             display: flex;
             border-bottom: $width-separator-thin solid $color-separator-alt;
