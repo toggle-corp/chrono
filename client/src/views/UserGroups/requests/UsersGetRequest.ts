@@ -3,26 +3,30 @@ import {
     FgRestBuilder,
 } from '../../../vendor/react-store/utils/rest';
 
+import { Request } from '../../../rest/interface';
 import {
-    urlForUsers,
+    urlForUsersSimplified,
     commonParamsForGet,
 } from '../../../rest';
-
 import {
-    Request,
-} from '../../../rest/interface';
-
-import {
-    UserInformation,
+    SetUsersAction,
+    UserPartialInformation,
 } from '../../../redux/interface';
 
 import schema from '../../../schema';
-import notify from '../../../notify';
 
-import { MemberAdd } from '../MemberAdd/index';
+import { MemberAdd } from '../MemberAdd';
 
 interface Props {
     setState: MemberAdd['setState'];
+    setUsers(params: SetUsersAction): void;
+}
+
+interface UsersGetResponse {
+    count: number;
+    next: string;
+    previous: string;
+    results: UserPartialInformation[];
 }
 
 export default class UsersGetRequest implements Request<{}> {
@@ -32,48 +36,22 @@ export default class UsersGetRequest implements Request<{}> {
         this.props = props;
     }
 
-    success = (response: { results: UserInformation[] }) => {
-        try {
-            schema.validate(response, 'usersGetResponse');
-            this.props.setState({
-                users: response.results,
-            });
-        } catch (err) {
-            console.error(err);
-        }
-    }
-
-    // FIXME show errors from server
-    failure = () => {
-        notify.send({
-            title: 'User Group Add Member',
-            type: notify.type.ERROR,
-            message: 'Failed to get users list',
-            duration: notify.duration.MEDIUM,
-        });
-    }
-
-    // FIXME show errors from server
-    fatal = () => {
-        notify.send({
-            title: 'User Group Add Member',
-            type: notify.type.ERROR,
-            message: 'Failed to get users list',
-            duration: notify.duration.SLOW,
-        });
-    }
-
     create = (): RestRequest => {
-        const usersRequest = new FgRestBuilder()
-            .url(urlForUsers)
+        const request = new FgRestBuilder()
+            .url(urlForUsersSimplified)
             .params(commonParamsForGet)
             .preLoad(() => { this.props.setState({ pending: true }); })
             .postLoad(() => { this.props.setState({ pending: false }); })
-            .success(this.success)
-            .failure(this.failure)
-            .fatal(this.fatal)
+            .success((response: UsersGetResponse) => {
+                try {
+                    schema.validate(response, 'simplifiedUsersGetResponse');
+                    this.props.setUsers({ users: response.results });
+                } catch (err) {
+                    console.error(err);
+                }
+            })
             .build();
+        return request;
 
-        return usersRequest;
     }
 }

@@ -5,26 +5,32 @@ import Redux from 'redux';
 import { connect } from 'react-redux';
 
 import {
+    Member,
     RootState,
-    UserInformation,
     SetUserGroupMemberAction,
+    SetUsersAction,
+    UserPartialInformation,
 } from '../../../redux/interface';
 
 import {
     setUserGroupMemberAction,
+    setUsersAction,
+    usersSelector,
+    userGroupMembersSelector,
 } from '../../../redux';
 
 import Faram, {
     FaramErrors,
-    FaramValues,
     FaramSchema,
+    FaramValues,
 } from '../../../vendor/react-store/components/Input/Faram';
-import { requiredCondition } from '../../../vendor/react-store/components/Input/Faram/validations';
-import LoadingAnimation from '../../../vendor/react-store/components/View/LoadingAnimation';
-import SelectInput from '../../../vendor/react-store/components/Input/SelectInput';
-import NonFieldErrors from '../../../vendor/react-store/components/Input/NonFieldErrors';
-import PrimaryButton from '../../../vendor/react-store/components/Action/Button/PrimaryButton';
+
 import DangerButton from '../../../vendor/react-store/components/Action/Button/DangerButton';
+import PrimaryButton from '../../../vendor/react-store/components/Action/Button/PrimaryButton';
+import { requiredCondition } from '../../../vendor/react-store/components/Input/Faram/validations';
+import NonFieldErrors from '../../../vendor/react-store/components/Input/NonFieldErrors';
+import SelectInput from '../../../vendor/react-store/components/Input/SelectInput';
+import LoadingAnimation from '../../../vendor/react-store/components/View/LoadingAnimation';
 import { RestRequest } from '../../../vendor/react-store/utils/rest';
 
 import UsersGetRequest from '../requests/UsersGetRequest';
@@ -36,8 +42,12 @@ interface OwnProps {
     userGroupId?: number;
     handleClose() : void;
 }
-interface PropsFromState {}
+interface PropsFromState {
+    members: Member[];
+    users: UserPartialInformation[];
+}
 interface PropsFromDispatch {
+    setUsers(params: SetUsersAction): void;
     setMember(params: SetUserGroupMemberAction): void;
 }
 
@@ -46,9 +56,9 @@ type Props = OwnProps & PropsFromState & PropsFromDispatch;
 interface States {
     faramErrors: FaramErrors;
     faramValues: FaramValues;
+    nonMembers: UserPartialInformation[];
     pristine: boolean;
     pending: boolean;
-    users: UserInformation[];
 }
 
 export class MemberAdd extends PureComponent<Props, States> {
@@ -56,15 +66,15 @@ export class MemberAdd extends PureComponent<Props, States> {
     addUserRequest: RestRequest;
     userGroupMembersRequest: RestRequest;
 
-    static keySelector = (d: UserInformation)  => d.id;
-    static labelSelector = (d: UserInformation) => d.displayName;
+    static keySelector = (d: UserPartialInformation)  => d.id;
+    static labelSelector = (d: UserPartialInformation) => d.displayName;
 
     state = {
         faramErrors: {},
         faramValues: {},
         pending: false,
         pristine: true,
-        users: [],
+        nonMembers: [],
     };
 
     schema : FaramSchema = {
@@ -72,6 +82,17 @@ export class MemberAdd extends PureComponent<Props, States> {
             userId: [requiredCondition],
         },
     };
+
+    componentWillReceiveProps(nextProps: Props) {
+        if (this.props.members !== nextProps.members ||
+            this.props.users !== nextProps.users
+        ) {
+            const nonMembers = nextProps.users.filter((user) => {
+                return !nextProps.members.find(members => members.member === user.id);
+            });
+            this.setState({ nonMembers });
+        }
+    }
 
     componentWillMount() {
         this.startRequestForUsers();
@@ -93,6 +114,7 @@ export class MemberAdd extends PureComponent<Props, States> {
 
         const request = new UsersGetRequest({
             setState: params => this.setState(params),
+            setUsers: this.props.setUsers,
         });
 
         this.usersGetRequest = request.create();
@@ -148,6 +170,7 @@ export class MemberAdd extends PureComponent<Props, States> {
         const {
             faramErrors,
             faramValues,
+            nonMembers,
             pending,
             pristine,
         } = this.state;
@@ -155,10 +178,6 @@ export class MemberAdd extends PureComponent<Props, States> {
         const {
             handleClose,
         } = this.props;
-
-        const {
-            users,
-        } = this.state;
 
         return (
             <Faram
@@ -176,7 +195,7 @@ export class MemberAdd extends PureComponent<Props, States> {
                 <SelectInput
                     faramElementName="userId"
                     label="User"
-                    options={users}
+                    options={nonMembers}
                     placeholder="Select a user"
                     labelSelector={MemberAdd.labelSelector}
                     keySelector={MemberAdd.keySelector}
@@ -202,10 +221,16 @@ export class MemberAdd extends PureComponent<Props, States> {
     }
 }
 
+const mapStateToProps = (state: RootState) => ({
+    members: userGroupMembersSelector(state),
+    users: usersSelector(state),
+});
+
 const mapDispatchToProps = (dispatch: Redux.Dispatch<RootState>) => ({
+    setUsers: (params: SetUsersAction) => dispatch(setUsersAction(params)),
     setMember: (params: SetUserGroupMemberAction) => dispatch(setUserGroupMemberAction(params)),
 });
 
 export default connect<PropsFromState, PropsFromDispatch, OwnProps>(
-    undefined, mapDispatchToProps,
+    mapStateToProps, mapDispatchToProps,
 )(MemberAdd);
