@@ -57,6 +57,17 @@ export interface PatchUserBody {
     lastName: string;
 }
 
+export interface PostSlotParams {
+    date?: string;
+    startTime?: string;
+    endTime?: string;
+    task?: number;
+    remarks?: string;
+    tag?: number[];
+}
+
+export type PutSlotParams = PostSlotParams;
+
 export interface AddTaskParams {
     project: number;
     title: string;
@@ -83,6 +94,7 @@ export type SlotStatsUrlParams = {
     user_group?: (number | number[]);
     task?: (number | number[]);
     user?: (number | number[]);
+    tag?: (number | number[]);
     date_gt?: string;
     date_lt?: string;
 };

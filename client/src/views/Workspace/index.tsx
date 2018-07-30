@@ -17,6 +17,7 @@ import {
     setUserGroupsAction,
     setProjectsAction,
     setTasksAction,
+    setTagsAction,
 
     activeTimeSlotIdSelector,
     activeDateSelector,
@@ -29,6 +30,7 @@ import {
     UserGroup,
     Project,
     Task,
+    Tag,
     TimeSlots,
     TimeSlot,
     SetActiveSlotAction,
@@ -41,6 +43,7 @@ import GetUserGroupsRequest from './requests/GetUserGroupsRequest';
 import GetProjectsRequest from './requests/GetProjectsRequest';
 import GetSlotsRequest from './requests/GetSlotsRequest';
 import GetTasksRequest from './requests/GetTasksRequest';
+import GetTagsRequest from './requests/GetTagsRequest';
 
 interface Ymd {
     year: number;
@@ -58,6 +61,7 @@ interface PropsFromDispatch {
     setUserGroups(params: UserGroup[]): void;
     setUserProjects(params: Project[]): void;
     setUserTasks(params: Task[]): void;
+    setUserTags(params: Tag[]): void;
     setActiveSlot(params: SetActiveSlotAction): void;
     setTimeSlots(param: SetTimeSlotsAction): void;
 }
@@ -73,6 +77,7 @@ interface States {
     };
     pendingProjects: boolean;
     pendingTasks: boolean;
+    pendingTags: boolean;
     pendingUsergroups: boolean;
     pendingSlots: boolean;
 }
@@ -87,6 +92,7 @@ export class Workspace extends React.PureComponent<Props, States> {
     userGroupRequest: RestRequest;
     projectsRequest: RestRequest;
     tasksRequest: RestRequest;
+    tagsRequest: RestRequest;
     slotsRequest: RestRequest;
 
     static keyExtractor = (listData: ListData) => String(listData.day);
@@ -123,6 +129,7 @@ export class Workspace extends React.PureComponent<Props, States> {
             today,
             pendingProjects: true,
             pendingTasks: true,
+            pendingTags: true,
             pendingUsergroups: true,
             pendingSlots: true,
         };
@@ -139,6 +146,7 @@ export class Workspace extends React.PureComponent<Props, States> {
         this.startRequestForUserGroup();
         this.startRequestForProjects();
         this.startRequestForTasks();
+        this.startRequestForTags();
         this.startRequestForSlots();
     }
 
@@ -151,6 +159,9 @@ export class Workspace extends React.PureComponent<Props, States> {
         }
         if (this.tasksRequest) {
             this.tasksRequest.stop();
+        }
+        if (this.tagsRequest) {
+            this.tagsRequest.stop();
         }
         if (this.slotsRequest) {
             this.slotsRequest.stop();
@@ -191,6 +202,18 @@ export class Workspace extends React.PureComponent<Props, States> {
         });
         this.tasksRequest = request.create();
         this.tasksRequest.start();
+    }
+
+    startRequestForTags = () => {
+        if (this.tagsRequest) {
+            this.tagsRequest.stop();
+        }
+        const request = new GetTagsRequest({
+            setUserTags: this.props.setUserTags,
+            setState: params => this.setState(params),
+        });
+        this.tagsRequest = request.create();
+        this.tagsRequest.start();
     }
 
     startRequestForUserGroup = () => {
@@ -367,6 +390,7 @@ export class Workspace extends React.PureComponent<Props, States> {
             listData,
             pendingProjects,
             pendingTasks,
+            pendingTags,
             pendingUsergroups,
             pendingSlots,
             today,
@@ -375,7 +399,7 @@ export class Workspace extends React.PureComponent<Props, States> {
             activeDate,
         } = this.props;
 
-        if (pendingProjects || pendingTasks || pendingUsergroups || pendingSlots) {
+        if (pendingProjects || pendingTasks || pendingTags || pendingUsergroups || pendingSlots) {
             return (
                 <div className={styles.workspace}>
                     <LoadingAnimation />
@@ -477,6 +501,7 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<RootState>) => ({
     setUserGroups: (params: UserGroup[]) => dispatch(setUserGroupsAction(params)),
     setUserProjects: (params: Project[]) => dispatch(setProjectsAction(params)),
     setUserTasks: (params: Task[]) => dispatch(setTasksAction(params)),
+    setUserTags: (params: Tag[]) => dispatch(setTagsAction(params)),
 
     setActiveSlot: (params: SetActiveSlotAction) => dispatch(setActiveSlotAction(params)),
     setTimeSlots: (params: SetTimeSlotsAction) => dispatch(setTimeSlotsAction(params)),

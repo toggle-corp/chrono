@@ -89,13 +89,12 @@ class Tag(UserResource):
         * user is member of a group in the tag's project
         """
         projects = Project.get_for(user)
-        print(projects)
         return Tag.objects.filter(
             project__in=list(projects)
         )
 
     def can_get(self, user):
-        return self.project.can_get()
+        return self.project.can_get(user)
 
     def can_modify(self, user):
-        return self.project.can_modify()
+        return self.project.can_modify(user)

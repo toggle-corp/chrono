@@ -13,6 +13,7 @@ interface Props {
     disabledProjectChange?: boolean;
     projectId?: number;
     onTagCreate?(taskId: number): void;
+    tagId?: number;
 }
 
 interface States {
@@ -38,16 +39,19 @@ export default class AddTag extends React.PureComponent<Props, States> {
 
     render() {
         const { showModal } = this.state;
-        const { disabled } = this.props;
+        const {
+            disabled,
+            tagId,
+        } = this.props;
 
         return(
             <Fragment>
                 <PrimaryButton
                     onClick={this.handleAddTagButton}
                     transparent
-                    title="Create task for a project"
+                    title={!tagId ? 'Create tag for a project' : 'Edit tag for a project'}
                     disabled={showModal || disabled}
-                    iconName={iconNames.add}
+                    iconName={!tagId ? iconNames.add : iconNames.edit}
                 />
                 {
                     showModal &&
@@ -56,6 +60,7 @@ export default class AddTag extends React.PureComponent<Props, States> {
                         onClose={this.handleAddTagModalClose}
                         onTagCreate={this.props.onTagCreate}
                         disabledProjectChange={this.props.disabledProjectChange}
+                        tagId={tagId}
                     />
                 }
             </Fragment>

@@ -28,7 +28,10 @@ import {
 import AddTask from '../../components/AddTask';
 import AddTag from '../../components/AddTag';
 
-import headers from './headers';
+import {
+    tagHeaders,
+    taskHeaders,
+} from './headers';
 import GetProjectRequest from './requests/GetProjectRequest';
 import GetTasksRequest from './requests/GetTasksRequest';
 import GetTagsRequest from './requests/GetTagsRequest';
@@ -187,7 +190,7 @@ export class Project extends React.PureComponent<Props, States> {
                     />
                     <Table
                         data={tasks}
-                        headers={headers}
+                        headers={taskHeaders}
                         keyExtractor={keyExtractor}
                     />
                 </div>
@@ -201,7 +204,7 @@ export class Project extends React.PureComponent<Props, States> {
                     />
                     <Table
                         data={tags}
-                        headers={headers}
+                        headers={tagHeaders}
                         keyExtractor={keyExtractor}
                     />
                 </div>

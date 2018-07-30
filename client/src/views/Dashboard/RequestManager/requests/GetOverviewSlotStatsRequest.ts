@@ -31,10 +31,8 @@ export default class GetOverviewSlotsRequest implements Request<{}> {
 
     create = (params: OverviewParams): RestRequest => {
         const filters = {
-            project: params.project,
+            ...params, // task, user, tag, project
             user_group: params.userGroup,
-            task: params.task,
-            user: params.user,
             date_gt: params.date ? getISODate(params.date.startDate) : undefined,
             date_lt: params.date ? getISODate(params.date.endDate) : undefined,
         };

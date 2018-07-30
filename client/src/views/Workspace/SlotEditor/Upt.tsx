@@ -1,11 +1,25 @@
 import React, { Fragment } from 'react';
+import { connect } from 'react-redux';
+
 import SelectInput from '../../../vendor/react-store/components/Input/SelectInput';
+import MultiSelectInput from '../../../vendor/react-store/components/Input/MultiSelectInput';
 
 import {
+    RootState,
     UserGroup,
     Project,
     Task,
+    Tag,
 } from '../../../redux/interface';
+import {
+    userGroupsSelector,
+    projectsSelector,
+    tasksSelector,
+    tagsSelector,
+} from '../../../redux';
+
+import AddTask from '../../../components/AddTask';
+import AddTag from '../../../components/AddTag';
 
 import * as styles from './styles.scss';
 
@@ -14,22 +28,34 @@ interface WithIdAndTitle {
     title: string;
 }
 
-interface Props {
+interface OwnProps {
+    userGroupId?: number;
+    projectId?: number;
+    pending?: boolean;
+    showAddTask?: boolean;
+    showAddTag?: boolean;
+    onTagCreate?(taskId: number): void;
+    onTaskCreate?(tagId: number): void;
+}
+interface PropsFromState {
     userGroups: UserGroup[];
     projects: Project[];
     tasks: Task[];
-
-    userGroupId?: number;
-    projectId?: number;
+    tags: Tag[];
 }
+interface PropsFromDispatch {}
+
+type Props = OwnProps & PropsFromState & PropsFromDispatch;
+
 interface State {
     projects: Project[];
     tasks: Task[];
+    tags: Tag[];
 }
 
 const emptyArray: object[] = [];
 
-export default class Upt extends React.PureComponent<Props, State> {
+export class Upt extends React.PureComponent<Props, State> {
     static keySelector = (d: WithIdAndTitle) => d.id;
     static labelSelector = (d: WithIdAndTitle) => d.title;
 
@@ -47,6 +73,13 @@ export default class Upt extends React.PureComponent<Props, State> {
         return tasks.filter(task => task.project === projectId);
     }
 
+    static filterTagByProjectId = (tags: Tag[], projectId?: number) => {
+        if (!projectId) {
+            return emptyArray as Tag[];
+        }
+        return tags.filter(tag => tag.project === projectId);
+    }
+
     constructor(props: Props) {
         super(props);
 
@@ -57,6 +90,10 @@ export default class Upt extends React.PureComponent<Props, State> {
             ),
             tasks: Upt.filterTaskByProjectId(
                 props.tasks,
+                props.projectId,
+            ),
+            tags: Upt.filterTagByProjectId(
+                props.tags,
                 props.projectId,
             ),
         };
@@ -78,10 +115,15 @@ export default class Upt extends React.PureComponent<Props, State> {
         if (
             this.props.projectId !== nextProps.projectId
             || this.props.tasks !== nextProps.tasks
+            || this.props.tags !== nextProps.tags
         ) {
             this.setState({
                 tasks: Upt.filterTaskByProjectId(
                     nextProps.tasks,
+                    nextProps.projectId,
+                ),
+                tags: Upt.filterTagByProjectId(
+                    nextProps.tags,
                     nextProps.projectId,
                 ),
             });
@@ -92,10 +134,19 @@ export default class Upt extends React.PureComponent<Props, State> {
         const {
             projects,
             tasks,
+            tags,
         } = this.state;
         const {
+            projectId,
             userGroups,
+            showAddTask,
+            showAddTag,
+            pending,
+            onTaskCreate,
+            onTagCreate,
         } = this.props;
+
+        const disableTaskTagsSelect = !projectId || pending;
 
         return (
             <Fragment>
@@ -126,7 +177,43 @@ export default class Upt extends React.PureComponent<Props, State> {
                     keySelector={Upt.keySelector}
                     labelSelector={Upt.labelSelector}
                 />
+                { showAddTask &&
+                    <AddTask
+                        projectId={projectId}
+                        disabledProjectChange
+                        disabled={disableTaskTagsSelect}
+                        onTaskCreate={onTaskCreate}
+                    />
+                }
+                <MultiSelectInput
+                    className={styles.tag}
+                    faramElementName="tag"
+                    label="Tags"
+                    options={tags}
+                    placeholder="Select tags"
+                    keySelector={Upt.keySelector}
+                    labelSelector={Upt.labelSelector}
+                />
+                { showAddTag &&
+                    <AddTag
+                        projectId={projectId}
+                        disabledProjectChange
+                        disabled={disableTaskTagsSelect}
+                        onTagCreate={onTagCreate}
+                    />
+                }
             </Fragment>
         );
     }
 }
+
+const mapStateToProps = (state: RootState, props: OwnProps) => ({
+    userGroups: userGroupsSelector(state),
+    projects: projectsSelector(state),
+    tasks: tasksSelector(state),
+    tags: tagsSelector(state),
+});
+
+export default connect<PropsFromState, PropsFromDispatch, OwnProps>(
+    mapStateToProps,
+)(Upt);

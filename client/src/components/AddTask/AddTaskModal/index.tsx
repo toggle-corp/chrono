@@ -25,6 +25,7 @@ import LoadingAnimation from '../../../vendor/react-store/components/View/Loadin
 
 import {
     projectsSelector,
+    taskSelector,
     setTaskAction,
 } from '../../../redux';
 import {
@@ -37,6 +38,8 @@ import { AddTaskParams } from '../../../rest/interface';
 import { iconNames } from '../../../constants';
 
 import TaskPostRequest from '../requests/TaskPostRequest';
+import TaskGetRequest from '../requests/TaskGetRequest';
+import TaskPutRequest from '../requests/TaskPutRequest';
 
 import * as styles from './styles.scss';
 
@@ -45,9 +48,11 @@ interface OwnProps{
     projectId?: number;
     onTaskCreate?(taskId: number): void;
     disabledProjectChange?: boolean;
+    taskId?: number;
 }
 interface PropsFromState{
     projects: Project[];
+    task?: Task;
 }
 interface PropsFromDispatch {
     setTask(value: Task): void;
@@ -63,7 +68,9 @@ interface State {
 }
 
 export class AddTaskModal extends React.PureComponent<Props, State> {
+    taskRequest: RestRequest;
     addTaskRequest: RestRequest;
+    editTaskRequest: RestRequest;
     schema: FaramSchema;
 
     static keySelector = (d: Project) => d.id;
@@ -80,7 +87,7 @@ export class AddTaskModal extends React.PureComponent<Props, State> {
             },
         };
 
-        let faramValues = {};
+        let faramValues = props.task ? props.task : {};
         if (props.projectId !== undefined) {
             faramValues = {
                 project: props.projectId,
@@ -94,10 +101,39 @@ export class AddTaskModal extends React.PureComponent<Props, State> {
         };
     }
 
+    componentWillMount() {
+        const { taskId } = this.props;
+        if (taskId) {
+            this.startRequestForTask(taskId);
+        } else {
+            this.setState({ pending: false });
+        }
+    }
+
     componentWillUnmount() {
         if (this.addTaskRequest) {
             this.addTaskRequest.stop();
         }
+        if (this.editTaskRequest) {
+            this.editTaskRequest.stop();
+        }
+        if (this.taskRequest) {
+            this.taskRequest.stop();
+        }
+    }
+
+    startRequestForTask = (taskId: number) => {
+        if (this.taskRequest) {
+            this.taskRequest.stop();
+        }
+
+        const taskRequest = new TaskGetRequest({
+            setState: params => this.setState(params),
+            setTask: this.props.setTask,
+        });
+
+        this.taskRequest = taskRequest.create(taskId);
+        this.taskRequest.start();
     }
 
     startRequestForAddTask = (values: AddTaskParams) => {
@@ -114,6 +150,21 @@ export class AddTaskModal extends React.PureComponent<Props, State> {
 
         this.addTaskRequest = addTaskRequest.create(values);
         this.addTaskRequest.start();
+    }
+
+    startRequestForEditTask = (taskId: number, values: AddTaskParams) => {
+        if (this.editTaskRequest) {
+            this.editTaskRequest.stop();
+        }
+        const editTaskRequest = new TaskPutRequest({
+            taskId,
+            onClose: this.props.onClose,
+            setState: params => this.setState(params),
+            setTask: this.props.setTask,
+        });
+
+        this.editTaskRequest = editTaskRequest.create(values);
+        this.editTaskRequest.start();
     }
 
     handleFaramChange = (
@@ -135,7 +186,12 @@ export class AddTaskModal extends React.PureComponent<Props, State> {
     }
 
     handleFaramSuccess = (values: AddTaskParams) => {
-        this.startRequestForAddTask(values);
+        const { taskId } = this.props;
+        if (taskId) {
+            this.startRequestForEditTask(taskId, values);
+        } else {
+            this.startRequestForAddTask(values);
+        }
     }
 
     render() {
@@ -145,7 +201,10 @@ export class AddTaskModal extends React.PureComponent<Props, State> {
             pending,
             pristine,
         } = this.state;
-        const { disabledProjectChange } = this.props;
+        const {
+            disabledProjectChange,
+            taskId,
+        } = this.props;
 
         const { projects } = this.props;
 
@@ -155,7 +214,7 @@ export class AddTaskModal extends React.PureComponent<Props, State> {
                 onClose={this.props.onClose}
             >
                 <ModalHeader
-                    title="Create Task"
+                    title={!taskId ? 'Create Task' : 'Create Task'}
                     rightComponent={
                         <DangerButton
                             onClick={this.props.onClose}
@@ -221,8 +280,9 @@ export class AddTaskModal extends React.PureComponent<Props, State> {
     }
 }
 
-const mapStateToProps = (state: RootState) => ({
+const mapStateToProps = (state: RootState, props: Props) => ({
     projects: projectsSelector(state),
+    task: taskSelector(state, props),
 });
 
 const mapDispatchToProps = (dispatch: Redux.Dispatch<RootState>) => ({

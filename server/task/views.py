@@ -87,6 +87,8 @@ class TimeSlotFilterSet(django_filters.FilterSet):
 class TaskViewSet(viewsets.ModelViewSet):
     serializer_class = TaskSerializer
     permission_classes = [permissions.IsAuthenticated, ModifyPermission]
+    filter_classes = [django_filters.rest_framework.DjangoFilterBackend]
+    filter_fields = ['project', 'title']
 
     def get_queryset(self):
         return Task.get_for(self.request.user)

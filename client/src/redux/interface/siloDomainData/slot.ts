@@ -23,6 +23,7 @@ export interface WipTimeSlot {
         userGroup?: number,
         project?: number,
         task?: number,
+        tags?: number[],
     };
     faramErrors: FaramErrors;
     pristine: boolean;

@@ -23,6 +23,7 @@ import LoadingAnimation from '../../../vendor/react-store/components/View/Loadin
 
 import {
     projectsSelector,
+    tagSelector,
     setTagAction,
 } from '../../../redux';
 import {
@@ -35,6 +36,8 @@ import { AddTagParams } from '../../../rest/interface';
 import { iconNames } from '../../../constants';
 
 import TagPostRequest from '../requests/TagPostRequest';
+import TagGetRequest from '../requests/TagGetRequest';
+import TagPutRequest from '../requests/TagPutRequest';
 
 import * as styles from './styles.scss';
 
@@ -43,9 +46,11 @@ interface OwnProps{
     projectId?: number;
     onTagCreate?(taskId: number): void;
     disabledProjectChange?: boolean;
+    tagId?: number;
 }
 interface PropsFromState{
     projects: Project[];
+    tag?: Tag;
 }
 interface PropsFromDispatch {
     setTag(value: Tag): void;
@@ -62,6 +67,8 @@ interface State {
 
 export class AddTagModal extends React.PureComponent<Props, State> {
     addTagRequest: RestRequest;
+    editTagRequest: RestRequest;
+    tagRequest: RestRequest;
     schema: FaramSchema;
 
     static keySelector = (d: Project) => d.id;
@@ -78,7 +85,7 @@ export class AddTagModal extends React.PureComponent<Props, State> {
             },
         };
 
-        let faramValues = {};
+        let faramValues = props.tag ? props.tag : {};
         if (props.projectId !== undefined) {
             faramValues = {
                 project: props.projectId,
@@ -87,15 +94,51 @@ export class AddTagModal extends React.PureComponent<Props, State> {
         this.state = {
             faramValues,
             faramErrors: {},
-            pending: false,
+            pending: true,
             pristine: true,
         };
     }
 
+    componentWillMount() {
+        const { tagId } = this.props;
+        if (tagId) {
+            this.startRequestForTag(tagId);
+        } else {
+            this.setState({ pending: false });
+        }
+    }
+
+    componentWillReceiveProps(nextProps: Props) {
+        if (nextProps.tag && nextProps.tag !== this.props.tag) {
+            this.setState({
+                faramValues: nextProps.tag,
+                faramErrors: {},
+                pristine: true,
+            });
+        }
+    }
+
     componentWillUnmount() {
+        if (this.tagRequest) {
+            this.tagRequest.stop();
+        }
         if (this.addTagRequest) {
             this.addTagRequest.stop();
         }
+    }
+
+    startRequestForTag = (tagId: number) => {
+        if (this.tagRequest) {
+            this.tagRequest.stop();
+        }
+
+        const tagRequest = new TagGetRequest({
+            setState: params => this.setState(params),
+            setTag: this.props.setTag,
+        });
+
+        this.tagRequest = tagRequest.create(tagId);
+        this.tagRequest.start();
     }
 
     startRequestForAddTag = (values: AddTagParams) => {
@@ -112,6 +155,22 @@ export class AddTagModal extends React.PureComponent<Props, State> {
 
         this.addTagRequest = addTagRequest.create(values);
         this.addTagRequest.start();
+    }
+
+    startRequestForEditTag = (tagId: number, values: AddTagParams) => {
+        if (this.editTagRequest) {
+            this.editTagRequest.stop();
+        }
+
+        const editTagRequest = new TagPutRequest({
+            tagId,
+            onClose: this.props.onClose,
+            setState: params => this.setState(params),
+            setTag: this.props.setTag,
+        });
+
+        this.editTagRequest = editTagRequest.create(values);
+        this.editTagRequest.start();
     }
 
     handleFaramChange = (
@@ -133,7 +192,12 @@ export class AddTagModal extends React.PureComponent<Props, State> {
     }
 
     handleFaramSuccess = (values: AddTagParams) => {
-        this.startRequestForAddTag(values);
+        const { tagId } = this.props;
+        if (tagId) {
+            this.startRequestForEditTag(tagId, values);
+        } else {
+            this.startRequestForAddTag(values);
+        }
     }
 
     render() {
@@ -143,7 +207,10 @@ export class AddTagModal extends React.PureComponent<Props, State> {
             pending,
             pristine,
         } = this.state;
-        const { disabledProjectChange } = this.props;
+        const {
+            disabledProjectChange,
+            tagId,
+        } = this.props;
 
         const { projects } = this.props;
 
@@ -153,7 +220,7 @@ export class AddTagModal extends React.PureComponent<Props, State> {
                 onClose={this.props.onClose}
             >
                 <ModalHeader
-                    title="Create Tag"
+                    title={!tagId ? 'Create Tag' : 'Edit Tag'}
                     rightComponent={
                         <DangerButton
                             onClick={this.props.onClose}
@@ -219,8 +286,9 @@ export class AddTagModal extends React.PureComponent<Props, State> {
     }
 }
 
-const mapStateToProps = (state: RootState) => ({
+const mapStateToProps = (state: RootState, props: Props) => ({
     projects: projectsSelector(state),
+    tag: tagSelector(state, props),
 });
 
 const mapDispatchToProps = (dispatch: Redux.Dispatch<RootState>) => ({

@@ -39,14 +39,11 @@ const setUserTags = (state: DomainData, action: { tags: Tag[] }) => {
 
 const setTag = (state: DomainData, action: { tag: Tag }) => {
     const { tag } = action;
-    const { tags } = state;
-    const tagIndex = tags.findIndex(t => t.id === tag.id);
     const settings = {
         tags: { $autoArray: {
-            $if: [
-                tagIndex === -1,
+            $bulk: [
+                { $filter: (t: Tag) => t.id !== tag.id },
                 { $push: [tag] },
-                { $splice: [[tagIndex, 1, tag]] },
             ],
         } },
     };
