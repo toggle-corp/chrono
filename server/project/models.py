@@ -60,3 +60,42 @@ class Project(UserResource):
             col_total=True,
             row_total=True
         )
+
+
+class Tag(UserResource):
+    """
+    Project Tags
+    """
+
+    title = models.CharField(max_length=255)
+    description = models.TextField(blank=True)
+
+    project = models.ForeignKey(
+        Project,
+        on_delete=models.CASCADE,
+        related_name='tags'
+    )
+
+    class Meta:
+        unique_together = (("title", "project"),)
+
+    def __str__(self):
+        return '{}:{}'.format(self.project.title, self.title)
+
+    @staticmethod
+    def get_for(user):
+        """
+        Tag can be accessed only if
+        * user is member of a group in the tag's project
+        """
+        projects = Project.get_for(user)
+        print(projects)
+        return Tag.objects.filter(
+            project__in=list(projects)
+        )
+
+    def can_get(self, user):
+        return self.project.can_get()
+
+    def can_modify(self, user):
+        return self.project.can_modify()

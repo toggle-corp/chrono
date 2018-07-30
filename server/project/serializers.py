@@ -3,7 +3,7 @@ from drf_dynamic_fields import DynamicFieldsMixin
 
 from chrono.serializers import RemoveNullFieldsMixin
 from user_resource.serializers import UserResourceSerializer
-from project.models import Project
+from project.models import Project, Tag
 
 
 class ProjectSerializer(DynamicFieldsMixin,
@@ -24,3 +24,9 @@ class ProjectExportSerializer(RemoveNullFieldsMixin,
     export_format = serializers.CharField()
     start_date = serializers.DateField()
     end_date = serializers.DateField()
+
+
+class TagSerializer(DynamicFieldsMixin, UserResourceSerializer):
+    class Meta:
+        model = Tag
+        fields = ('__all__')
