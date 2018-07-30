@@ -6,17 +6,17 @@ import {
 } from '../config/rest';
 import {
     RestPostBody,
-    AddTaskParams,
-    TaskUrlParams,
+    AddTagParams,
+    TagUrlParams,
 } from './interface';
 
-export const urlForTasks: string = `${wsEndpoint}/tasks/`;
-export const createUrlForTasks = (params: TaskUrlParams): string => (
-    `${wsEndpoint}/tasks/?${p(params)}`
+export const urlForTags: string = `${wsEndpoint}/tags/`;
+export const createUrlForTags = (params: TagUrlParams): string => (
+    `${wsEndpoint}/tags/?${p(params)}`
 );
 
-export const createParamsForPostTask = (
-    { project, title, description }: AddTaskParams,
+export const createParamsForPostTag = (
+    { project, title, description }: AddTagParams,
 ): RestPostBody => ({
     method: Rest.POST,
     headers: commonHeaderForPost,

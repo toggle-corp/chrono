@@ -8,6 +8,7 @@ import {
     Users,
     SetProjectAction,
     SetProjectTasksAction,
+    SetProjectTagsAction,
 } from '../../interface';
 
 // ACTION-TYPE
@@ -15,6 +16,7 @@ import {
 export const enum SILO_PROJECTS_ACTION {
     setProject =  'siloDomainData/PROJECT/SET_PROJECT',
     setProjectTasks =  'siloDomainData/PROJECT/SET_PROJECT_TASKS',
+    setProjectTags =  'siloDomainData/PROJECT/SET_PROJECT_TAGS',
 }
 
 // ACTION-CREATOR
@@ -29,6 +31,12 @@ export const setProjectTasksAction = ({ projectId, tasks }: SetProjectTasksActio
     projectId,
     tasks,
     type: SILO_PROJECTS_ACTION.setProjectTasks,
+});
+
+export const setProjectTagsAction = ({ projectId, tags }: SetProjectTagsAction) => ({
+    projectId,
+    tags,
+    type: SILO_PROJECTS_ACTION.setProjectTags,
 });
 
 // HELPER
@@ -86,9 +94,23 @@ const setProjectTasks = (state: SiloDomainData, { tasks, projectId }: SetProject
     return update(state, settings);
 };
 
+const setProjectTags = (state: SiloDomainData, { tags, projectId }: SetProjectTagsAction) => {
+    const settings = {
+        projects: { $auto: {
+            [projectId]: { $auto: {
+                tags: {
+                    $set: tags,
+                },
+            } },
+        } },
+    };
+    return update(state, settings);
+};
+
 const reducer: ReducerGroup<SiloDomainData> = {
     [SILO_PROJECTS_ACTION.setProject]: setProject,
     [SILO_PROJECTS_ACTION.setProjectTasks]: setProjectTasks,
+    [SILO_PROJECTS_ACTION.setProjectTags]: setProjectTags,
 };
 
 export default reducer;

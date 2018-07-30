@@ -12,6 +12,9 @@ const initialDomainDataState: DomainData = {
 
     // all user tasks
     tasks: [],
+
+    // all projects tags
+    tags: [],
 };
 
 export default initialDomainDataState;

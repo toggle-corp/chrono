@@ -16,6 +16,7 @@ import {
     Project,
     Member,
     Task,
+    Tag,
 } from '../../interface';
 
 const emptyObject = {};
@@ -107,4 +108,9 @@ export const projectSelector = createSelector(
 export const projectTasksSelector = createSelector(
     projectViewSelector,
     project => project.tasks || emptyArray as Task[],
+);
+
+export const projectTagsSelector = createSelector(
+    projectViewSelector,
+    project => project.tags || emptyArray as Tag[],
 );

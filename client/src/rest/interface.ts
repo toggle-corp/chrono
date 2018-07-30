@@ -63,15 +63,19 @@ export interface AddTaskParams {
     description: string;
 }
 
+export type TaskUrlParams = {
+    fields?: string[];
+    project?: number;
+};
+
+export interface AddTagParams extends AddTaskParams { }
+
+export type TagUrlParams = TaskUrlParams;
+
 export type ProjectUrlParams = {
     fields?: string[];
     user?: number;
     user_group?:number;
-};
-
-export type TaskUrlParams = {
-    fields?: string[];
-    project?: number;
 };
 
 export type SlotStatsUrlParams = {

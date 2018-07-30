@@ -40,3 +40,8 @@ export const getHumanReadableTime = (seconds: number, invalidText = '-') => {
 
     return getPrettyTime(hour, minute, second);
 };
+
+export const getISODate = (value: string | Date) => {
+    const date = new Date(value);
+    return date.toISOString();
+};

@@ -2,6 +2,7 @@ import {
     RestRequest,
     FgRestBuilder,
 } from '../../../../vendor/react-store/utils/rest';
+import { getISODate } from '../../../../utils/common';
 
 import { Request } from '../../../../rest/interface';
 import {
@@ -34,11 +35,10 @@ export default class GetOverviewSlotsRequest implements Request<{}> {
             user_group: params.userGroup,
             task: params.task,
             user: params.user,
-            date_gt: params.date ? params.date.startDate : undefined,
-            date_lt: params.date ? params.date.endDate : undefined,
+            date_gt: params.date ? getISODate(params.date.startDate) : undefined,
+            date_lt: params.date ? getISODate(params.date.endDate) : undefined,
         };
 
-        console.warn(filters);
         const request = new FgRestBuilder()
             .url(createUrlForSlotStats(filters))
             .params(commonParamsForGet)

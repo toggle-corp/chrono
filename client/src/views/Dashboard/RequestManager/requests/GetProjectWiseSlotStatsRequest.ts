@@ -2,6 +2,7 @@ import {
     RestRequest,
     FgRestBuilder,
 } from '../../../../vendor/react-store/utils/rest';
+import { getISODate } from '../../../../utils/common';
 
 import { Request } from '../../../../rest/interface';
 import {
@@ -31,11 +32,10 @@ export default class GetProjectWiseSlotsRequest implements Request<{}> {
     create = (params: ProjectWiseParams): RestRequest => {
         const filters = {
             project: params.project,
-            date_gt: params.date ? params.date.startDate : undefined,
-            date_lt: params.date ? params.date.endDate : undefined,
+            date_gt: params.date ? getISODate(params.date.startDate) : undefined,
+            date_lt: params.date ? getISODate(params.date.endDate) : undefined,
         };
 
-        console.warn(filters);
         const request = new FgRestBuilder()
             .url(createUrlForProjectWiseSlotStats(filters))
             .params(commonParamsForGet)
