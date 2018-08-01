@@ -30,3 +30,9 @@ class TagSerializer(DynamicFieldsMixin, UserResourceSerializer):
     class Meta:
         model = Tag
         fields = ('__all__')
+
+
+class TagShortSerializer(serializers.Serializer):
+    title = serializers.CharField(required=False)
+    id = serializers.IntegerField()
+    project = serializers.PrimaryKeyRelatedField(read_only=True)
