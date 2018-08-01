@@ -78,7 +78,7 @@ export class Filter extends React.PureComponent<Props, State>{
                 project: [],
                 task: [],
                 date: [],
-                tag: [],
+                tags: [],
             },
         };
     }

@@ -187,7 +187,7 @@ export class Upt extends React.PureComponent<Props, State> {
                 }
                 <MultiSelectInput
                     className={styles.tag}
-                    faramElementName="tag"
+                    faramElementName="tags"
                     label="Tags"
                     options={tags}
                     placeholder="Select tags"

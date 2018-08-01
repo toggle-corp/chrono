@@ -85,7 +85,7 @@ export class SlotEditor extends React.PureComponent<Props, States> {
                 userGroup: [requiredCondition],
                 project: [requiredCondition],
                 task: [requiredCondition],
-                tag: [],
+                tags: [],
                 remarks: [],
             },
         };

@@ -20,7 +20,7 @@ export const createUrlForProjects = (params: ProjectUrlParams): string => (
 
 // get a project
 export const createUrlForProject = (projectId: number): string =>
-    `${wsEndpoint}/projects/${projectId}`;
+    `${wsEndpoint}/projects/${projectId}/`;
 
 export const createParamsForPostProject = (
     { title, description, userGroup }: PostProjectBody,
