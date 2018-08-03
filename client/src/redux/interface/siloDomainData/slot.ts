@@ -10,6 +10,7 @@ export interface TimeSlot {
     userGroup: number;
     project: number;
     remarks: string;
+    tags: number[];
 }
 
 export interface WipTimeSlot {

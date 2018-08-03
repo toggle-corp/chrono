@@ -11,6 +11,7 @@ import AddTaskModal from './AddTaskModal';
 interface Props {
     disabled?: boolean;
     disabledProjectChange?: boolean;
+    userGroupId?: number;
     projectId?: number;
     onTaskCreate?(taskId: number): void;
     taskId?: number;
@@ -41,6 +42,10 @@ export default class AddTask extends React.PureComponent<Props, States> {
         const { showModal } = this.state;
         const {
             disabled,
+            onTaskCreate,
+            disabledProjectChange,
+            projectId,
+            userGroupId,
             taskId,
         } = this.props;
 
@@ -56,10 +61,11 @@ export default class AddTask extends React.PureComponent<Props, States> {
                 {
                     showModal &&
                     <AddTaskModal
-                        projectId={this.props.projectId}
+                        projectId={projectId}
+                        userGroupId={userGroupId}
                         onClose={this.handleAddTaskModalClose}
-                        onTaskCreate={this.props.onTaskCreate}
-                        disabledProjectChange={this.props.disabledProjectChange}
+                        onTaskCreate={onTaskCreate}
+                        disabledProjectChange={disabledProjectChange}
                         taskId={taskId}
                     />
                 }

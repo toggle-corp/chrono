@@ -35,6 +35,9 @@ import {
 } from '../../../redux/interface';
 import { getCanonicalDate } from '../../../utils/map';
 
+import AddTask from '../../../components/AddTask';
+import AddTag from '../../../components/AddTag';
+
 import SlotPostRequest from '../requests/SlotPostRequest';
 import SlotDeleteRequest from '../requests/SlotDeleteRequest';
 import Upt from './Upt';
@@ -300,10 +303,23 @@ export class SlotEditor extends React.PureComponent<Props, States> {
                                 userGroupId={faramValues.userGroup}
                                 projectId={faramValues.project}
                                 pending={pending}
-                                showAddTask
-                                showAddTag
-                                onTagCreate={this.handleTagCreate}
-                                onTaskCreate={this.handleTaskCreate}
+                                taskChild={
+                                    <AddTask
+                                        projectId={faramValues.project}
+                                        userGroupId={faramValues.userGroup}
+                                        disabledProjectChange
+                                        disabled={!faramValues.project || pending}
+                                        onTaskCreate={this.handleTaskCreate}
+                                    />
+                                }
+                                tagChild={
+                                    <AddTag
+                                        projectId={faramValues.project}
+                                        disabledProjectChange
+                                        disabled={!faramValues.project || pending}
+                                        onTagCreate={this.handleTagCreate}
+                                    />
+                                }
                             />
                             <TextInput
                                 className={styles.remarks}

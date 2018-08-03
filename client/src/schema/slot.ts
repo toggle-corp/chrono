@@ -11,6 +11,7 @@ const slotSchemas: Schema[] = [
             endTime: { type: 'string', required: true },
             remarks: { type: 'string' },
             task: { type: 'uint', required: true },
+            tags: { type: 'array.uint', required: true } ,
             userGroup: { type: 'uint', required: true },
             project: { type: 'uint', required: true },
         },

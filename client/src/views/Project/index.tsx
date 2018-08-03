@@ -183,6 +183,7 @@ export class Project extends React.PureComponent<Props, States> {
                 <div>
                     Tasks
                     <AddTask
+                        userGroupId={project.userGroup}
                         projectId={projectId}
                         disabledProjectChange
                         disabled={loading}

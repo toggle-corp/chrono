@@ -40,7 +40,7 @@ export default class GetTagsRequest implements Request<{}> {
             .postLoad(() => { this.props.setState({ pendingTags: false }); })
             .success((response: TagsGetResponse) => {
                 try {
-                    schema.validate(response, 'tasksGetResponse');
+                    schema.validate(response, 'tagsGetResponse');
                     this.props.setUserTags(response.results);
                 } catch (err) {
                     console.error(err);

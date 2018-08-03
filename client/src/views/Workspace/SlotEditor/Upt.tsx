@@ -18,9 +18,6 @@ import {
     tagsSelector,
 } from '../../../redux';
 
-import AddTask from '../../../components/AddTask';
-import AddTag from '../../../components/AddTag';
-
 import * as styles from './styles.scss';
 
 interface WithIdAndTitle {
@@ -32,10 +29,11 @@ interface OwnProps {
     userGroupId?: number;
     projectId?: number;
     pending?: boolean;
-    showAddTask?: boolean;
-    showAddTag?: boolean;
-    onTagCreate?(taskId: number): void;
-    onTaskCreate?(tagId: number): void;
+    taskChild?: string | React.ReactNode;
+    tagChild?: string | React.ReactNode;
+    hideTasks?: boolean;
+    disabledUserGroupChange?: boolean;
+    disabledProjectChange?: boolean;
 }
 interface PropsFromState {
     userGroups: UserGroup[];
@@ -137,16 +135,14 @@ export class Upt extends React.PureComponent<Props, State> {
             tags,
         } = this.state;
         const {
-            projectId,
             userGroups,
-            showAddTask,
-            showAddTag,
+            taskChild,
+            tagChild,
             pending,
-            onTaskCreate,
-            onTagCreate,
+            disabledUserGroupChange,
+            disabledProjectChange,
+            hideTasks,
         } = this.props;
-
-        const disableTaskTagsSelect = !projectId || pending;
 
         return (
             <Fragment>
@@ -158,6 +154,7 @@ export class Upt extends React.PureComponent<Props, State> {
                     placeholder="Select a user group"
                     keySelector={Upt.keySelector}
                     labelSelector={Upt.labelSelector}
+                    disabled={disabledProjectChange || disabledUserGroupChange || pending}
                 />
                 <SelectInput
                     faramElementName="project"
@@ -167,24 +164,20 @@ export class Upt extends React.PureComponent<Props, State> {
                     placeholder="Select a project"
                     keySelector={Upt.keySelector}
                     labelSelector={Upt.labelSelector}
+                    disabled={disabledProjectChange || pending}
                 />
-                <SelectInput
-                    className={styles.task}
-                    faramElementName="task"
-                    label="Task"
-                    options={tasks}
-                    placeholder="Select a task"
-                    keySelector={Upt.keySelector}
-                    labelSelector={Upt.labelSelector}
-                />
-                { showAddTask &&
-                    <AddTask
-                        projectId={projectId}
-                        disabledProjectChange
-                        disabled={disableTaskTagsSelect}
-                        onTaskCreate={onTaskCreate}
+                { !hideTasks &&
+                    <SelectInput
+                        className={styles.task}
+                        faramElementName="task"
+                        label="Task"
+                        options={tasks}
+                        placeholder="Select a task"
+                        keySelector={Upt.keySelector}
+                        labelSelector={Upt.labelSelector}
                     />
                 }
+                {taskChild}
                 <MultiSelectInput
                     className={styles.tag}
                     faramElementName="tags"
@@ -194,14 +187,7 @@ export class Upt extends React.PureComponent<Props, State> {
                     keySelector={Upt.keySelector}
                     labelSelector={Upt.labelSelector}
                 />
-                { showAddTag &&
-                    <AddTag
-                        projectId={projectId}
-                        disabledProjectChange
-                        disabled={disableTaskTagsSelect}
-                        onTagCreate={onTagCreate}
-                    />
-                }
+                {tagChild}
             </Fragment>
         );
     }

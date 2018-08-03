@@ -33,7 +33,7 @@ export default class TagPutRequest implements Request < {} > {
 
     success = (response: Tag) => {
         try {
-            schema.validate(response, 'tasksPostResponse');
+            schema.validate(response, 'tagPostResponse');
             this.props.setTag(response);
             this.props.onClose();
         } catch (err) {

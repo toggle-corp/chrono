@@ -10,6 +10,10 @@ from user_resource.serializers import UserResourceSerializer
 class TaskSerializer(DynamicFieldsMixin,
                      RemoveNullFieldsMixin,
                      UserResourceSerializer):
+    userGroup = serializers.IntegerField(
+        source='project.user_group.id', read_only=True,
+    )
+
     class Meta:
         model = Task
         fields = ('__all__')

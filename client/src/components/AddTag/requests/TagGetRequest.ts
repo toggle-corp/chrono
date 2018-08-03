@@ -30,7 +30,7 @@ export default class TagGetRequest implements Request < {} > {
 
     success = (response: Tag) => {
         try {
-            schema.validate(response, 'tasksPostResponse');
+            schema.validate(response, 'tagPostResponse');
             this.props.setTag(response);
         } catch (err) {
             console.error(err);

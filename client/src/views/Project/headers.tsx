@@ -62,6 +62,8 @@ export const taskHeaders: Header<Task>[] = [
         order: 5,
         modifier: row => (
             <AddTask
+                userGroupId={row.userGroup}
+                projectId={row.project}
                 taskId={row.id}
                 disabledProjectChange
             />

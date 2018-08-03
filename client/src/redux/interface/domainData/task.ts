@@ -9,4 +9,6 @@ export interface Task {
     title: string;
     description: string;
     project: number;
+    userGroup: number;
+    tags: number[];
 }

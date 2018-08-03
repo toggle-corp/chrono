@@ -21,7 +21,7 @@ interface Props {
     onClose(): void;
     setState: AddTagModal['setState'];
     setTag(value: Tag): void;
-    onTagCreate?(taskId: number): void;
+    onTagCreate?(tagId: number): void;
 }
 
 export default class TagPostRequest implements Request < {} > {
@@ -33,7 +33,7 @@ export default class TagPostRequest implements Request < {} > {
 
     success = (response: Tag) => {
         try {
-            schema.validate(response, 'tasksPostResponse');
+            schema.validate(response, 'tagPostResponse');
             this.props.setTag(response);
             if (this.props.onTagCreate) {
                 this.props.onTagCreate(response.id);

@@ -14,8 +14,10 @@ import Faram, {
     FaramErrors,
     FaramValues,
     FaramSchema,
-} from '../../../vendor/react-store/components/Input/Faram';
-import { requiredCondition } from '../../../vendor/react-store/components/Input/Faram/validations';
+} from '../../../vendor/react-store/components/General/Faram';
+import {
+    requiredCondition,
+} from '../../../vendor/react-store/components/General/Faram/validations';
 import SelectInput from '../../../vendor/react-store/components/Input/SelectInput';
 import TextArea from '../../../vendor/react-store/components/Input/TextArea';
 import TextInput from '../../../vendor/react-store/components/Input/TextInput';

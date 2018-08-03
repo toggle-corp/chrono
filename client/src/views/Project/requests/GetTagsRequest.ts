@@ -3,6 +3,7 @@ import {
     FgRestBuilder,
 } from '../../../vendor/react-store/utils/rest';
 import notify from '../../../notify';
+import schema from '../../../schema';
 
 import {
     createUrlForTags,
@@ -33,11 +34,15 @@ export default class GetTagsRequest implements Request<number> {
     }
 
     success = (projectId: number) => (response: ServerResponse) => {
-        // FIXME: Schema
-        this.props.setProjectTags({
-            projectId,
-            tags: response.results,
-        });
+        try {
+            schema.validate(response, 'tagsGetResponse');
+            this.props.setProjectTags({
+                projectId,
+                tags: response.results,
+            });
+        } catch (err) {
+            console.error(err);
+        }
     }
 
     failure = () => {
