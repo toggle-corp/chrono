@@ -96,8 +96,8 @@ export class AddTagModal extends React.PureComponent<Props, State> {
         this.state = {
             faramValues,
             faramErrors: {},
-            pending: true,
             pristine: true,
+            pending: !!props.tagId,
         };
     }
 
@@ -105,8 +105,6 @@ export class AddTagModal extends React.PureComponent<Props, State> {
         const { tagId } = this.props;
         if (tagId) {
             this.startRequestForTag(tagId);
-        } else {
-            this.setState({ pending: false });
         }
     }
 

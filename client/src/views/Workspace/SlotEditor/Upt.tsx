@@ -113,13 +113,19 @@ export class Upt extends React.PureComponent<Props, State> {
         if (
             this.props.projectId !== nextProps.projectId
             || this.props.tasks !== nextProps.tasks
-            || this.props.tags !== nextProps.tags
         ) {
             this.setState({
                 tasks: Upt.filterTaskByProjectId(
                     nextProps.tasks,
                     nextProps.projectId,
                 ),
+            });
+        }
+        if (
+            this.props.projectId !== nextProps.projectId
+            || this.props.tags !== nextProps.tags
+        ) {
+            this.setState({
                 tags: Upt.filterTagByProjectId(
                     nextProps.tags,
                     nextProps.projectId,
@@ -167,17 +173,19 @@ export class Upt extends React.PureComponent<Props, State> {
                     disabled={disabledProjectChange || pending}
                 />
                 { !hideTasks &&
-                    <SelectInput
-                        className={styles.task}
-                        faramElementName="task"
-                        label="Task"
-                        options={tasks}
-                        placeholder="Select a task"
-                        keySelector={Upt.keySelector}
-                        labelSelector={Upt.labelSelector}
-                    />
+                    <Fragment>
+                        <SelectInput
+                            className={styles.task}
+                            faramElementName="task"
+                            label="Task"
+                            options={tasks}
+                            placeholder="Select a task"
+                            keySelector={Upt.keySelector}
+                            labelSelector={Upt.labelSelector}
+                        />
+                        {taskChild}
+                    </Fragment>
                 }
-                {taskChild}
                 <MultiSelectInput
                     className={styles.tag}
                     faramElementName="tags"

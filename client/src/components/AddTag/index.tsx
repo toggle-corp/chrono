@@ -42,6 +42,7 @@ export default class AddTag extends React.PureComponent<Props, States> {
         const {
             disabled,
             tagId,
+            ...otherProps
         } = this.props;
 
         return(
@@ -56,11 +57,9 @@ export default class AddTag extends React.PureComponent<Props, States> {
                 {
                     showModal &&
                     <AddTagModal
-                        projectId={this.props.projectId}
                         onClose={this.handleAddTagModalClose}
-                        onTagCreate={this.props.onTagCreate}
-                        disabledProjectChange={this.props.disabledProjectChange}
                         tagId={tagId}
+                        {...otherProps}
                     />
                 }
             </Fragment>

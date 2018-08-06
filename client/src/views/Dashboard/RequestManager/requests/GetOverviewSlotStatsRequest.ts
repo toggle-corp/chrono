@@ -2,7 +2,6 @@ import {
     RestRequest,
     FgRestBuilder,
 } from '../../../../vendor/react-store/utils/rest';
-import { getISODate } from '../../../../utils/common';
 
 import { Request } from '../../../../rest/interface';
 import {
@@ -33,8 +32,8 @@ export default class GetOverviewSlotsRequest implements Request<{}> {
         const filters = {
             ...params, // task, user, tag, project
             user_group: params.userGroup,
-            date_gt: params.date ? getISODate(params.date.startDate) : undefined,
-            date_lt: params.date ? getISODate(params.date.endDate) : undefined,
+            date_gt: params.date ? params.date.startDate : undefined,
+            date_lt: params.date ? params.date.endDate : undefined,
         };
 
         const request = new FgRestBuilder()

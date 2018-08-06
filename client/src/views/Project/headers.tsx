@@ -101,7 +101,7 @@ export const tagHeaders: Header<Task>[] = [
         comparator: (a, b) => compareString(a.createdAt, b.createdAt),
         modifier: row => (
             <FormattedDate
-                date={row.createdAt}
+                value={row.createdAt}
                 mode="dd-MMM-yy"
             />
         ),

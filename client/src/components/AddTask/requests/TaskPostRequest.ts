@@ -63,15 +63,8 @@ export default class TaskPostRequest implements Request < {} > {
         const request = new FgRestBuilder()
             .url(urlForTasks)
             .params(createParamsForPostTask(values))
-            .preLoad(() => {
-                this.props.setState({
-                    pending: true,
-                    pristine: false,
-                });
-            })
-            .postLoad(() => {
-                this.props.setState({ pending: false });
-            })
+            .preLoad(() => { this.props.setState({ pending: true }); })
+            .postLoad(() => { this.props.setState({ pending: false }); })
             .success(this.success)
             .failure(this.failure)
             .fatal(this.fatal)
