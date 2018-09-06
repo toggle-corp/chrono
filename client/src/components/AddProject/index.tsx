@@ -15,8 +15,8 @@ import Faram, {
     FaramErrors,
     FaramValues,
     FaramSchema,
-} from '../../vendor/react-store/components/Input/Faram';
-import { requiredCondition } from '../../vendor/react-store/components/Input/Faram/validations';
+} from '../../vendor/react-store/components/General/Faram';
+import { requiredCondition } from '../../vendor/react-store/components/General/Faram/validations';
 import LoadingAnimation from '../../vendor/react-store/components/View/LoadingAnimation';
 import SelectInput from '../../vendor/react-store/components/Input/SelectInput';
 import NonFieldErrors from '../../vendor/react-store/components/Input/NonFieldErrors';

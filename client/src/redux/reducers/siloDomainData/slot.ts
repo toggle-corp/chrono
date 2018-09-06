@@ -1,5 +1,5 @@
 import update from '../../../vendor/react-store/utils/immutable-update';
-import { analyzeErrors } from '../../../vendor/react-store/components/Input/Faram/validator';
+import { analyzeErrors } from '../../../vendor/react-store/components/General/Faram/validator';
 import { randomString } from '../../../vendor/react-store/utils/common';
 import { getCanonicalDate } from '../../../utils/map';
 

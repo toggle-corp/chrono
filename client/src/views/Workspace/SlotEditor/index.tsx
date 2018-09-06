@@ -9,8 +9,10 @@ import PrimaryButton from '../../../vendor/react-store/components/Action/Button/
 import Faram, {
     FaramErrors,
     FaramSchema,
-} from '../../../vendor/react-store/components/Input/Faram';
-import { requiredCondition } from '../../../vendor/react-store/components/Input/Faram/validations';
+} from '../../../vendor/react-store/components/General/Faram';
+import {
+    requiredCondition,
+} from '../../../vendor/react-store/components/General/Faram/validations';
 import NonFieldErrors from '../../../vendor/react-store/components/Input/NonFieldErrors';
 import TextInput from '../../../vendor/react-store/components/Input/TextInput';
 import LoadingAnimation from '../../../vendor/react-store/components/View/LoadingAnimation';
@@ -313,7 +315,7 @@ export class SlotEditor extends React.PureComponent<Props, States> {
                     <div className={styles.bottom}>
                         <div className={styles.date}>
                             <FormattedDate
-                                date={`${year}-${month}-${day || 1}`}
+                                value={`${year}-${month}-${day || 1}`}
                                 mode="EEE, dd"
                             />
                         </div>

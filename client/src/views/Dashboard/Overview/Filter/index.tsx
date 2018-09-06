@@ -10,7 +10,7 @@ import DateFilter from '../../../../vendor/react-store/components/Input/DateFilt
 import Faram, {
     FaramErrors,
     FaramSchema,
-} from '../../../../vendor/react-store/components/Input/Faram';
+} from '../../../../vendor/react-store/components/General/Faram';
 import NonFieldErrors from '../../../../vendor/react-store/components/Input/NonFieldErrors';
 import { isObjectEmpty } from '../../../../vendor/react-store/utils/common';
 

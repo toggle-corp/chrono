@@ -75,7 +75,7 @@ export class UserGroupProjects extends PureComponent<Props, States> {
                 comparator: (a, b) => compareDate(a.createdAt, b.createdAt),
                 modifier: row => (
                     <FormattedDate
-                        date={row.createdAt}
+                        value={row.createdAt}
                         mode="dd-MM-yyyy hh:mm"
                     />
                 ),
@@ -88,7 +88,7 @@ export class UserGroupProjects extends PureComponent<Props, States> {
                 comparator: (a, b) => compareDate(a.modifiedAt, b.modifiedAt),
                 modifier: row => (
                     <FormattedDate
-                        date={row.createdAt}
+                        value={row.createdAt}
                         mode="dd-MM-yyyy hh:mm"
                     />
                 ),
