@@ -81,7 +81,7 @@ export const getHeaders = ({ users } : HeaderParams) => {
             ),
             modifier: (row: FormatedData) => (
                 <FormattedDate
-                    date={row.date.toISOString()}
+                    value={row.date.toISOString()}
                     mode="MMM dd, yyyy"
                 />
             ),

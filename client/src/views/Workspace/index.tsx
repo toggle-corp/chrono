@@ -326,6 +326,7 @@ export class Workspace extends React.PureComponent<Props, States> {
 
         const canonicalDate = getCanonicalDate(date.year, date.month, date.day);
         const timeSlots = activeTimeSlots[canonicalDate];
+        // FIXME: sort timeslots according to started time
 
         const addButtonClassNames = [
             styles.button,
@@ -342,7 +343,7 @@ export class Workspace extends React.PureComponent<Props, States> {
                 <div className={styles.left}>
                     <div className={styles.date}>
                         <FormattedDate
-                            date={`${date.year}-${date.month}-${date.day}`}
+                            value={`${date.year}-${date.month}-${date.day}`}
                             mode="EEE, dd"
                         />
                     </div>

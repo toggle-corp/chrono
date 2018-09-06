@@ -14,12 +14,12 @@ import Faram, {
     FaramErrors,
     FaramValues,
     FaramSchema,
-} from '../../vendor/react-store/components/Input/Faram';
+} from '../../vendor/react-store/components/General/Faram';
 import {
     emailCondition,
     lengthGreaterThanCondition,
     requiredCondition,
-} from '../../vendor/react-store/components/Input/Faram/validations';
+} from '../../vendor/react-store/components/General/Faram/validations';
 
 import { startTasksAction } from '../../redux/middlewares/taskManager';
 import {

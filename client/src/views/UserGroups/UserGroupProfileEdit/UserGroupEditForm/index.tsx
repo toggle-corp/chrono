@@ -17,10 +17,10 @@ import Faram, {
     FaramErrors,
     FaramSchema,
     FaramValues,
-} from '../../../../vendor/react-store/components/Input/Faram';
+} from '../../../../vendor/react-store/components/General/Faram';
 import {
     requiredCondition,
-} from '../../../../vendor/react-store/components/Input/Faram/validations';
+} from '../../../../vendor/react-store/components/General/Faram/validations';
 import NonFieldErrors from '../../../../vendor/react-store/components/Input/NonFieldErrors';
 import LoadingAnimation from '../../../../vendor/react-store/components/View/LoadingAnimation';
 import TextInput from '../../../../vendor/react-store/components/Input/TextInput';

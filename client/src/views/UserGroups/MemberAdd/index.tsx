@@ -23,11 +23,13 @@ import Faram, {
     FaramErrors,
     FaramSchema,
     FaramValues,
-} from '../../../vendor/react-store/components/Input/Faram';
+} from '../../../vendor/react-store/components/General/Faram';
 
 import DangerButton from '../../../vendor/react-store/components/Action/Button/DangerButton';
 import PrimaryButton from '../../../vendor/react-store/components/Action/Button/PrimaryButton';
-import { requiredCondition } from '../../../vendor/react-store/components/Input/Faram/validations';
+import {
+    requiredCondition,
+} from '../../../vendor/react-store/components/General/Faram/validations';
 import NonFieldErrors from '../../../vendor/react-store/components/Input/NonFieldErrors';
 import SelectInput from '../../../vendor/react-store/components/Input/SelectInput';
 import LoadingAnimation from '../../../vendor/react-store/components/View/LoadingAnimation';

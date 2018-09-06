@@ -10,10 +10,10 @@ import MultiSelectInput from '../../../../vendor/react-store/components/Input/Mu
 import Faram, {
     FaramErrors,
     FaramSchema,
-} from '../../../../vendor/react-store/components/Input/Faram';
+} from '../../../../vendor/react-store/components/General/Faram';
 import {
     requiredCondition,
-} from '../../../../vendor/react-store/components/Input/Faram/validations';
+} from '../../../../vendor/react-store/components/General/Faram/validations';
 import NonFieldErrors from '../../../../vendor/react-store/components/Input/NonFieldErrors';
 import { isObjectEmpty } from '../../../../vendor/react-store/utils/common';
 

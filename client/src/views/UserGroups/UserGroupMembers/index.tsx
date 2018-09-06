@@ -90,7 +90,7 @@ export class UserGroupMembers extends PureComponent<Props, States> {
                 comparator: (a, b) => compareDate(a.joinedAt, b.joinedAt),
                 modifier: row => (
                     <FormattedDate
-                        date={row.joinedAt}
+                        value={row.joinedAt}
                         mode="dd-MM-yyyy"
                     />
                 ),

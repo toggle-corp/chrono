@@ -1,4 +1,4 @@
-import { FaramErrors } from '../vendor/react-store/components/Input/Faram';
+import { FaramErrors } from '../vendor/react-store/components/General/Faram';
 import {
     ErrorsFromServer,
     RestGetBody,
