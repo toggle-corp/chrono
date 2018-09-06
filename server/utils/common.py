@@ -93,7 +93,7 @@ def json_to_csv_data(
     first_row_key = list(jsondata.keys())[0]
     first_item = jsondata[first_row_key]
 
-    cols = [k for k, _ in first_item.items()]
+    cols = [underscore_to_title(k) for k, _ in first_item.items()]
 
     columns = ['{}\\{}'.format(rowheading, colheading)] + cols
     if row_total:
@@ -107,10 +107,14 @@ def json_to_csv_data(
         rows = [row + [sum(row[1:])] for row in rows]
     # now add total for each col
     if col_total:
-        colssum = [
-            sum([row[i] for row in rows])
-            for i in range(1, len(columns))
-        ]
+        colssum = []
+        for i in range(1, len(columns)):
+            try:
+                sm = sum([row[i] for row in rows])
+            except Exception as e:  # means there are strings as well
+                sm = ''
+            colssum.append(sm)
+
         rows.append(
             ['TOTAL', *colssum]
         )
