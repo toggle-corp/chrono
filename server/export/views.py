@@ -1,11 +1,9 @@
-import os
-
 from django.core.files.base import ContentFile
-from django.conf import settings
 
 from rest_framework import views, response
 
 from export.exporters import CSVExporter
+from export.serializers import ExportSerializer
 from export.models import Export
 from utils.common import json_to_csv_data, generate_filename
 from task.views import TimeSlotStatsViewSet
@@ -44,9 +42,6 @@ class ExportViewSet(views.APIView):
             generate_filename(export.title, 'csv'),
             ContentFile(open(filename).read())
         )
-        return response.Response({
-            'file_url': os.path.join(
-                settings.MEDIA_ROOT,
-                export.file.url
-            )
-        })
+
+        serializer = ExportSerializer(export, context={'request': request})
+        return response.Response(serializer.data)
