@@ -1,7 +1,7 @@
 from xml.sax.saxutils import escape
 
 import os
-import time
+from datetime import datetime
 
 
 USER_AGENT = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1)' + \
@@ -59,8 +59,8 @@ def format_date(date):
 
 
 def generate_filename(title, extension):
-    return '{} DEEP {}.{}'.format(
-        time.strftime('%Y%m%d'),
+    return '{} CHRONO {}.{}'.format(
+        datetime.now().strftime('%Y%m%dT%H:%M:%S'),
         title,
         extension,
     )

@@ -1,10 +1,13 @@
-from django.http import HttpResponse
-from rest_framework import views
+import os
+
+from django.core.files.base import ContentFile
+from django.conf import settings
+
+from rest_framework import views, response
 
 from export.exporters import CSVExporter
-
-from utils.common import json_to_csv_data
-
+from export.models import Export
+from utils.common import json_to_csv_data, generate_filename
 from task.views import TimeSlotStatsViewSet
 
 import logging
@@ -21,17 +24,29 @@ class ExportViewSet(views.APIView):
 
         data = resp.data['results']
         datadict = {x['id']: x for x in data}
+        # TODO: make results more readable, replace pk/fk fields by names
 
-        # csvdata = [cols, *rows]
+        # csvdata is [cols, *rows]
         csvdata = json_to_csv_data(datadict, col_total=True)
 
         csvexporter = CSVExporter(csvdata)
 
-        filename = csvexporter.export()
-        response = HttpResponse(
-            open(filename, 'r'),
-            content_type=csvexporter.MIME_TYPE
+        export = Export.objects.create(
+            title='Tasks Export',
+            format=Export.CSV,  # TODO: make this dynamic
+            mime_type=csvexporter.MIME_TYPE,
+            exported_by=request.user,
         )
-        response['Content-Disposition'] = 'attachment; filename=export.csv'
 
-        return response
+        filename = csvexporter.export()
+
+        export.file.save(
+            generate_filename(export.title, 'csv'),
+            ContentFile(open(filename).read())
+        )
+        return response.Response({
+            'file_url': os.path.join(
+                settings.MEDIA_ROOT,
+                export.file.url
+            )
+        })
