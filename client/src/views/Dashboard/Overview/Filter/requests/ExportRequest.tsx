@@ -36,9 +36,7 @@ export default class ExportRequest implements Request<{}> {
     handleSuccess = (response:any) => {
         try {
             schema.validate(response, 'exportResponse');
-            this.props.setState({
-                fileUrl: response.file,
-            });
+            window.open(response.file);
         } catch (err) {
             console.error(err);
         }

@@ -62,9 +62,7 @@ interface PropsFromDispatch {
 
 type Props = OwnProps & PropsFromState & PropsFromDispatch;
 
-interface State {
-    fileUrl: string | null;
-}
+interface State { }
 
 const userKeySelector = (user: UserPartialInformation) => user.id;
 const userLabelSelector = (user: UserPartialInformation) => user.displayName;
@@ -164,8 +162,6 @@ export class Filter extends React.PureComponent<Props, State>{
             pristine,
         } = faram;
 
-        const { fileUrl } = this.state;
-
         const isFilterEmpty = isObjectEmpty(faramValues);
 
         return (
@@ -229,17 +225,6 @@ export class Filter extends React.PureComponent<Props, State>{
                 >
                     Export
                 </SuccessButton>
-                {
-                    fileUrl && (
-                        <span>
-                            <a
-                                href={fileUrl}
-                            >
-                                &nbsp; Download Export
-                            </a>
-                        </span>
-                    )
-                }
             </Faram>
         );
     }
