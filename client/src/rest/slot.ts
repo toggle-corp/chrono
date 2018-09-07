@@ -14,6 +14,9 @@ export const urlForSlots: string = `${wsEndpoint}/time-slots/`;
 export const createUrlForSlotStats = (params: SlotStatsUrlParams): string =>
     `${wsEndpoint}/time-slots-stats/?${p(params)}`;
 
+export const createUrlForOverviewExport = (params: SlotStatsUrlParams): string =>
+    `${wsEndpoint}/export/?${p(params)}`;
+
 export const createUrlForProjectWiseSlotStats = (params: SlotStatsUrlParams): string =>
     `${wsEndpoint}/time-slots-stats/project-wise/?${p(params)}`;
 
