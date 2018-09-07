@@ -8,6 +8,8 @@ from export.models import Export
 from utils.common import json_to_csv_data, generate_filename
 from task.views import TimeSlotStatsViewSet
 
+from collections import OrderedDict
+
 import logging
 
 logger = logging.getLogger(__name__)
@@ -20,9 +22,21 @@ class ExportViewSet(views.APIView):
         if resp.status_code != 200:
             return resp
 
+        export_fields = [
+            'user_display_name',
+            'user_group_display_name',
+            'project_display_name',
+            'total_time',
+            'total_time_in_seconds',
+        ]
+
+        def extract_export_fields(obj):
+            return OrderedDict([(k, obj[k]) for k in export_fields])
+
         data = resp.data['results']
-        datadict = {x['id']: x for x in data}
-        # TODO: make results more readable, replace pk/fk fields by names
+        datadict = {
+            x['user_display_name']: extract_export_fields(x) for x in data
+        }
 
         # csvdata is [cols, *rows]
         csvdata = json_to_csv_data(datadict, col_total=True)
