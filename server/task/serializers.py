@@ -3,10 +3,13 @@ from rest_framework import serializers
 
 from .models import (Task, TimeSlot)
 from user.models import User
+from chrono.serializers import RemoveNullFieldsMixin
 from user_resource.serializers import UserResourceSerializer
 
 
-class TaskSerializer(DynamicFieldsMixin, UserResourceSerializer):
+class TaskSerializer(DynamicFieldsMixin,
+                     RemoveNullFieldsMixin,
+                     UserResourceSerializer):
     class Meta:
         model = Task
         fields = ('__all__')
@@ -17,7 +20,9 @@ class TaskSerializer(DynamicFieldsMixin, UserResourceSerializer):
         return project
 
 
-class TimeSlotSerializer(DynamicFieldsMixin, serializers.ModelSerializer):
+class TimeSlotSerializer(DynamicFieldsMixin,
+                         RemoveNullFieldsMixin,
+                         serializers.ModelSerializer):
     userGroup = serializers.IntegerField(
         source='task.project.user_group.pk',
         read_only=True,
@@ -73,7 +78,8 @@ class SecondsField(serializers.Field):
         return int(dt.total_seconds())
 
 
-class TimeSlotStatsProjectWiseSerializer(serializers.ModelSerializer):
+class TimeSlotStatsProjectWiseSerializer(RemoveNullFieldsMixin,
+                                         serializers.ModelSerializer):
     user_display_name = serializers.CharField(
         source='profile.get_display_name'
     )
