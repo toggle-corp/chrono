@@ -14,6 +14,7 @@ import {
     requiredCondition,
 } from '../../../vendor/react-store/components/General/Faram/validations';
 import NonFieldErrors from '../../../vendor/react-store/components/Input/NonFieldErrors';
+import TimeInput from '../../../vendor/react-store/components/Input/TimeInput';
 import TextInput from '../../../vendor/react-store/components/Input/TextInput';
 import LoadingAnimation from '../../../vendor/react-store/components/View/LoadingAnimation';
 import Message from '../../../vendor/react-store/components/View/Message';
@@ -271,7 +272,7 @@ export class SlotEditor extends React.PureComponent<Props, States> {
                     </div>
                     <div className={styles.mainForm}>
                         <div className={styles.infowrapper} >
-                             <TextInput
+                             <TimeInput
                                 faramElementName="startTime"
                                 className={styles.startTime}
                                 label="Start"
@@ -279,7 +280,7 @@ export class SlotEditor extends React.PureComponent<Props, States> {
                                 type="time"
                                 autoFocus
                              />
-                            <TextInput
+                            <TimeInput
                                 faramElementName="endTime"
                                 className={styles.endTime}
                                 label="End"

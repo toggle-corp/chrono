@@ -34,6 +34,8 @@ from task.views import (
     TimeSlotStatsDayWiseViewSet,
 )
 
+from export.views import ExportViewSet
+
 router = routers.DefaultRouter()
 
 # User routers
@@ -114,6 +116,11 @@ urlpatterns = [
     url(get_api_path(r'time-slots-stats/day-wise/$'),
         TimeSlotStatsDayWiseViewSet.as_view(),
         name='time-slot-stat-day-wise'),
+
+    # Export Urls
+    url(get_api_path(r'export/$'),
+        ExportViewSet.as_view(),
+        name='export'),
 
     # Viewsets
     url(get_api_path(''), include(router.urls)),

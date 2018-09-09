@@ -1,6 +1,9 @@
+from collections import OrderedDict
+
 from django.db import models
 from user_resource.models import UserResource
 from user_group.models import (UserGroup, GroupMembership)
+from utils.common import json_to_csv_data
 
 
 class Project(UserResource):
@@ -37,3 +40,23 @@ class Project(UserResource):
             group=self.user_group,
             member=user,
         ).exists()
+
+    def project_summary_json(self, filters={}):
+        data = OrderedDict()
+        users = self.user_group.members.all()
+        for task in self.tasks.all():
+            data[task.title] = OrderedDict(
+                (user.username, task.get_duration_for(user, filters))
+                for user in users
+            )
+        return data
+
+    def project_summary_csv(self, filters={}):
+        # first get json data
+        jsondata = self.project_summary_json(filters)
+
+        return json_to_csv_data(
+            jsondata, rowheading="Tasks", colheading="Users",
+            col_total=True,
+            row_total=True
+        )

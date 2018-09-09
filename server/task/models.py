@@ -1,4 +1,5 @@
 from datetime import datetime
+
 from django.core.exceptions import ValidationError
 from django.db import models
 
@@ -12,7 +13,11 @@ class Task(UserResource):
     Task model
     """
 
-    project = models.ForeignKey(Project, on_delete=models.CASCADE)
+    project = models.ForeignKey(
+        Project,
+        on_delete=models.CASCADE,
+        related_name='tasks'
+    )
     title = models.CharField(max_length=255)
     description = models.TextField(blank=True)
 
@@ -33,6 +38,13 @@ class Task(UserResource):
 
     def can_modify(self, user):
         return self.project.can_get(user)
+
+    def get_timeslots_for(self, user, filters):
+        return TimeSlot.objects.filter(task=self, user=user, **filters)
+
+    def get_duration_for(self, user, filters):
+        slots = self.get_timeslots_for(user, filters)
+        return sum([x.duration for x in slots])
 
 
 class TimeSlot(models.Model):
@@ -104,3 +116,15 @@ class TimeSlot(models.Model):
 
     def can_modify(self, user):
         return self.user == user
+
+    @property
+    def duration(self):
+        """Return duration in hours"""
+        if not self.end_time:
+            # TODO: provide some value by calculation if not end time
+            return 0
+        enddatetime = datetime.combine(self.date, self.end_time)
+        startdatetime = datetime.combine(self.date, self.start_time)
+        diff = enddatetime - startdatetime
+        secs = round(diff.total_seconds(), 0)
+        return round(secs / 3600.0, 2)

@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'user_resource',
     'project',
     'task',
+    'export',
 ]
 
 MIDDLEWARE = [
@@ -148,14 +149,36 @@ USE_L10N = True
 
 USE_TZ = True
 
+if os.environ.get('DJANGO_USE_S3', 'False').lower() == 'true':
+    # AWS S3 Bucket Credentials
+    AWS_STORAGE_BUCKET_NAME_STATIC = os.environ[
+        'DJANGO_AWS_STORAGE_BUCKET_NAME_STATIC']
+    AWS_STORAGE_BUCKET_NAME_MEDIA = os.environ[
+        'DJANGO_AWS_STORAGE_BUCKET_NAME_MEDIA']
+    AWS_ACCESS_KEY_ID = os.environ['S3_AWS_ACCESS_KEY_ID']
+    AWS_SECRET_ACCESS_KEY = os.environ['S3_AWS_SECRET_ACCESS_KEY']
 
-# Static files (CSS, JavaScript, Images)
+    AWS_S3_FILE_OVERWRITE = False
+    AWS_DEFAULT_ACL = 'private'
+    AWS_QUERYSTRING_AUTH = True
+    AWS_S3_CUSTOM_DOMAIN = None
 
-STATIC_URL = '/static/'
-STATIC_ROOT = '/static'
+    # Static configuration
+    STATICFILES_LOCATION = 'static'
+    STATIC_URL = "https://%s/%s/" % (AWS_S3_CUSTOM_DOMAIN,
+                                     STATICFILES_LOCATION)
+    STATICFILES_STORAGE = 'chrono.s3_storages.StaticStorage'
 
-MEDIA_URL = '/media/'
-MEDIA_ROOT = '/media'
+    # Media configuration
+    MEDIAFILES_LOCATION = 'media'
+    MEDIA_URL = "https://%s/%s/" % (AWS_S3_CUSTOM_DOMAIN, MEDIAFILES_LOCATION)
+    DEFAULT_FILE_STORAGE = 'chrono.s3_storages.MediaStorage'
+else:
+    STATIC_URL = '/static/'
+    STATIC_ROOT = '/static'
+
+    MEDIA_URL = '/media/'
+    MEDIA_ROOT = '/media'
 
 HTTP_PROTOCOL = os.environ.get('HTTP_PROTOCOL', 'http')
 CHRONO_FRONTEND_HOST = os.environ.get('CHRONO_FRONTEND_HOST', 'localhost:3000')
