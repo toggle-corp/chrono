@@ -1,4 +1,4 @@
-import { Schema } from './interface';
+import { Schema } from '@togglecorp/ravl';
 
 const projectSchemas: Schema[] = [
     {

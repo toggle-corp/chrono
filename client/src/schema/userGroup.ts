@@ -1,4 +1,4 @@
-import { Schema } from './interface';
+import { Schema } from '@togglecorp/ravl';
 
 const userGroupSchema: Schema[] = [
     {
@@ -26,7 +26,7 @@ const userGroupSchema: Schema[] = [
     {
         doc: { name: 'userGroupsResponse' },
         fields: {
-            count: { type: 'number', required: 'true' },
+            count: { type: 'number', required: true },
             next: { type: 'number' },
             previous: { type: 'number' },
             results: { type: 'array.userGroup' },

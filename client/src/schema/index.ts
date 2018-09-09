@@ -1,5 +1,4 @@
-import dict from '../vendor/ravl/schema';
-import attachValidator from '../vendor/ravl/attachValidator';
+import Dict, { basicTypes, Schema } from '@togglecorp/ravl';
 
 import common from './common';
 import project from './project';
@@ -9,11 +8,9 @@ import user from './user';
 import slot from './slot';
 import userGroup from './userGroup';
 
-// Validator mixin
-attachValidator(dict);
-
-// ATTACHING SCHEMAS
-[
+const dict = new Dict();
+const schemas: Schema[] = [
+    ...basicTypes,
     ...common,
     ...project,
     ...task,
@@ -21,6 +18,6 @@ attachValidator(dict);
     ...user,
     ...userGroup,
     ...slot,
-].forEach(schema => dict.put(schema.doc.name, schema));
-
+];
+schemas.forEach(schema => dict.put(schema.doc.name, schema));
 export default dict;

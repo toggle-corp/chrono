@@ -131,7 +131,7 @@ const setOverviewFilters = (
 ) => {
     const {
         type,
-        ...otherProps,
+        ...otherProps
     } = action;
     const settings = {
         dashboard: { $auto: {
@@ -166,7 +166,7 @@ const setProjectWiseFilters = (
 ) => {
     const {
         type,
-        ...otherProps,
+        ...otherProps
     } = action;
 
     const settings = {
@@ -202,7 +202,7 @@ const setDayWiseFilters = (
 ) => {
     const {
         type,
-        ...otherProps,
+        ...otherProps
     } = action;
     const settings = {
         dashboard: { $auto: {
