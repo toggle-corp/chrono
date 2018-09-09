@@ -44,7 +44,7 @@ export default class GetTasksRequest implements Request<number> {
         notify.send({
             title: 'Project',
             type: notify.type.ERROR,
-            message: 'Failed to retrive Project',
+            message: 'Failed to retrive Project\'s Tasks',
             duration: notify.duration.MEDIUM,
         });
     }
@@ -53,7 +53,7 @@ export default class GetTasksRequest implements Request<number> {
         notify.send({
             title: 'Project',
             type: notify.type.ERROR,
-            message: 'Failed to retrive Project',
+            message: 'Failed to retrive Project\'s Tasks',
             duration: notify.duration.SLOW,
         });
     }

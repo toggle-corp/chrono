@@ -1,6 +1,7 @@
 import {
     Dictionary,
     Task,
+    Tag,
 } from '../../interface';
 
 export interface Project {
@@ -19,6 +20,7 @@ export interface Project {
 export interface ProjectView {
     detail: Project;
     tasks: Task[];
+    tags: Tag[];
 }
 
 // For Silo
@@ -33,4 +35,9 @@ export interface SetProjectAction {
 export interface SetProjectTasksAction {
     projectId: number;
     tasks: Task[];
+}
+
+export interface SetProjectTagsAction {
+    projectId: number;
+    tags: Tag[];
 }

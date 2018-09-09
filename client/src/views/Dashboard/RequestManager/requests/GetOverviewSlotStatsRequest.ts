@@ -30,15 +30,12 @@ export default class GetOverviewSlotsRequest implements Request<{}> {
 
     create = (params: OverviewParams): RestRequest => {
         const filters = {
-            project: params.project,
+            ...params, // task, user, tag, project
             user_group: params.userGroup,
-            task: params.task,
-            user: params.user,
             date_gt: params.date ? params.date.startDate : undefined,
             date_lt: params.date ? params.date.endDate : undefined,
         };
 
-        console.warn(filters);
         const request = new FgRestBuilder()
             .url(createUrlForSlotStats(filters))
             .params(commonParamsForGet)

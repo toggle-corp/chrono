@@ -87,6 +87,8 @@ class TimeSlotFilterSet(django_filters.FilterSet):
 class TaskViewSet(viewsets.ModelViewSet):
     serializer_class = TaskSerializer
     permission_classes = [permissions.IsAuthenticated, ModifyPermission]
+    filter_classes = [django_filters.rest_framework.DjangoFilterBackend]
+    filter_fields = ['project', 'title']
 
     def get_queryset(self):
         return Task.get_for(self.request.user)
@@ -101,7 +103,14 @@ class TimeSlotViewSet(viewsets.ModelViewSet):
     search_fields = ('title', 'description')
 
     def get_queryset(self):
-        return TimeSlot.get_for(self.request.user)
+        user_qs = TimeSlot.get_for(self.request.user)
+        tag_values = self.request.query_params.get('tag') or []
+        if not tag_values:
+            return user_qs
+        tagids = [x.strip() for x in tag_values.split(',') if x.strip()]
+        for id in tagids:
+            user_qs = user_qs.filter(tags__id=id)
+        return user_qs
 
     # TODO: Auto set user from request.user
 

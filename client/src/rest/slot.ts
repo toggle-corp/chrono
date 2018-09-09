@@ -7,6 +7,8 @@ import {
 import {
     RestPostBody,
     SlotStatsUrlParams,
+    PostSlotParams,
+    PutSlotParams,
 } from './interface';
 
 export const urlForSlots: string = `${wsEndpoint}/time-slots/`;
@@ -26,47 +28,17 @@ export const createUrlForDayWiseSlotStats = (params: SlotStatsUrlParams): string
 export const createUrlForSlot = (slotId: number): string => `${wsEndpoint}/time-slots/${slotId}/`;
 
 export const createParamsForPostSlot = (
-    { date, startTime, endTime, task, user, remarks }:
-    {
-        date?: string,
-        startTime?: string,
-        endTime?: string,
-        task?: number,
-        user?: number,
-        remarks?: string,
-    },
+    params: PostSlotParams,
 ): RestPostBody => ({
     method: Rest.POST,
     headers: commonHeaderForPost,
-    body: JSON.stringify({
-        date,
-        startTime,
-        endTime,
-        task,
-        user,
-        remarks,
-    }),
+    body: JSON.stringify(params),
 });
 
 export const createParamsForPutSlot = (
-    { date, startTime, endTime, task, user, remarks }:
-    {
-        date?: string,
-        startTime?: string,
-        endTime?: string,
-        task?: number,
-        user?: number,
-        remarks?: string,
-    },
+    params: PutSlotParams,
 ): RestPostBody => ({
     method: Rest.PUT,
     headers: commonHeaderForPost,
-    body: JSON.stringify({
-        date,
-        startTime,
-        endTime,
-        task,
-        user,
-        remarks,
-    }),
+    body: JSON.stringify(params),
 });

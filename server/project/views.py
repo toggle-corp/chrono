@@ -5,9 +5,13 @@ from django.utils import timezone
 from django.http import HttpResponse
 
 from chrono.permissions import ModifyPermission
-from .models import Project
-from .serializers import ProjectSerializer, ProjectExportSerializer
 from export.exporters import JSONExporter, XLSXExporter, CSVExporter
+from .models import Project, Tag
+from .serializers import (
+    ProjectSerializer,
+    TagSerializer,
+    ProjectExportSerializer,
+)
 
 import logging
 
@@ -82,3 +86,13 @@ class ProjectViewSet(viewsets.ModelViewSet):
             data = f.read()
         resp.write(data)
         return resp
+
+
+class TagViewSet(viewsets.ModelViewSet):
+    serializer_class = TagSerializer
+    permission_classes = [permissions.IsAuthenticated, ModifyPermission]
+    filter_classes = [DjangoFilterBackend]
+    filter_fields = ['project', 'title']
+
+    def get_queryset(self):
+        return Tag.get_for(self.request.user)

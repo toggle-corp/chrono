@@ -4,6 +4,7 @@ import userReducer from './user';
 import userGroupReducer from './userGroup';
 import projectReducer from './project';
 import taskReducer from './task';
+import tagReducer from './tag';
 
 import { AUTH_ACTION } from '../auth';
 
@@ -16,6 +17,7 @@ const reducers = {
     ...userGroupReducer,
     ...projectReducer,
     ...taskReducer,
+    ...tagReducer,
     [AUTH_ACTION.logout]: logout,
 };
 

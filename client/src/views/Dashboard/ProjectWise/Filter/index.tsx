@@ -82,7 +82,7 @@ export class Filter extends React.PureComponent<Props, State>{
         });
     }
 
-    handleFaramSuccess = (faramValues: ProjectWiseParams) => {
+    handleFaramSuccess = (_: any, faramValues: ProjectWiseParams) => {
         this.props.setFilters({
             faramValues,
             filters: faramValues,

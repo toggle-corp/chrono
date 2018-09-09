@@ -18,9 +18,6 @@ import { isObjectEmpty } from '../../../../vendor/react-store/utils/common';
 import ExportRequest from './requests/ExportRequest';
 
 import {
-    userGroupsSelector,
-    projectsSelector,
-    tasksSelector,
     usersSelector,
     setOverviewFiltersAction,
     overviewFaramSelector,
@@ -29,9 +26,6 @@ import {
 
 import {
     RootState,
-    UserGroup,
-    Project,
-    Task,
     OverviewFilter,
     OverviewParams,
     UserPartialInformation,
@@ -48,9 +42,6 @@ interface OwnProps {
 }
 
 interface PropsFromState {
-    userGroups: UserGroup[];
-    projects: Project[];
-    tasks: Task[];
     users: UserPartialInformation[];
     faram: OverviewFilter;
     filters: OverviewParams;
@@ -87,6 +78,7 @@ export class Filter extends React.PureComponent<Props, State>{
                 project: [],
                 task: [],
                 date: [],
+                tags: [],
             },
         };
     }
@@ -119,7 +111,7 @@ export class Filter extends React.PureComponent<Props, State>{
         });
     }
 
-    handleFaramSuccess = (faramValues: OverviewParams) => {
+    handleFaramSuccess = (_:any, faramValues: OverviewParams) => {
         this.props.setFilters({
             faramValues,
             filters: faramValues,
@@ -150,9 +142,6 @@ export class Filter extends React.PureComponent<Props, State>{
 
     render() {
         const {
-            userGroups,
-            projects,
-            tasks,
             users,
             loading,
             faram,
@@ -193,9 +182,7 @@ export class Filter extends React.PureComponent<Props, State>{
                 <Upt
                     userGroupId={faramValues.userGroup}
                     projectId={faramValues.project}
-                    projects={projects}
-                    tasks={tasks}
-                    userGroups={userGroups}
+                    pending={loading}
                 />
                 <DateFilter
                     className={styles.formElement}
@@ -228,9 +215,6 @@ export class Filter extends React.PureComponent<Props, State>{
 }
 
 const mapStateToProps = (state: RootState) => ({
-    userGroups: userGroupsSelector(state),
-    projects: projectsSelector(state),
-    tasks: tasksSelector(state),
     users: usersSelector(state),
     faram: overviewFaramSelector(state),
     filters: overviewFilterSelector(state),

@@ -10,14 +10,26 @@ from user_resource.serializers import UserResourceSerializer
 class TaskSerializer(DynamicFieldsMixin,
                      RemoveNullFieldsMixin,
                      UserResourceSerializer):
+    userGroup = serializers.IntegerField(
+        source='project.user_group.id', read_only=True,
+    )
+
     class Meta:
         model = Task
         fields = ('__all__')
 
     def validate_project(self, project):
         if not project.can_get(self.context['request'].user):
-            raise serializers.Validations('Invalid project')
+            raise serializers.ValidationError('Invalid project')
         return project
+
+    def validate_tags(self, tags):
+        for tag in tags:
+            if not tag.project.id == self.initial_data['project']:
+                raise serializers.ValidationError(
+                    'Tag {} does not belong to this project.'.format(tag.title)
+                )
+        return tags
 
 
 class TimeSlotSerializer(DynamicFieldsMixin,
@@ -45,9 +57,23 @@ class TimeSlotSerializer(DynamicFieldsMixin,
         attrs['user'] = self.context['request'].user
         if self.instance:
             attrs['id'] = self.instance.id
+        # Popping here because, tags are many-to-many related fields and slot
+        # object is not created yet, and not popping gives error
+        tags = attrs.pop('tags')
         instance = TimeSlot(**attrs)
         instance.clean()
+        # Setting tags here again so that relation can be created
+        attrs['tags'] = tags
         return attrs
+
+    def validate_tags(self, tags):
+        for tag in tags:
+            task = Task.objects.get(id=self.initial_data['task'])
+            if not tag.project.id == task.project.id:
+                raise serializers.ValidationError(
+                    'Tag {} does not belong to this project.'.format(tag.title)
+                )
+        return tags
 
 
 class TimeSlotStatsSerializer(TimeSlotSerializer):
@@ -98,7 +124,8 @@ class TimeSlotStatsProjectWiseSerializer(RemoveNullFieldsMixin,
         )
 
 
-class UserStatsSerializer(serializers.ModelSerializer):
+class UserStatsSerializer(RemoveNullFieldsMixin,
+                          serializers.ModelSerializer):
     total_time = serializers.DurationField()
     total_time_in_seconds = SecondsField(source='total_time')
 
@@ -107,6 +134,7 @@ class UserStatsSerializer(serializers.ModelSerializer):
         fields = ('id', 'total_time', 'total_time_in_seconds')
 
 
-class TimeSlotStatsDayWiseSerializer(serializers.Serializer):
+class TimeSlotStatsDayWiseSerializer(RemoveNullFieldsMixin,
+                                     serializers.Serializer):
     date = serializers.DateField()
     users = UserStatsSerializer(many=True)

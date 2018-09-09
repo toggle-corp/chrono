@@ -85,7 +85,7 @@ export class Filter extends React.PureComponent<Props, State>{
         });
     }
 
-    handleFaramSuccess = (faramValues: DayWiseParams) => {
+    handleFaramSuccess = (_ : any, faramValues: DayWiseParams) => {
         this.props.setFilters({
             faramValues,
             filters: faramValues,

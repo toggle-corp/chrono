@@ -3,6 +3,7 @@ import Dict, { basicTypes, Schema } from '@togglecorp/ravl';
 import common from './common';
 import project from './project';
 import task from './task';
+import tag from './tag';
 import token from './token';
 import user from './user';
 import slot from './slot';
@@ -18,6 +19,8 @@ const schemas: Schema[] = [
     ...user,
     ...userGroup,
     ...slot,
+    ...tag,
 ];
 schemas.forEach(schema => dict.put(schema.doc.name, schema));
+
 export default dict;

@@ -35,6 +35,7 @@ const getFaramValuesFromTimeSlot = (timeSlot: TimeSlot): WipTimeSlot['faramValue
     task: timeSlot.task,
     userGroup: timeSlot.userGroup,
     project: timeSlot.project,
+    tags: timeSlot.tags,
 });
 
 // ACTION-CREATOR

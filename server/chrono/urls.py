@@ -25,6 +25,7 @@ from user_group.views import (
 )
 from project.views import (
     ProjectViewSet,
+    TagViewSet
 )
 from task.views import (
     TaskViewSet,
@@ -58,6 +59,8 @@ router.register(r'tasks', TaskViewSet,
 
 router.register(r'time-slots', TimeSlotViewSet,
                 base_name='time-slot')
+
+router.register(r'tags', TagViewSet, base_name='tag')
 
 # Versioning : (v1|v2|v3)
 

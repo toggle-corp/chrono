@@ -20,13 +20,8 @@ import LoadingAnimation from '../../../vendor/react-store/components/View/Loadin
 import Message from '../../../vendor/react-store/components/View/Message';
 import { RestRequest } from '../../../vendor/react-store/utils/rest';
 
-import AddTask from '../../../components/AddTask';
-
 import {
     activeWipTimeSlotSelector,
-    userGroupsSelector,
-    projectsSelector,
-    tasksSelector,
     changeTimeSlotAction,
     discardTimeSlotAction,
     deleteTimeSlotAction,
@@ -34,14 +29,14 @@ import {
 } from '../../../redux';
 import {
     RootState,
-    UserGroup,
-    Project,
-    Task,
     WipTimeSlot,
     ChangeTimeSlotAction,
     SaveTimeSlotAction,
 } from '../../../redux/interface';
 import { getCanonicalDate } from '../../../utils/map';
+
+import AddTask from '../../../components/AddTask';
+import AddTag from '../../../components/AddTag';
 
 import SlotPostRequest from '../requests/SlotPostRequest';
 import SlotDeleteRequest from '../requests/SlotDeleteRequest';
@@ -56,9 +51,6 @@ interface OwnProps {
 }
 
 interface PropsFromState {
-    userGroups: UserGroup[];
-    projects: Project[];
-    tasks: Task[];
     activeWipTimeSlot: WipTimeSlot | undefined;
 }
 
@@ -96,6 +88,7 @@ export class SlotEditor extends React.PureComponent<Props, States> {
                 userGroup: [requiredCondition],
                 project: [requiredCondition],
                 task: [requiredCondition],
+                tags: [],
                 remarks: [],
             },
         };
@@ -158,6 +151,28 @@ export class SlotEditor extends React.PureComponent<Props, States> {
         });
     }
 
+    handleTagCreate = (tagId: number) => {
+        const { activeWipTimeSlot } = this.props;
+        if (!activeWipTimeSlot) {
+            return;
+        }
+
+        const { faramValues, faramErrors } = activeWipTimeSlot;
+        // FIXME: do not access faramValues directly
+        this.props.changeTimeSlot({
+            faramValues: {
+                ...faramValues,
+                // FIXME: Only add id to the array
+                tags: [tagId],
+            },
+            faramErrors: {
+                ...faramErrors,
+                $internal: undefined,
+                task: undefined,
+            },
+        });
+    }
+
     handleFaramChange = (
         faramValues: WipTimeSlot['faramValues'], faramErrors: FaramErrors,
     ) => {
@@ -205,9 +220,6 @@ export class SlotEditor extends React.PureComponent<Props, States> {
         } = this.state;
         const {
             activeWipTimeSlot,
-            userGroups,
-            projects,
-            tasks,
             year,
             month,
             day,
@@ -290,20 +302,24 @@ export class SlotEditor extends React.PureComponent<Props, States> {
                             <Upt
                                 userGroupId={faramValues.userGroup}
                                 projectId={faramValues.project}
-                                projects={projects}
-                                tasks={tasks}
-                                userGroups={userGroups}
-                            />
-                            <AddTask
-                                // FIXME: do not access faramValues directly
-                                projectId={faramValues.project}
-                                disabledProjectChange
-                                disabled={
-                                    !faramValues.project ||
-                                    !faramValues.userGroup ||
-                                    pending
+                                pending={pending}
+                                taskChild={
+                                    <AddTask
+                                        projectId={faramValues.project}
+                                        userGroupId={faramValues.userGroup}
+                                        disabledProjectChange
+                                        disabled={!faramValues.project || pending}
+                                        onTaskCreate={this.handleTaskCreate}
+                                    />
                                 }
-                                onTaskCreate={this.handleTaskCreate}
+                                tagChild={
+                                    <AddTag
+                                        projectId={faramValues.project}
+                                        disabledProjectChange
+                                        disabled={!faramValues.project || pending}
+                                        onTagCreate={this.handleTagCreate}
+                                    />
+                                }
                             />
                             <TextInput
                                 className={styles.remarks}
@@ -329,9 +345,6 @@ export class SlotEditor extends React.PureComponent<Props, States> {
 
 const mapStateToProps = (state: RootState, props: OwnProps) => ({
     activeWipTimeSlot: activeWipTimeSlotSelector(state, props),
-    userGroups: userGroupsSelector(state),
-    projects: projectsSelector(state),
-    tasks: tasksSelector(state),
 });
 
 const mapDispatchToProps = (dispatch: Redux.Dispatch<RootState>) => ({

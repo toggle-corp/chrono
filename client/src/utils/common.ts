@@ -1,3 +1,4 @@
+import { isFalsy } from '../vendor/react-store/utils/common.js';
 /*
 const padding = (number: number, length = 2, str = '0') => (
     String(number).padStart(length, str)
@@ -29,8 +30,8 @@ const getPrettyTime = (hour: number, minute: number, second: number) => {
     return prettyText;
 };
 
-export const getHumanReadableTime = (seconds: number, invalidText = '-') => {
-    if (!seconds) {
+export const getHumanReadableTime = (seconds?: number, invalidText = '-') => {
+    if (isFalsy(seconds)) {
         return invalidText;
     }
 

@@ -46,6 +46,11 @@ export interface FormatedData {
 interface States{
     data?: FormatedData[];
     headers?: Header<FormatedData>[];
+    users?: UserPartialInformation[];
+    totalTime?: number;
+    totalTimePerUser?: {
+        [key: number] : number;
+    };
 }
 
 const keyExtractor = (slotStat: FormatedData) => slotStat.date.toISOString();
@@ -60,6 +65,22 @@ const getTotalTime = (data: DayWiseSlotStat[]) => (
             return newAcc;
         },
         0,
+    )
+);
+
+const getTotalTimePerUser = (data: DayWiseSlotStat[]) => (
+    data.reduce(
+        (acc, stat) => {
+            stat.users.forEach((user) => {
+                if (acc[user.id]) {
+                    acc[user.id] += user.totalTimeInSeconds;
+                } else {
+                    acc[user.id] = user.totalTimeInSeconds;
+                }
+            });
+            return acc;
+        },
+        {},
     )
 );
 
@@ -95,6 +116,9 @@ export class Dashboard extends React.PureComponent<Props, States> {
                     data: slotStats,
                 }),
                 headers: getHeaders({ users: fUsers }),
+                users: fUsers,
+                totalTime: getTotalTime(props.slotStats),
+                totalTimePerUser: getTotalTimePerUser(props.slotStats),
             };
         } else {
             this.state = {};
@@ -117,14 +141,16 @@ export class Dashboard extends React.PureComponent<Props, States> {
                     end: date.endDate,
                     data: slotStats,
                 }),
+                users: fUsers,
                 headers: getHeaders({ users: fUsers }),
+                totalTime: getTotalTime(nextProps.slotStats),
+                totalTimePerUser: getTotalTimePerUser(nextProps.slotStats),
             });
         }
     }
 
     render() {
         const {
-            slotStats,
             loadings: {
                 projectsLoading,
                 tasksLoading,
@@ -137,6 +163,9 @@ export class Dashboard extends React.PureComponent<Props, States> {
         const {
             headers,
             data,
+            totalTime,
+            users,
+            totalTimePerUser,
         } = this.state;
 
         const loading = (
@@ -158,7 +187,21 @@ export class Dashboard extends React.PureComponent<Props, States> {
                         : 'Select Date'
                 }
                 <div className={styles.summary}>
-                    Total Time: {getHumanReadableTime(getTotalTime(slotStats))}
+                    // TODO: Use ListView
+                    Total Time: {getHumanReadableTime(totalTime)}
+                    {
+                        (users && totalTimePerUser) ?
+                        users.map(user => (
+                            <div key={user.id}>
+                                <span>{user.displayName}</span>
+                                <span>{
+                                    getHumanReadableTime(
+                                        totalTimePerUser[user.id],
+                                    )}
+                                </span>
+                            </div>
+                        )) : <div />
+                    }
                 </div>
             </div>
         );

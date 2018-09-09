@@ -35,7 +35,6 @@ export default class GetProjectWiseSlotsRequest implements Request<{}> {
             date_lt: params.date ? params.date.endDate : undefined,
         };
 
-        console.warn(filters);
         const request = new FgRestBuilder()
             .url(createUrlForProjectWiseSlotStats(filters))
             .params(commonParamsForGet)

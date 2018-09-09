@@ -41,6 +41,7 @@ export interface OverviewParams {
     userGroup: number;
     project: number;
     task: number;
+    tag: number[];
     date: Date;
 }
 

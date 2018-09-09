@@ -5,7 +5,7 @@ from django.db import models
 
 from user_resource.models import UserResource
 from user.models import User
-from project.models import Project
+from project.models import Project, Tag
 
 
 class Task(UserResource):
@@ -20,6 +20,8 @@ class Task(UserResource):
     )
     title = models.CharField(max_length=255)
     description = models.TextField(blank=True)
+
+    tags = models.ManyToManyField('project.Tag', blank=True)
 
     def __str__(self):
         return self.title
@@ -58,6 +60,8 @@ class TimeSlot(models.Model):
 
     task = models.ForeignKey(Task, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    tags = models.ManyToManyField(Tag, blank=True)
 
     remarks = models.TextField(blank=True)
 

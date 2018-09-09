@@ -6,15 +6,22 @@ import {
     ReducerGroup,
     Project,
     Users,
+    Tag,
+    Task,
     SetProjectAction,
     SetProjectTasksAction,
+    SetProjectTagsAction,
 } from '../../interface';
+import { TAGS_ACTION } from '../domainData/tag';
+import { TASKS_ACTION } from '../domainData/task';
 
 // ACTION-TYPE
 
 export const enum SILO_PROJECTS_ACTION {
     setProject =  'siloDomainData/PROJECT/SET_PROJECT',
     setProjectTasks =  'siloDomainData/PROJECT/SET_PROJECT_TASKS',
+    setProjectTags =  'siloDomainData/PROJECT/SET_PROJECT_TAGS',
+    setProjectTag =  'siloDomainData/PROJECT/SET_PROJECT_TAG',
 }
 
 // ACTION-CREATOR
@@ -29,6 +36,17 @@ export const setProjectTasksAction = ({ projectId, tasks }: SetProjectTasksActio
     projectId,
     tasks,
     type: SILO_PROJECTS_ACTION.setProjectTasks,
+});
+
+export const setProjectTagsAction = ({ projectId, tags }: SetProjectTagsAction) => ({
+    projectId,
+    tags,
+    type: SILO_PROJECTS_ACTION.setProjectTags,
+});
+
+export const setProjectTagAction = (tag: Tag) => ({
+    tag,
+    type: SILO_PROJECTS_ACTION.setProjectTag,
 });
 
 // HELPER
@@ -86,9 +104,59 @@ const setProjectTasks = (state: SiloDomainData, { tasks, projectId }: SetProject
     return update(state, settings);
 };
 
+const setProjectTags = (state: SiloDomainData, { tags, projectId }: SetProjectTagsAction) => {
+    const settings = {
+        projects: { $auto: {
+            [projectId]: { $auto: {
+                tags: {
+                    $set: tags,
+                },
+            } },
+        } },
+    };
+    return update(state, settings);
+};
+
+const setProjectTag = (state: SiloDomainData, action: { tag: Tag}) => {
+    const { tag } = action;
+    const settings = {
+        projects: { $auto: {
+            [tag.project]: { $auto: {
+                tags: { $autoArray: {
+                    $bulk: [
+                        { $filter: (t: Tag) => t.id !== tag.id },
+                        { $push: [tag] },
+                    ],
+                } },
+            } },
+        } },
+    };
+    return update(state, settings);
+};
+
+const setProjectTask = (state: SiloDomainData, action: { task: Task}) => {
+    const { task } = action;
+    const settings = {
+        projects: { $auto: {
+            [task.project]: { $auto: {
+                tasks: { $autoArray: {
+                    $bulk: [
+                        { $filter: (t: Task) => t.id !== task.id },
+                        { $push: [task] },
+                    ],
+                } },
+            } },
+        } },
+    };
+    return update(state, settings);
+};
+
 const reducer: ReducerGroup<SiloDomainData> = {
     [SILO_PROJECTS_ACTION.setProject]: setProject,
     [SILO_PROJECTS_ACTION.setProjectTasks]: setProjectTasks,
+    [SILO_PROJECTS_ACTION.setProjectTags]: setProjectTags,
+    [TAGS_ACTION.setTag]: setProjectTag,
+    [TASKS_ACTION.setTask]: setProjectTask,
 };
 
 export default reducer;

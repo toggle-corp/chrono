@@ -7,7 +7,9 @@ const taskSchemas: Schema[] = [
         fields: {
             title: { type: 'string', required: true },
             description: { type: 'string' },
-            project: { type: 'number' },
+            project: { type: 'number', required: true },
+            userGroup: { type: 'number', required: true },
+            tags: { type: 'array.number' },
         },
     },
     {
