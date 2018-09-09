@@ -15,7 +15,7 @@ import Faram, {
 import { RestRequest } from '../../../../vendor/react-store/utils/rest';
 import NonFieldErrors from '../../../../vendor/react-store/components/Input/NonFieldErrors';
 import { isObjectEmpty } from '../../../../vendor/react-store/utils/common';
-import { ExportRequest } from './requests';
+import ExportRequest from './requests/ExportRequest';
 
 import {
     userGroupsSelector,
@@ -62,7 +62,9 @@ interface PropsFromDispatch {
 
 type Props = OwnProps & PropsFromState & PropsFromDispatch;
 
-interface State { }
+interface State {
+    exportLoading: boolean;
+}
 
 const userKeySelector = (user: UserPartialInformation) => user.id;
 const userLabelSelector = (user: UserPartialInformation) => user.displayName;
@@ -75,7 +77,7 @@ export class Filter extends React.PureComponent<Props, State>{
         super(props);
 
         this.state = {
-            fileUrl: null,
+            exportLoading: false,
         };
 
         this.schema = {
@@ -162,6 +164,8 @@ export class Filter extends React.PureComponent<Props, State>{
             pristine,
         } = faram;
 
+        const { exportLoading } = this.state;
+
         const isFilterEmpty = isObjectEmpty(faramValues);
 
         return (
@@ -212,16 +216,9 @@ export class Filter extends React.PureComponent<Props, State>{
                 >
                     Clear
                 </WarningButton>
-                {/*
-                <WarningButton
-                    onClick={this.handleFaramDiscard}
-                    disabled={pristine || loading}
-                >
-                    Discard
-                </WarningButton>
-                */}
                 <SuccessButton
                     onClick={this.handleExportClick}
+                    disabled={exportLoading}
                 >
                     Export
                 </SuccessButton>

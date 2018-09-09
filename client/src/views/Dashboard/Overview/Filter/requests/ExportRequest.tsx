@@ -2,6 +2,7 @@ import {
     RestRequest,
     FgRestBuilder,
 } from '../../../../../vendor/react-store/utils/rest';
+import notify from '../../../../../notify';
 
 import { Request } from '../../../../../rest/interface';
 import schema from '../../../../../schema';
@@ -28,9 +29,11 @@ export default class ExportRequest implements Request<{}> {
     }
 
     handlePreload = () => {
+        this.props.setState({ exportLoading: true });
     }
 
     handlePostload = () => {
+        this.props.setState({ exportLoading: false });
     }
 
     handleSuccess = (response:any) => {
@@ -43,9 +46,21 @@ export default class ExportRequest implements Request<{}> {
     }
 
     handleFailure = () => {
+        notify.send({
+            title: 'Export Tasks',
+            type: notify.type.ERROR,
+            message: 'Failed to export tasks',
+            duration: notify.duration.MEDIUM,
+        });
     }
 
     handleFatal = () => {
+        notify.send({
+            title: 'Export Tasks',
+            type: notify.type.ERROR,
+            message: 'Failed to export tasks',
+            duration: notify.duration.SLOW,
+        });
     }
 
     create = (filters: OverviewParams): RestRequest => {

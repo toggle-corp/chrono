@@ -30,11 +30,11 @@ class CSVExporter(Exporter):
     # NOTE: self.data should be list of rows
 
     def export(self, temp=True):
-        f = tempfile.NamedTemporaryFile(mode='w', delete=False)
-        for row in self.data:
-            f.write(','.join([str(x) for x in row]))
-            f.write('\n')
-        return f.name
+        with tempfile.NamedTemporaryFile(mode='w', delete=False) as f:
+            for row in self.data:
+                f.write(','.join([str(x) for x in row]))
+                f.write('\n')
+            return f.name
 
 
 class XLSXExporter(Exporter):
