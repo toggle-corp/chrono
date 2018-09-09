@@ -111,7 +111,7 @@ export class Filter extends React.PureComponent<Props, State>{
         });
     }
 
-    handleFaramSuccess = (faramValues: OverviewParams) => {
+    handleFaramSuccess = (_:any, faramValues: OverviewParams) => {
         this.props.setFilters({
             faramValues,
             filters: faramValues,

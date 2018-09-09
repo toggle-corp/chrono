@@ -124,7 +124,8 @@ class TimeSlotStatsProjectWiseSerializer(RemoveNullFieldsMixin,
         )
 
 
-class UserStatsSerializer(serializers.ModelSerializer):
+class UserStatsSerializer(RemoveNullFieldsMixin,
+                          serializers.ModelSerializer):
     total_time = serializers.DurationField()
     total_time_in_seconds = SecondsField(source='total_time')
 
@@ -133,6 +134,7 @@ class UserStatsSerializer(serializers.ModelSerializer):
         fields = ('id', 'total_time', 'total_time_in_seconds')
 
 
-class TimeSlotStatsDayWiseSerializer(serializers.Serializer):
+class TimeSlotStatsDayWiseSerializer(RemoveNullFieldsMixin,
+                                     serializers.Serializer):
     date = serializers.DateField()
     users = UserStatsSerializer(many=True)
