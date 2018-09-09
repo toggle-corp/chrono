@@ -1,12 +1,12 @@
-import { Schema } from './interface';
+import { Schema } from '@togglecorp/ravl';
 
 const userSchema: Schema[] = [
     {
         doc: { name: 'user' },
         fields: {
-            id: { type: 'uint', required: 'true' },
-            username: { type: 'string', required: 'true' },
-            email: { type: 'email', required: 'true' },
+            id: { type: 'uint', required: true },
+            username: { type: 'string', required: true },
+            email: { type: 'email', required: true },
             firstName: { type: 'string' },
             lastName: { type: 'string' },
             displayName: { type: 'string' },
@@ -15,8 +15,8 @@ const userSchema: Schema[] = [
     {
         doc: { name: 'simplifiedUser' },
         fields: {
-            id: { type: 'uint', required: 'true' },
-            email: { type: 'email', required: 'true' },
+            id: { type: 'uint', required: true },
+            email: { type: 'email', required: true },
             displayName: { type: 'string' },
         },
     },
