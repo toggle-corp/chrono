@@ -3,7 +3,7 @@ import { match as Match } from 'react-router';
 
 import createReducerWithMap from '../../utils/createReducerWithMap';
 import initialRouteState from '../initial-state/route';
-import { isTruthy } from '../../vendor/react-store/utils/common';
+import { isTruthy } from '#rsu/common';
 import { Route, ReducerGroup } from '../interface';
 
 import { AUTH_ACTION } from './auth';

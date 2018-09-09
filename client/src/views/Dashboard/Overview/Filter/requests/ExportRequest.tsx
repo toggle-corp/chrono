@@ -1,7 +1,7 @@
 import {
     RestRequest,
     FgRestBuilder,
-} from '../../../../../vendor/react-store/utils/rest';
+} from '#rsu/rest';
 import notify from '../../../../../notify';
 
 import { Request } from '../../../../../rest/interface';

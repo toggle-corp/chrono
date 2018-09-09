@@ -5,8 +5,8 @@ import React, {
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 
-import DangerButton from '../../../../vendor/react-store/components/Action/Button/DangerButton';
-import { reverseRoute } from '../../../../vendor/react-store/utils/common';
+import DangerButton from '#rsca/Button/DangerButton';
+import { reverseRoute } from '#rsu/common';
 
 import {
     pathNames,

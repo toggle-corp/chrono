@@ -1,4 +1,4 @@
-import update from '../../../vendor/react-store/utils/immutable-update';
+import update from '#rsu/immutable-update';
 
 import {
     SiloDomainData,

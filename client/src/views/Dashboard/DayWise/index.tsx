@@ -1,8 +1,8 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-import Table, { Header }  from '../../../vendor/react-store/components/View/Table';
-import LoadingAnimation from '../../../vendor/react-store/components/View/LoadingAnimation';
+import Table, { Header }  from '#rscv/Table';
+import LoadingAnimation from '#rscv/LoadingAnimation';
 
 import {
     RootState,

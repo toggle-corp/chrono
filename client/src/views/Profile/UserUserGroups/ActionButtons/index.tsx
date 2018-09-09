@@ -6,8 +6,8 @@ import {
     UserUserGroup,
 } from '../../../../redux/interface';
 import { pathNames, iconNames } from '../../../../constants';
-import { reverseRoute } from '../../../../vendor/react-store/utils/common';
-import DangerButton from '../../../../vendor/react-store/components/Action/Button/DangerButton';
+import { reverseRoute } from '#rsu/common';
+import DangerButton from '#rsca/Button/DangerButton';
 
 import * as styles from './styles.scss';
 

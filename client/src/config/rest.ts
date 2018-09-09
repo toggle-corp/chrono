@@ -1,4 +1,4 @@
-import { RestRequest } from '../vendor/react-store/utils/rest';
+import { RestRequest } from '#rsu/rest';
 import { RestHeader, RestAuthorizationHeader } from '../rest/interface';
 
 export interface PP {

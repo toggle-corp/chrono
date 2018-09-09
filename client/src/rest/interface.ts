@@ -1,4 +1,4 @@
-import { RestRequest } from '../vendor/react-store/utils/rest';
+import { RestRequest } from '#rsu/rest';
 
 export interface RestPostBody {
     method: string;

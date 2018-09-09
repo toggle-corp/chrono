@@ -1,4 +1,4 @@
-import { NOTIFICATION } from './vendor/react-store/components/View/Toast';
+import { NOTIFICATION } from '#rscv/Toast';
 
 import { Notification } from './redux/interface';
 import { notifySendAction } from './redux';

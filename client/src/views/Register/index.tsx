@@ -2,22 +2,22 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 
-import { reverseRoute } from '../../vendor/react-store/utils/common';
-import LoadingAnimation from '../../vendor/react-store/components/View/LoadingAnimation';
-import NonFieldErrors from '../../vendor/react-store/components/Input/NonFieldErrors';
-import TextInput from '../../vendor/react-store/components/Input/TextInput';
-import PrimaryButton from '../../vendor/react-store/components/Action/Button/PrimaryButton';
-import { RestRequest } from '../../vendor/react-store/utils/rest';
+import { reverseRoute } from '#rsu/common';
+import LoadingAnimation from '#rscv/LoadingAnimation';
+import NonFieldErrors from '#rsci/NonFieldErrors';
+import TextInput from '#rsci/TextInput';
+import PrimaryButton from '#rsca/Button/PrimaryButton';
+import { RestRequest } from '#rsu/rest';
 import Faram, {
     FaramErrors,
     FaramValues,
     FaramSchema,
-} from '../../vendor/react-store/components/General/Faram';
+} from '#rscg/Faram';
 import {
     emailCondition,
     lengthGreaterThanCondition,
     requiredCondition,
-} from '../../vendor/react-store/components/General/Faram/validations';
+} from '#rscg/Faram/validations';
 
 import { pathNames } from '../../constants';
 

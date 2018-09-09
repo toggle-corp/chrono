@@ -5,9 +5,9 @@ import {
     compareString,
     compareNumber,
     reverseRoute,
-} from '../../../vendor/react-store/utils/common';
-import { Header } from '../../../vendor/react-store/components/View/Table';
-import Numeral from '../../../vendor/react-store/components/View/Numeral';
+} from '#rsu/common';
+import { Header } from '#rscv/Table';
+import Numeral from '#rscv/Numeral';
 
 import { ProjectWiseSlotStat } from '../../../redux/interface';
 

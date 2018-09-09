@@ -1,4 +1,4 @@
-import { FaramErrors } from '../../../vendor/react-store/components/General/Faram';
+import { FaramErrors } from '#rscg/Faram';
 
 export interface TimeSlot {
     id: number;

@@ -1,4 +1,4 @@
-import Locker from '../../../vendor/react-store/utils/Locker';
+import Locker from '#rsu/Locker';
 
 export interface AbstractTask {
     start(): Promise<any>; // tslint:disable-line no-any

@@ -2,13 +2,13 @@ import React from 'react';
 import Redux from 'redux';
 import { connect } from 'react-redux';
 
-import Button from '../../vendor/react-store/components/Action/Button';
-import SelectInput from '../../vendor/react-store/components/Input/SelectInput';
-import FormattedDate from '../../vendor/react-store/components/View/FormattedDate';
-import ListView from '../../vendor/react-store/components/View/List/ListView';
-import LoadingAnimation from '../../vendor/react-store/components/View/LoadingAnimation';
-import { getNumDaysInMonthX } from '../../vendor/react-store/utils/common';
-import { RestRequest } from '../../vendor/react-store/utils/rest';
+import Button from '#rsca/Button';
+import SelectInput from '#rsci/SelectInput';
+import FormattedDate from '#rscv/FormattedDate';
+import ListView from '#rscv/List/ListView';
+import LoadingAnimation from '#rscv/LoadingAnimation';
+import { getNumDaysInMonthX } from '#rsu/common';
+import { RestRequest } from '#rsu/rest';
 
 import { getCanonicalDate } from '../../utils/map';
 import { iconNames } from '../../constants';

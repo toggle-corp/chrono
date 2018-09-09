@@ -2,25 +2,25 @@ import React from 'react';
 import Redux from 'redux';
 import { connect } from 'react-redux';
 
-import PrimaryButton from '../../../vendor/react-store/components/Action/Button/PrimaryButton';
-import DangerButton from '../../../vendor/react-store/components/Action/Button/DangerButton';
-import Modal from '../../../vendor/react-store/components/View/Modal';
-import ModalBody from '../../../vendor/react-store/components/View/Modal/Body';
-import ModalHeader from '../../../vendor/react-store/components/View/Modal/Header';
-import { RestRequest } from '../../../vendor/react-store/utils/rest';
+import PrimaryButton from '#rsca/Button/PrimaryButton';
+import DangerButton from '#rsca/Button/DangerButton';
+import Modal from '#rscv/Modal';
+import ModalBody from '#rscv/Modal/Body';
+import ModalHeader from '#rscv/Modal/Header';
+import { RestRequest } from '#rsu/rest';
 
-import NonFieldErrors from '../../../vendor/react-store/components/Input/NonFieldErrors';
+import NonFieldErrors from '#rsci/NonFieldErrors';
 import Faram, {
     FaramErrors,
     FaramValues,
     FaramSchema,
-} from '../../../vendor/react-store/components/General/Faram';
+} from '#rscg/Faram';
 import {
     requiredCondition,
-} from '../../../vendor/react-store/components/General/Faram/validations';
-import TextArea from '../../../vendor/react-store/components/Input/TextArea';
-import TextInput from '../../../vendor/react-store/components/Input/TextInput';
-import LoadingAnimation from '../../../vendor/react-store/components/View/LoadingAnimation';
+} from '#rscg/Faram/validations';
+import TextArea from '#rsci/TextArea';
+import TextInput from '#rsci/TextInput';
+import LoadingAnimation from '#rscv/LoadingAnimation';
 
 import {
     taskSelector,

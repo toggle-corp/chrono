@@ -5,9 +5,9 @@ import {
     RouteComponentProps,
 } from 'react-router-dom';
 
-import { reverseRoute } from '../../vendor/react-store/utils/common';
-import List from '../../vendor/react-store/components/View/List';
-import DropdownMenu from '../../vendor/react-store/components/Action/DropdownMenu';
+import { reverseRoute } from '#rsu/common';
+import List from '#rscv/List';
+import DropdownMenu from '#rsca/DropdownMenu';
 
 import {
     iconNames,

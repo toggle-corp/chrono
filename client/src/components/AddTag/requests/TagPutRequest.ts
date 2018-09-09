@@ -1,7 +1,7 @@
 import {
     RestRequest,
     FgRestBuilder,
-} from '../../../vendor/react-store/utils/rest';
+} from '#rsu/rest';
 import schema from '../../../schema';
 import { Tag } from '../../../redux/interface';
 import {

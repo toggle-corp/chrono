@@ -7,7 +7,7 @@ import {
     RouteComponentProps,
 } from 'react-router-dom';
 
-import { reverseRoute } from '../../vendor/react-store/utils/common';
+import { reverseRoute } from '#rsu/common';
 
 import {
     pathNames,
