@@ -7,7 +7,7 @@ import {
     dashboardActiveViewSelector,
     setDashboardActiveViewAction,
 }  from '../../redux';
-import MultiViewContainer from '../../vendor/react-store/components/View/MultiViewContainer';
+import MultiViewContainer from '#rscv/MultiViewContainer';
 import FixedTabs from '../../vendor/react-store/components/View/FixedTabs';
 
 import Overview from './Overview';
