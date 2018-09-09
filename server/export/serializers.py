@@ -1,15 +1,18 @@
 from rest_framework import serializers
 
+from chrono.serializers import RemoveNullFieldsMixin
 from export.models import Export
 
 
-class ExportSerializer(serializers.ModelSerializer):
+class ExportSerializer(RemoveNullFieldsMixin,
+                       serializers.ModelSerializer):
     class Meta:
         model = Export
         fields = '__all__'
 
 
-class ExportTriggerSerializer(serializers.Serializer):
+class ExportTriggerSerializer(RemoveNullFieldsMixin,
+                              serializers.Serializer):
     project_id = serializers.IntegerField()
     export_type = serializers.CharField()
     start_date = serializers.DateField()

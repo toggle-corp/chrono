@@ -1,11 +1,14 @@
 from rest_framework import serializers
 from drf_dynamic_fields import DynamicFieldsMixin
 
-from project.models import Project
+from chrono.serializers import RemoveNullFieldsMixin
 from user_resource.serializers import UserResourceSerializer
+from project.models import Project
 
 
-class ProjectSerializer(DynamicFieldsMixin, UserResourceSerializer):
+class ProjectSerializer(DynamicFieldsMixin,
+                        RemoveNullFieldsMixin,
+                        UserResourceSerializer):
     class Meta:
         model = Project
         fields = ('__all__')
@@ -16,7 +19,8 @@ class ProjectSerializer(DynamicFieldsMixin, UserResourceSerializer):
         return group
 
 
-class ProjectExportSerializer(serializers.Serializer):
+class ProjectExportSerializer(RemoveNullFieldsMixin,
+                              serializers.Serializer):
     export_format = serializers.CharField()
     start_date = serializers.DateField()
     end_date = serializers.DateField()

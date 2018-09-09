@@ -8,10 +8,12 @@ from django.utils.http import urlsafe_base64_encode
 from django.template import loader
 from django.core.mail import EmailMultiAlternatives
 
+from chrono.serializers import RemoveNullFieldsMixin
 from user.models import Profile
 
 
-class UserSerializer(DynamicFieldsMixin, serializers.ModelSerializer):
+class UserSerializer(DynamicFieldsMixin, RemoveNullFieldsMixin,
+                     serializers.ModelSerializer):
     display_name = serializers.SerializerMethodField()
 
     class Meta:
