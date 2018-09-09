@@ -1,5 +1,5 @@
-import update from '../../../vendor/react-store/utils/immutable-update';
-import { getObjectChildren } from '../../../vendor/react-store/utils/common';
+import update from '#rsu/immutable-update';
+import { getObjectChildren } from '#rsu/common';
 
 import {
     SiloDomainData,

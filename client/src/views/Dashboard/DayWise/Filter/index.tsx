@@ -2,20 +2,20 @@ import React from 'react';
 import Redux from 'redux';
 import { connect } from 'react-redux';
 
-import PrimaryButton from '../../../../vendor/react-store/components/Action/Button/PrimaryButton';
-import WarningButton from '../../../../vendor/react-store/components/Action/Button/WarningButton';
-import LoadingAnimation from '../../../../vendor/react-store/components/View/LoadingAnimation';
-import DateFilter from '../../../../vendor/react-store/components/Input/DateFilter';
-import MultiSelectInput from '../../../../vendor/react-store/components/Input/MultiSelectInput';
+import PrimaryButton from '#rsca/Button/PrimaryButton';
+import WarningButton from '#rsca/Button/WarningButton';
+import LoadingAnimation from '#rscv/LoadingAnimation';
+import DateFilter from '#rsci/DateFilter';
+import MultiSelectInput from '#rsci/MultiSelectInput';
 import Faram, {
     FaramErrors,
     FaramSchema,
-} from '../../../../vendor/react-store/components/General/Faram';
+} from '#rscg/Faram';
 import {
     requiredCondition,
-} from '../../../../vendor/react-store/components/General/Faram/validations';
-import NonFieldErrors from '../../../../vendor/react-store/components/Input/NonFieldErrors';
-import { isObjectEmpty } from '../../../../vendor/react-store/utils/common';
+} from '#rscg/Faram/validations';
+import NonFieldErrors from '#rsci/NonFieldErrors';
+import { isObjectEmpty } from '#rsu/common';
 
 import {
     usersSelector,

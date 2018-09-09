@@ -23,17 +23,17 @@ import Faram, {
     FaramErrors,
     FaramSchema,
     FaramValues,
-} from '../../../vendor/react-store/components/General/Faram';
+} from '#rscg/Faram';
 
-import DangerButton from '../../../vendor/react-store/components/Action/Button/DangerButton';
-import PrimaryButton from '../../../vendor/react-store/components/Action/Button/PrimaryButton';
+import DangerButton from '#rsca/Button/DangerButton';
+import PrimaryButton from '#rsca/Button/PrimaryButton';
 import {
     requiredCondition,
-} from '../../../vendor/react-store/components/General/Faram/validations';
-import NonFieldErrors from '../../../vendor/react-store/components/Input/NonFieldErrors';
-import SelectInput from '../../../vendor/react-store/components/Input/SelectInput';
-import LoadingAnimation from '../../../vendor/react-store/components/View/LoadingAnimation';
-import { RestRequest } from '../../../vendor/react-store/utils/rest';
+} from '#rscg/Faram/validations';
+import NonFieldErrors from '#rsci/NonFieldErrors';
+import SelectInput from '#rsci/SelectInput';
+import LoadingAnimation from '#rscv/LoadingAnimation';
+import { RestRequest } from '#rsu/rest';
 
 import UsersGetRequest from '../requests/UsersGetRequest';
 import AddMemberRequest from '../requests/AddMemberRequest';

@@ -96,7 +96,13 @@ module.exports = {
       '.jsx',
     ],
     alias: {
-      
+      "#rsca": path.resolve(paths.appSrc, "./vendor/react-store/components/Action"),
+      "#rscg": path.resolve(paths.appSrc, "./vendor/react-store/components/General"),
+      "#rsci": path.resolve(paths.appSrc, "./vendor/react-store/components/Input"),
+      "#rscv": path.resolve(paths.appSrc, "./vendor/react-store/components/View"),
+      "#rscz": path.resolve(paths.appSrc, "./vendor/react-store/components/Visualization"),
+      "#rsu": path.resolve(paths.appSrc, "./vendor/react-store/utils"),
+      "#rsk": path.resolve(paths.appSrc, "./vendor/react-store/constants"),
       // Support React Native Web
       // https://www.smashingmagazine.com/2016/08/a-glimpse-into-the-future-with-react-native-for-web/
       'react-native': 'react-native-web',

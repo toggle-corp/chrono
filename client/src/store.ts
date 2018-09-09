@@ -10,7 +10,7 @@ import {
     EnhancerOptions,
 } from 'redux-devtools-extension';
 
-import { createActionSyncMiddleware } from './vendor/react-store/utils/redux-sync.js';
+import { createActionSyncMiddleware } from '#rsu/redux-sync.js';
 
 import {
     commonHeaderForPost,

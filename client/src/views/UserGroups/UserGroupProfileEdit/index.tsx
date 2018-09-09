@@ -3,11 +3,11 @@ import React, {
 } from 'react';
 
 import { UserGroup } from '../../../redux/interface';
-import PrimaryButton from '../../../vendor/react-store/components/Action/Button/PrimaryButton';
-import Modal from '../../../vendor/react-store/components/View/Modal';
-import ModalBody from '../../../vendor/react-store/components/View/Modal/Body';
-import ModalHeader from '../../../vendor/react-store/components/View/Modal/Header';
-import { iconNames } from '../../../vendor/react-store/constants';
+import PrimaryButton from '#rsca/Button/PrimaryButton';
+import Modal from '#rscv/Modal';
+import ModalBody from '#rscv/Modal/Body';
+import ModalHeader from '#rscv/Modal/Header';
+import { iconNames } from '#rsk/index';
 import UserGroupEditForm from './UserGroupEditForm';
 
 interface OwnProps {

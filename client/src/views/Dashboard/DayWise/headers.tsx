@@ -2,9 +2,9 @@ import React from 'react';
 import {
     compareNumber,
     compareString,
-} from '../../../vendor/react-store/utils/common';
-import { Header } from '../../../vendor/react-store/components/View/Table';
-import FormattedDate from '../../../vendor/react-store/components/View/FormattedDate';
+} from '#rsu/common';
+import { Header } from '#rscv/Table';
+import FormattedDate from '#rscv/FormattedDate';
 
 import {
     DayWiseSlotStat,

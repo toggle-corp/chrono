@@ -8,13 +8,13 @@ import {
     SetUserAction,
 } from '../../redux/interface';
 
-import LoadingAnimation from '../../vendor/react-store/components/View/LoadingAnimation';
-import Modal from '../../vendor/react-store/components/View/Modal';
-import ModalBody from '../../vendor/react-store/components/View/Modal/Body';
-import ModalHeader from '../../vendor/react-store/components/View/Modal/Header';
-import PrimaryButton from '../../vendor/react-store/components/Action/Button/PrimaryButton';
-import DangerButton from '../../vendor/react-store/components/Action/Button/DangerButton';
-import { RestRequest } from '../../vendor/react-store/utils/rest';
+import LoadingAnimation from '#rscv/LoadingAnimation';
+import Modal from '#rscv/Modal';
+import ModalBody from '#rscv/Modal/Body';
+import ModalHeader from '#rscv/Modal/Header';
+import PrimaryButton from '#rsca/Button/PrimaryButton';
+import DangerButton from '#rsca/Button/DangerButton';
+import { RestRequest } from '#rsu/rest';
 import {
     userProfileInformationSelector,
     userIdFromRouteSelector,

@@ -3,7 +3,7 @@ import { AbstractTask } from '../Manager';
 import {
     RestRequest,
     BgRestBuilder,
-} from '../../../../vendor/react-store/utils/rest';
+} from '#rsu/rest';
 import {
     createParamsForTokenRefresh,
     urlForTokenRefresh,

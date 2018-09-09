@@ -1,8 +1,8 @@
 import React, { Fragment } from 'react';
 import { connect } from 'react-redux';
 
-import SelectInput from '../../../vendor/react-store/components/Input/SelectInput';
-import MultiSelectInput from '../../../vendor/react-store/components/Input/MultiSelectInput';
+import SelectInput from '#rsci/SelectInput';
+import MultiSelectInput from '#rsci/MultiSelectInput';
 
 import {
     RootState,

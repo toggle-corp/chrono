@@ -2,12 +2,12 @@ import React from 'react';
 import Redux from 'redux';
 import { connect } from 'react-redux';
 
-import { compareString } from '../../../vendor/react-store/utils/common';
-import Table, { Header } from '../../../vendor/react-store/components/View/Table';
-import Confirm from '../../../vendor/react-store/components/View/Modal/Confirm';
-import LoadingAnimation from '../../../vendor/react-store/components/View/LoadingAnimation';
+import { compareString } from '#rsu/common';
+import Table, { Header } from '#rscv/Table';
+import Confirm from '#rscv/Modal/Confirm';
+import LoadingAnimation from '#rscv/LoadingAnimation';
 
-import { RestRequest } from '../../../vendor/react-store/utils/rest';
+import { RestRequest } from '#rsu/rest';
 
 import {
     RootState,

@@ -2,7 +2,7 @@ import React, {
     Fragment,
 } from 'react';
 
-import PrimaryButton from '../../vendor/react-store/components/Action/Button/PrimaryButton';
+import PrimaryButton from '#rsca/Button/PrimaryButton';
 
 import { iconNames } from '../../constants';
 

@@ -2,7 +2,7 @@ import React from 'react';
 import Redux from 'redux';
 import { connect } from 'react-redux';
 
-import { RestRequest } from '../../../vendor/react-store/utils/rest';
+import { RestRequest } from '#rsu/rest';
 
 import {
     RootState,

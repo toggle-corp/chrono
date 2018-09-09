@@ -6,7 +6,7 @@ import { Location } from 'history';
 import { match as Match } from 'react-router';
 import { RouteComponentProps } from 'react-router-dom';
 
-import Bundle from '../vendor/react-store/components/General/Bundle';
+import Bundle from '#rscg/Bundle';
 
 import { RootState } from '../redux/interface';
 import { setRouteParamsAction } from '../redux';

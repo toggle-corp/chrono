@@ -2,9 +2,9 @@ import React from 'react';
 import Redux from 'redux';
 import { connect } from 'react-redux';
 
-import RestRequest from '../../vendor/react-store/utils/rest/RestRequest.js';
-import Table  from '../../vendor/react-store/components/View/Table';
-import LoadingAnimation from '../../vendor/react-store/components/View/LoadingAnimation';
+import RestRequest from '#rsu/rest/RestRequest.js';
+import Table  from '#rscv/Table';
+import LoadingAnimation from '#rscv/LoadingAnimation';
 
 import {
     RootState,

@@ -3,7 +3,7 @@ import * as Redux from 'redux';
 import { BrowserRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 
-import { RestRequest, FgRestBuilder } from './vendor/react-store/utils/rest';
+import { RestRequest, FgRestBuilder } from '#rsu/rest';
 import { RootState, Token } from './redux/interface';
 import {
     authenticatedSelector,

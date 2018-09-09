@@ -2,23 +2,23 @@ import React from 'react';
 import Redux from 'redux';
 import { connect } from 'react-redux';
 
-import FormattedDate from '../../../vendor/react-store/components/View/FormattedDate';
-import DangerButton from '../../../vendor/react-store/components/Action/Button/DangerButton';
-import WarningButton from '../../../vendor/react-store/components/Action/Button/WarningButton';
-import PrimaryButton from '../../../vendor/react-store/components/Action/Button/PrimaryButton';
+import FormattedDate from '#rscv/FormattedDate';
+import DangerButton from '#rsca/Button/DangerButton';
+import WarningButton from '#rsca/Button/WarningButton';
+import PrimaryButton from '#rsca/Button/PrimaryButton';
 import Faram, {
     FaramErrors,
     FaramSchema,
-} from '../../../vendor/react-store/components/General/Faram';
+} from '#rscg/Faram';
 import {
     requiredCondition,
-} from '../../../vendor/react-store/components/General/Faram/validations';
-import NonFieldErrors from '../../../vendor/react-store/components/Input/NonFieldErrors';
-import TimeInput from '../../../vendor/react-store/components/Input/TimeInput';
-import TextInput from '../../../vendor/react-store/components/Input/TextInput';
-import LoadingAnimation from '../../../vendor/react-store/components/View/LoadingAnimation';
-import Message from '../../../vendor/react-store/components/View/Message';
-import { RestRequest } from '../../../vendor/react-store/utils/rest';
+} from '#rscg/Faram/validations';
+import NonFieldErrors from '#rsci/NonFieldErrors';
+import TimeInput from '#rsci/TimeInput';
+import TextInput from '#rsci/TextInput';
+import LoadingAnimation from '#rscv/LoadingAnimation';
+import Message from '#rscv/Message';
+import { RestRequest } from '#rsu/rest';
 
 import {
     activeWipTimeSlotSelector,

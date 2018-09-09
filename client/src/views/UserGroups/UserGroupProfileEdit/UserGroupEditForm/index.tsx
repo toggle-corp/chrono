@@ -17,18 +17,18 @@ import Faram, {
     FaramErrors,
     FaramSchema,
     FaramValues,
-} from '../../../../vendor/react-store/components/General/Faram';
+} from '#rscg/Faram';
 import {
     requiredCondition,
-} from '../../../../vendor/react-store/components/General/Faram/validations';
-import NonFieldErrors from '../../../../vendor/react-store/components/Input/NonFieldErrors';
-import LoadingAnimation from '../../../../vendor/react-store/components/View/LoadingAnimation';
-import TextInput from '../../../../vendor/react-store/components/Input/TextInput';
-import TextArea from '../../../../vendor/react-store/components/Input/TextArea';
-import PrimaryButton from '../../../../vendor/react-store/components/Action/Button/PrimaryButton';
-import DangerButton from '../../../../vendor/react-store/components/Action/Button/DangerButton';
+} from '#rscg/Faram/validations';
+import NonFieldErrors from '#rsci/NonFieldErrors';
+import LoadingAnimation from '#rscv/LoadingAnimation';
+import TextInput from '#rsci/TextInput';
+import TextArea from '#rsci/TextArea';
+import PrimaryButton from '#rsca/Button/PrimaryButton';
+import DangerButton from '#rsca/Button/DangerButton';
 
-import { RestRequest } from '../../../../vendor/react-store/utils/rest';
+import { RestRequest } from '#rsu/rest';
 
 import UserGroupPatchRequest from '../../requests/UserGroupPatchRequest';
 

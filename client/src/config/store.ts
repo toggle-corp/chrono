@@ -1,7 +1,7 @@
 import localforage from 'localforage';
 import { createTransform } from 'redux-persist';
 import { SiloDomainData } from '../redux/interface';
-import update from '../vendor/react-store/utils/immutable-update';
+import update from '#rsu/immutable-update';
 
 const myTransform = createTransform(
     (inboundState: SiloDomainData) => {

@@ -7,10 +7,10 @@ import {
 import Redux from 'redux';
 import { connect } from 'react-redux';
 
-import { reverseRoute } from '../../vendor/react-store/utils/common';
-import List from '../../vendor/react-store/components/View/List';
-import DropdownMenu from '../../vendor/react-store/components/Action/DropdownMenu';
-import DropdownGroup from '../../vendor/react-store/components/Action/DropdownMenu/Group';
+import { reverseRoute } from '#rsu/common';
+import List from '#rscv/List';
+import DropdownMenu from '#rsca/DropdownMenu';
+import DropdownGroup from '#rsca/DropdownMenu/Group';
 
 import { stopTasksAction } from '../../redux/middlewares/taskManager';
 import {

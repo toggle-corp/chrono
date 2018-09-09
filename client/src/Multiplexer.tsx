@@ -8,9 +8,9 @@ import {
     RouteComponentProps,
 } from 'react-router-dom';
 
-import PrivateRoute from './vendor/react-store/components/General/PrivateRoute';
-import ExclusivelyPublicRoute from './vendor/react-store/components/General/ExclusivelyPublicRoute';
-import Toast from './vendor/react-store/components/View/Toast';
+import PrivateRoute from '#rscg/PrivateRoute';
+import ExclusivelyPublicRoute from '#rscg/ExclusivelyPublicRoute';
+import Toast from '#rscv/Toast';
 
 import {
     authenticatedSelector,
