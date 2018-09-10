@@ -164,13 +164,13 @@ if os.environ.get('DJANGO_USE_S3', 'False').lower() == 'true':
     AWS_S3_CUSTOM_DOMAIN = None
 
     # Static configuration
-    STATICFILES_LOCATION = 'static'
+    STATICFILES_LOCATION = 'server-static'
     STATIC_URL = "https://%s/%s/" % (AWS_S3_CUSTOM_DOMAIN,
                                      STATICFILES_LOCATION)
     STATICFILES_STORAGE = 'chrono.s3_storages.StaticStorage'
 
     # Media configuration
-    MEDIAFILES_LOCATION = 'media'
+    MEDIAFILES_LOCATION = 'server-media'
     MEDIA_URL = "https://%s/%s/" % (AWS_S3_CUSTOM_DOMAIN, MEDIAFILES_LOCATION)
     DEFAULT_FILE_STORAGE = 'chrono.s3_storages.MediaStorage'
 else:
