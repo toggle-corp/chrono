@@ -196,7 +196,7 @@ export class AddTaskModal extends React.PureComponent<Props, State> {
         });
     }
 
-    handleFaramSuccess = (values: AddTaskParams) => {
+    handleFaramSuccess = (_: AddTaskParams, values: AddTaskParams) => {
         const { taskId } = this.props;
         if (taskId) {
             this.startRequestForEditTask(taskId, values);

@@ -28,5 +28,6 @@ script:
     - echo 'script'
 
 after_success:
-    - docker push devtc/chrono:latest
+    - docker push devtc/chrono:server-latest
+    - docker push devtc/chrono:client-latest
     - ./scripts/deploy.sh
