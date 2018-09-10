@@ -9,8 +9,9 @@ RUN apt-get clean && \
     rm -rf /var/cache/apt/*
 
 # Update and install common packages with apt
-RUN apt-get update -y; \
+RUN apt-get update -y ; \
     apt-get install -y \
+        # Basic Packages
         git \
         locales \
         vim \
@@ -29,25 +30,15 @@ ENV LANG en_US.UTF-8
 # Install uwsgi for django
 RUN pip3 install uwsgi
 
-# Install node for react
-RUN curl -sL https://deb.nodesource.com/setup_8.x | bash -
-RUN apt-get install -y nodejs
-
-# Install yarn for react
-RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
-RUN echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
-RUN apt-get update && apt-get install yarn
-
-RUN mkdir /code/server -p && mkdir /code/client -p
 WORKDIR /code
 
 RUN pip3 install virtualenv
 RUN virtualenv /venv
 
-COPY server/requirements.txt /code/server/
-RUN . /venv/bin/activate && pip install -r server/requirements.txt
-
-COPY client/package.json /code/client/
-RUN cd client && yarn install
+COPY ./requirements.txt /code/requirements.txt
+RUN . /venv/bin/activate && \
+    pip install -r requirements.txt
 
 COPY . /code/
+
+CMD ./deploy/scripts/run_prod.sh

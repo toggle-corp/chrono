@@ -18,8 +18,8 @@ before_install:
     - git --git-dir=client/src/vendor/ravl/.git --no-pager show --pretty=fuller --quiet
 
     - env > .env
-    - docker pull devtc/chrono:latest
-    - docker build --cache-from devtc/chrono:latest --tag devtc/chrono:latest .
+    - docker pull devtc/chrono:server-latest; docker build --cache-from devtc/chrono:server-latest --tag devtc/chrono:server-latest ./server/
+    - docker pull devtc/chrono:client-latest; docker build --cache-from devtc/chrono:client-latest --tag devtc/chrono:client-latest ./client/
 
 before_script:
     - echo 'before_script'

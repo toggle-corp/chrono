@@ -33,6 +33,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'jwt_auth',
     'user',
+    'storages',
     'user_group',
     'user_resource',
     'project',
