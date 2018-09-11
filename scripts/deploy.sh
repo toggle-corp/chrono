@@ -40,9 +40,9 @@ printf "\n\n::::::::: Deploying React to S3 [Client] :::::::::::\n"
     REACT_APP_API_HTTPS=${CHRONO_HTTPS}
     REACT_APP_API_END=${CHRONO_API_END}
     " > ${CLIENT_DIR}/.env
-    docker run -t -v ${CLIENT_DIR}/build:/code/client/build --env-file=${CLIENT_DIR}/.env \
-        devtc/chrono:latest \
-        bash -c 'cd /code/client && yarn install && CI=false yarn build'
+    docker run -t -v ${CLIENT_DIR}/build:/code/build --env-file=${CLIENT_DIR}/.env \
+        devtc/chrono:client-latest \
+        bash -c 'yarn install && CI=false yarn build'
     set +e;
     rm ${CLIENT_DIR}/.env
 

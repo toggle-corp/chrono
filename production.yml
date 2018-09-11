@@ -7,17 +7,17 @@ services:
             - ./postgres-data:/var/lib/postgresql/data
 
     server:
-        image: devtc/chrono:prod-0.1
+        image: devtc/chrono:server-prod-0.1
         build:
-          context: .
+          context: ./server/
           cache_from:
-            - devtc/chrono:latest
+            - devtc/chrono:server-latest
+            # - devtc/chrono:server-prod-0.1
         env_file:
             - .env
-        command: ['/code/scripts/wait-for-it.sh', 'db:5432', '--', '/code/scripts/run_develop.sh', 'server']
         volumes:
             - ./media:/media
         ports:
-            - '80:8010'
+            - '80:80'
         depends_on:
             - db

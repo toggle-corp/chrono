@@ -193,6 +193,7 @@ export class SlotEditor extends React.PureComponent<Props, States> {
 
         this.startSubmitSlotRequest({
             ...faramValues,
+            tags: faramValues.tags || [],
             id: activeWipTimeSlot ? activeWipTimeSlot.id : undefined,
             date: getCanonicalDate(year, month, day as number),
         });

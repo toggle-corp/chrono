@@ -7,16 +7,16 @@ services:
             - ./postgres-data:/var/lib/postgresql/data
 
     server:
-        image: devtc/chrono:latest
+        image: devtc/chrono:server-latest
         build:
-          context: .
+          context: ./server/
           cache_from:
-            - devtc/chrono:latest
+            - devtc/chrono:server-latest
         env_file:
             - .env
-        command: ['/code/scripts/wait-for-it.sh', 'db:5432', '--', '/code/scripts/run_develop.sh', 'server']
+        command: ['/code/deploy/scripts/wait-for-it.sh', 'db:5432', '--', '/code/deploy/scripts/run_develop.sh']
         volumes:
-            - .:/code
+            - ./server/:/code
             - ./media:/media
         ports:
             - '8010:8010'
@@ -24,17 +24,16 @@ services:
             - db
 
     client:
-        image: devtc/chrono:latest
+        image: devtc/chrono:client-latest
         build:
-          context: .
+          context: ./client/
           cache_from:
-            - devtc/chrono:latest
-        build: .
+            - devtc/chrono:client-latest
         env_file:
             - .env
-        command: ['/code/scripts/run_develop.sh', 'client']
+        command: ['/code/scripts/run_develop.sh']
         volumes:
-            - .:/code
+            - ./client/:/code
             - ./media:/media
         ports:
             - '3001:3001'
