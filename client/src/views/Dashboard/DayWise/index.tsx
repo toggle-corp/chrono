@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 
 import Table, { Header }  from '#rscv/Table';
 import LoadingAnimation from '#rscv/LoadingAnimation';
+import { isTruthy } from '#rsu/common';
 
 import {
     RootState,
@@ -72,10 +73,12 @@ const getTotalTimePerUser = (data: DayWiseSlotStat[]) => (
     data.reduce(
         (acc, stat) => {
             stat.users.forEach((user) => {
-                if (acc[user.id]) {
-                    acc[user.id] += user.totalTimeInSeconds;
-                } else {
-                    acc[user.id] = user.totalTimeInSeconds;
+                if (isTruthy(user.totalTimeInSeconds)) {
+                    if (acc[user.id]) {
+                        acc[user.id] += user.totalTimeInSeconds;
+                    } else {
+                        acc[user.id] = user.totalTimeInSeconds;
+                    }
                 }
             });
             return acc;
@@ -199,6 +202,7 @@ export class Dashboard extends React.PureComponent<Props, States> {
                                         totalTimePerUser[user.id],
                                     )}
                                 </span>
+                                <br/>
                             </div>
                         )) : <div />
                     }

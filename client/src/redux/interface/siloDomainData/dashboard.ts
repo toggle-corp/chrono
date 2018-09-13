@@ -20,7 +20,7 @@ export interface DashboardFilter<T> {
     pristine: boolean;
 }
 
-interface Date {
+export interface FaramDate {
     startDate: string;
     endDate: string;
 }
@@ -42,7 +42,7 @@ export interface OverviewParams {
     project: number;
     task: number;
     tag: number[];
-    date: Date;
+    date?: FaramDate;
 }
 
 export interface OverviewSlotStat {
@@ -67,7 +67,7 @@ export interface OverviewSlotStat {
 // PROJECT WISE VIEW
 export interface ProjectWiseParams {
     project: number;
-    date: Date;
+    date: FaramDate;
 }
 
 export interface ProjectWiseSlotStat {
@@ -84,7 +84,7 @@ export interface ProjectWiseSlotStat {
 
 // DAY WISE VIEW
 export interface DayWiseParams {
-    date: Date;
+    date: FaramDate;
     users: number[];
 }
 
