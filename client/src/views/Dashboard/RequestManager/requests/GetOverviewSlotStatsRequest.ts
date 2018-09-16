@@ -9,6 +9,7 @@ import {
     SetOverviewSlotStatsAction,
     SetDashboardLoadingsAction,
     OverviewParams,
+    FaramDate,
 } from '../../../../redux/interface';
 import {
     createUrlForSlotStats,
@@ -29,11 +30,18 @@ export default class GetOverviewSlotsRequest implements Request<{}> {
     }
 
     create = (params: OverviewParams): RestRequest => {
+        const {
+            date: {
+                startDate,
+                endDate,
+            } = {} as FaramDate,
+            ...otherParams
+        } = params;
         const filters = {
-            ...params, // task, user, tag, project
+            ...otherParams, // task, user, tag, project
             user_group: params.userGroup,
-            date_gt: params.date ? params.date.startDate : undefined,
-            date_lt: params.date ? params.date.endDate : undefined,
+            date_gt: startDate,
+            date_lt: endDate,
         };
 
         const request = new FgRestBuilder()
