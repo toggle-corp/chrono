@@ -90,7 +90,10 @@ def json_to_csv_data(
     @row_total: if rows are to be summed into new col
     @col_total: if cols are to b summed into new row
     """
-    first_row_key = list(jsondata.keys())[0]
+    keys = list(jsondata.keys())
+    if not keys:
+        return []
+    first_row_key = keys[0]
     first_item = jsondata[first_row_key]
 
     cols = [underscore_to_title(k) for k, _ in first_item.items()]
