@@ -8,9 +8,8 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get(
-    'DJANGO_SECRET_KEY',
-    'qyywo&%0=ipb)7+m7d1jc2-^@v@9if18!^rggb)*_cfla3&4i@')
+SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY') or \
+        'qyywo&%0=ipb)7+m7d1jc2-^@v@9if18!^rggb)*_cfla3&4i@'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('DJANGO_DEBUG', 'True').lower() == 'true'
@@ -174,6 +173,7 @@ if os.environ.get('DJANGO_USE_S3', 'False').lower() == 'true':
     MEDIAFILES_LOCATION = 'server-media'
     MEDIA_URL = "https://%s/%s/" % (AWS_S3_CUSTOM_DOMAIN, MEDIAFILES_LOCATION)
     DEFAULT_FILE_STORAGE = 'chrono.s3_storages.MediaStorage'
+
 else:
     STATIC_URL = '/static/'
     STATIC_ROOT = '/static'

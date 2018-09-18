@@ -54,7 +54,7 @@ class ExportViewSet(views.APIView):
 
         export.file.save(
             generate_filename(export.title, 'csv'),
-            ContentFile(open(filename, encoding='utf-8').read())
+            ContentFile(open(filename, "rb").read())
         )
 
         serializer = ExportSerializer(export, context={'request': request})
