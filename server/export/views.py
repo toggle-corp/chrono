@@ -26,6 +26,7 @@ class ExportViewSet(views.APIView):
             'user_display_name',
             'user_group_display_name',
             'project_display_name',
+            'date',
             'total_time',
             'total_time_in_seconds',
         ]
@@ -34,12 +35,21 @@ class ExportViewSet(views.APIView):
             return OrderedDict([(k, obj[k]) for k in export_fields])
 
         data = resp.data['results']
-        datadict = {
-            x['user_display_name']: extract_export_fields(x) for x in data
-        }
+        datadict = [extract_export_fields(x) for x in data]
 
+        # total functions
+        col_total_functions = {
+            # summing 1:0:10 and 10:12:00
+            'total_time': lambda a, x: ':'.join([
+                str(int(x)+int(y)) for x, y in zip(a.split(':'), x.split(':'))
+            ]),
+        }
         # csvdata is [cols, *rows]
-        csvdata = json_to_csv_data(datadict, col_total=True)
+        csvdata = json_to_csv_data(
+            datadict,
+            col_total=True,
+            col_total_functions=col_total_functions
+        )
 
         csvexporter = CSVExporter(csvdata)
 

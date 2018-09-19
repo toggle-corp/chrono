@@ -6,7 +6,10 @@ import notify from '../../../../../notify';
 
 import { Request } from '../../../../../rest/interface';
 import schema from '../../../../../schema';
-import { OverviewParams } from '../../../../../redux/interface';
+import {
+    OverviewParams,
+    FaramDate,
+} from '../../../../../redux/interface';
 import {
     createUrlForOverviewExport,
     commonParamsForGet,
@@ -63,7 +66,21 @@ export default class ExportRequest implements Request<{}> {
         });
     }
 
-    create = (filters: OverviewParams): RestRequest => {
+    create = (params: OverviewParams): RestRequest => {
+        const {
+            date: {
+                startDate,
+                endDate,
+            } = {} as FaramDate,
+            ...otherParams
+        } = params;
+
+        const filters = {
+            ...otherParams, // task, user, tag, project
+            user_group: params.userGroup,
+            date_gt: startDate,
+            date_lt: endDate,
+        };
         const request = new FgRestBuilder()
             .url(createUrlForOverviewExport(filters))
             .params(commonParamsForGet)
