@@ -1,6 +1,7 @@
 from xml.sax.saxutils import escape
 
 import os
+from functools import reduce
 from datetime import datetime
 
 
@@ -79,7 +80,9 @@ def json_to_csv_data(
         rowheading="",
         colheading="",
         row_total=False,
-        col_total=False):
+        col_total=False,
+        col_total_functions={}
+        ):
     """
     @jsondata: json data, expected format {
         'title1': {'col1': val11, 'col2': val12...},
@@ -90,20 +93,20 @@ def json_to_csv_data(
     @row_total: if rows are to be summed into new col
     @col_total: if cols are to b summed into new row
     """
-    keys = list(jsondata.keys())
-    if not keys:
+    if not jsondata:
         return []
-    first_row_key = keys[0]
-    first_item = jsondata[first_row_key]
 
-    cols = [underscore_to_title(k) for k, _ in first_item.items()]
+    first_item = jsondata[0]
 
-    columns = ['{}\\{}'.format(rowheading, colheading)] + cols
+    # columns before conversion
+    raw_cols = ['#', *[k for k in first_item.keys()]]
+    columns = [underscore_to_title(k) for k in raw_cols]
+
     if row_total:
         columns.append('TOTAL')
     rows = [
-        [k, *[m for _, m in v.items()]]
-        for k, v in jsondata.items()
+        [i+1, *[m for _, m in item.items()]]
+        for i, item in enumerate(jsondata)
     ]
     # add total field in rows
     if row_total:
@@ -111,14 +114,17 @@ def json_to_csv_data(
     # now add total for each col
     if col_total:
         colssum = []
-        for i in range(1, len(columns)):
+        for i, col in enumerate(columns):
             try:
-                sm = sum([row[i] for row in rows])
+                func = col_total_functions.get(raw_cols[i])
+                if func:
+                    sm = reduce(func, [row[i] for row in rows])
+                else:
+                    sm = ''
             except Exception as e:  # means there are strings as well
                 sm = ''
             colssum.append(sm)
+        colssum[0] = 'TOTAL'
 
-        rows.append(
-            ['TOTAL', *colssum]
-        )
+        rows.append(colssum)
     return [columns, *rows]
