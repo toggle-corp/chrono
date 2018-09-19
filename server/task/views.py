@@ -30,7 +30,7 @@ logger = logging.getLogger(__name__)
 
 
 TIME_SLOT_DEFAULT_SORT = (
-    'task__project__user_group', 'user', 'task__project', 'task', 'date',
+    'date', 'task__project__user_group', 'user', 'task__project', 'task',
 )
 
 
