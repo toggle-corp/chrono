@@ -15,7 +15,6 @@ import Faram, {
 import { RestRequest } from '#rsu/rest';
 import NonFieldErrors from '#rsci/NonFieldErrors';
 import { isObjectEmpty } from '#rsu/common';
-import ExportRequest from './requests/ExportRequest';
 
 import {
     usersSelector,
@@ -33,6 +32,7 @@ import {
 } from '../../../../redux/interface';
 
 import Upt from '../../../Workspace/SlotEditor/Upt';
+import ExportRequest from './requests/ExportRequest';
 
 import * as styles from './styles.scss';
 
@@ -205,8 +205,10 @@ export class Filter extends React.PureComponent<Props, State>{
                 </WarningButton>
                 <SuccessButton
                     onClick={this.handleExportClick}
-                    disabled={exportLoading}
+                    disabled={loading || exportLoading}
+                    className={styles.exportLoading}
                 >
+                    {exportLoading && <LoadingAnimation />}
                     Export
                 </SuccessButton>
             </Faram>

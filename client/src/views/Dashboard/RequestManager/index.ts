@@ -23,6 +23,7 @@ import {
     setProjectsAction,
     setTasksAction,
     setDashboardLoadingsAction,
+    resetDashboardLoadingsAction,
     setUsersAction,
     setOverviewSlotStatsAction,
     setProjectWiseSlotStatsAction,
@@ -55,6 +56,7 @@ interface PropsFromDispatch {
     setUserTasks(params: Task[]): void;
     setUsers(params: SetUsersAction): void;
     setLoadings(params: SetDashboardLoadingsAction): void;
+    resetLoadings(): void;
     setOverviewSlotStats(params: SetOverviewSlotStatsAction): void;
     setProjectWiseSlotStats(params: SetProjectWiseSlotStatsAction): void;
     setDayWiseSlotStats(params: SetDayWiseSlotStatsAction): void;
@@ -71,6 +73,11 @@ export class RequestManager extends React.PureComponent<Props, States> {
     projectsRequest: RestRequest;
     tasksRequest: RestRequest;
     slotsRequest: RestRequest;
+
+    constructor(props: Props) {
+        super(props);
+        this.props.resetLoadings();
+    }
 
     componentDidMount() {
         const {
@@ -235,6 +242,7 @@ const mapStateToProps = (state: RootState) => ({
 const mapDispatchToProps = (dispatch: Redux.Dispatch<RootState>) => ({
     setLoadings: (params: SetDashboardLoadingsAction) =>
         dispatch(setDashboardLoadingsAction(params)),
+    resetLoadings: () => dispatch(resetDashboardLoadingsAction()),
     setUsers: (params: SetUsersAction) => dispatch(setUsersAction(params)),
     setUserGroups: (params: UserGroup[]) => dispatch(setUserGroupsAction(params)),
     setUserProjects: (params: Project[]) => dispatch(setProjectsAction(params)),

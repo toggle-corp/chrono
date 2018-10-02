@@ -1,4 +1,5 @@
 import update from '#rsu/immutable-update';
+import initialState from '../../initial-state/siloDomainData';
 
 import {
     SiloDomainData,
@@ -17,6 +18,7 @@ import {
 export const enum SILO_DASHBOARD_ACTION {
     setDashboardActiveView = 'siloDomainData/DASHBOARD/ACTIVE_VIEW',
     setDashboardLoadings = 'siloDomainData/DASHBOARD/LOADINGS',
+    resetDashboardLoadings = 'siloDomainData/DASHBOARD/RESET_LOADINGS',
 
     setOverviewFilters = 'siloDomainData/DASHBOARD/SET_OVERVIEW_FILTERS',
     setOverviewSlotStats = 'siloDomainData/DASHBOARD/SET_OVERVIEW_SLOT_STATS',
@@ -42,6 +44,10 @@ export const setDashboardLoadingsAction = (
 ) => ({
     ...action,
     type: SILO_DASHBOARD_ACTION.setDashboardLoadings,
+});
+
+export const resetDashboardLoadingsAction = () => ({
+    type: SILO_DASHBOARD_ACTION.resetDashboardLoadings,
 });
 
 export const setOverviewSlotStatsAction = ({ slotStats }: SetOverviewSlotStatsAction) => ({
@@ -105,6 +111,19 @@ const setDashboardLoadings = (
             loadings: { $auto: {
                 $mergeIfDefined: otherProps,
             } },
+        } },
+    };
+    return update(state, settings);
+};
+
+const resetDashboardLoadings = (
+    state: SiloDomainData,
+) => {
+    const settings = {
+        dashboard: { $auto: {
+            loadings: {
+                $set: initialState.dashboard.loadings,
+            },
         } },
     };
     return update(state, settings);
@@ -219,6 +238,7 @@ const setDayWiseFilters = (
 const reducer: ReducerGroup<SiloDomainData> = {
     // DASHBOARD
     [SILO_DASHBOARD_ACTION.setDashboardLoadings]: setDashboardLoadings,
+    [SILO_DASHBOARD_ACTION.resetDashboardLoadings]: resetDashboardLoadings,
     [SILO_DASHBOARD_ACTION.setDashboardActiveView]: setDashboardActiveView,
 
     // OVERVIEW
