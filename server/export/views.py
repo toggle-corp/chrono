@@ -28,7 +28,7 @@ class ExportViewSet(views.APIView):
             'project_display_name',
             'date',
             'total_time',
-            'total_time_in_seconds',
+            'remarks',
         ]
 
         def extract_export_fields(obj):
@@ -37,12 +37,24 @@ class ExportViewSet(views.APIView):
         data = resp.data['results']
         datadict = [extract_export_fields(x) for x in data]
 
+        def sum_time_strs(a, b):
+            ha, ma, sa = a.split(':')
+            hb, mb, sb = b.split(':')
+            sec = int(sa) + int(sb)
+            min = int(ma) + int(mb) + int(sec/60)
+            hrs = int(ha) + int(hb) + int(min/60)
+            sec = sec % 60
+            min = min % 60
+            return '{}:{}:{}'.format(
+                str(hrs).zfill(2),
+                str(min).zfill(2),
+                str(sec).zfill(2)
+            )
+
         # total functions
         col_total_functions = {
             # summing 1:0:10 and 10:12:00
-            'total_time': lambda a, x: ':'.join([
-                str(int(x)+int(y)) for x, y in zip(a.split(':'), x.split(':'))
-            ]),
+            'total_time': sum_time_strs,
         }
         # csvdata is [cols, *rows]
         csvdata = json_to_csv_data(
