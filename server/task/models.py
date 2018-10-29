@@ -132,3 +132,9 @@ class TimeSlot(models.Model):
         diff = enddatetime - startdatetime
         secs = round(diff.total_seconds(), 0)
         return round(secs / 3600.0, 2)
+
+
+class DateRemark(models.Model):
+    date = models.DateField()
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    remark = models.TextField()

@@ -14,13 +14,14 @@ from chrono.permissions import ModifyPermission
 from project.models import Project
 from user_group.models import UserGroup
 from user.models import User
-from .models import (Task, TimeSlot)
+from .models import (Task, TimeSlot, DateRemark)
 from .serializers import (
     TaskSerializer,
     TimeSlotSerializer,
     TimeSlotStatsSerializer,
     TimeSlotStatsProjectWiseSerializer,
     TimeSlotStatsDayWiseSerializer,
+    DateRemarkSerializer,
 )
 
 import datetime
@@ -206,3 +207,11 @@ class TimeSlotStatsDayWiseViewSet(views.APIView):
         return response.Response(
             TimeSlotStatsDayWiseSerializer(data, many=True).data
         )
+
+
+class DateRemarkViewSet(viewsets.ModelViewSet):
+    queryset = DateRemark.objects.all()
+    serializer_class = DateRemarkSerializer
+    permission_classes = [permissions.IsAuthenticated, ModifyPermission]
+    filter_classes = [django_filters.rest_framework.DjangoFilterBackend]
+    filter_fields = ['date', 'user']

@@ -1,7 +1,7 @@
 from drf_dynamic_fields import DynamicFieldsMixin
 from rest_framework import serializers
 
-from .models import (Task, TimeSlot)
+from .models import (Task, TimeSlot, DateRemark)
 from user.models import User
 from chrono.serializers import RemoveNullFieldsMixin
 from user_resource.serializers import UserResourceSerializer
@@ -138,3 +138,9 @@ class TimeSlotStatsDayWiseSerializer(RemoveNullFieldsMixin,
                                      serializers.Serializer):
     date = serializers.DateField()
     users = UserStatsSerializer(many=True)
+
+
+class DateRemarkSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = DateRemark
+        fields = ('__all__')

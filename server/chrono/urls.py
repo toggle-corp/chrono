@@ -33,6 +33,7 @@ from task.views import (
     TimeSlotViewSet,
     TimeSlotStatsProjectWiseViewSet,
     TimeSlotStatsDayWiseViewSet,
+    DateRemarkViewSet,
 )
 
 from export.views import ExportViewSet
@@ -53,9 +54,12 @@ router.register(r'group-memberships', GroupMembershipViewSet,
 router.register(r'projects', ProjectViewSet,
                 base_name='project')
 
-# Task, Time Slot routers
+# Task, Time Slot, Date Remark routers
 router.register(r'tasks', TaskViewSet,
                 base_name='task')
+
+router.register(r'date-remarks', DateRemarkViewSet,
+                base_name='date-remark')
 
 router.register(r'time-slots', TimeSlotViewSet,
                 base_name='time-slot')
