@@ -2,6 +2,7 @@ import React from 'react';
 import Redux from 'redux';
 import { connect } from 'react-redux';
 
+import modalize from '#rscg/Modalize';
 import Button from '#rsca/Button';
 import SelectInput from '#rsci/SelectInput';
 import FormattedDate from '#rscv/FormattedDate';
@@ -37,6 +38,7 @@ import {
     SetTimeSlotsAction,
 } from '../../redux/interface';
 import SlotEditor from './SlotEditor';
+import DateRemark from './DateRemark';
 import * as styles from './styles.scss';
 
 import GetUserGroupsRequest from './requests/GetUserGroupsRequest';
@@ -88,6 +90,9 @@ interface ListData {
     day: number;
 }
 
+// tslint:disable-next-line:variable-name
+const ModalButton = modalize(Button);
+
 export class Workspace extends React.PureComponent<Props, States> {
     userGroupRequest: RestRequest;
     projectsRequest: RestRequest;
@@ -95,7 +100,7 @@ export class Workspace extends React.PureComponent<Props, States> {
     tagsRequest: RestRequest;
     slotsRequest: RestRequest;
 
-    static keyExtractor = (listData: ListData) => String(listData.day);
+    static keySelector = (listData: ListData) => String(listData.day);
 
     static calculateListData = (activeDate: Ymd) => {
         const { year, month } = activeDate;
@@ -226,6 +231,10 @@ export class Workspace extends React.PureComponent<Props, States> {
         });
         this.userGroupRequest = request.create();
         this.userGroupRequest.start();
+    }
+
+    handleDateClick = (date: String) => {
+        console.warn('handle date click');
     }
 
     handleSlotClick = (
@@ -364,12 +373,14 @@ export class Workspace extends React.PureComponent<Props, States> {
                 className={classNames.join(' ')}
             >
                 <div className={styles.left}>
-                    <div className={styles.date}>
+                    <ModalButton
+                        modal={<DateRemark date={date} />}
+                    >
                         <FormattedDate
                             value={`${date.year}-${date.month}-${date.day}`}
                             mode="EEE, dd"
                         />
-                    </div>
+                    </ModalButton>
                 </div>
                 <div className={styles.right}>
                     <Button
@@ -477,7 +488,7 @@ export class Workspace extends React.PureComponent<Props, States> {
                         className={styles.listView}
                         data={listData}
                         modifier={this.renderDay}
-                        keyExtractor={Workspace.keyExtractor}
+                        keySelector={Workspace.keySelector}
                     />
                 </div>
                 <SlotEditor
