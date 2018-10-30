@@ -103,6 +103,7 @@ module.exports = {
       "#rscz": path.resolve(paths.appSrc, "./vendor/react-store/components/Visualization"),
       "#rsu": path.resolve(paths.appSrc, "./vendor/react-store/utils"),
       "#rsk": path.resolve(paths.appSrc, "./vendor/react-store/constants"),
+      "#request": path.resolve(paths.appSrc, "./request"),
       // Support React Native Web
       // https://www.smashingmagazine.com/2016/08/a-glimpse-into-the-future-with-react-native-for-web/
       'react-native': 'react-native-web',
