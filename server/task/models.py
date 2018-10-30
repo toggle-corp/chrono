@@ -138,3 +138,9 @@ class DateRemark(models.Model):
     date = models.DateField()
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     remark = models.TextField()
+
+    class Meta:
+        unique_together = ('user', 'date')
+
+    def __str__(self):
+        return '{} : {}'.format(self.date, self.user)

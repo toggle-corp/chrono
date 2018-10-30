@@ -24,7 +24,6 @@ class TestDateRemarkCreate(TestCase):
         respdata = response.json()
         assert 'errors' in respdata
         errors = respdata['errors']
-        assert 'user' in errors
         assert 'date' in errors
         assert 'remark' in errors
 
@@ -50,28 +49,6 @@ class TestDateRemarkCreate(TestCase):
             assert 'date' in errors
             assert 'remark' not in errors
 
-    def test_no_or_invalid_user(self):
-        invalid_users = [None, '1231', 'abcd', '  ', '-1', '1.1']
-        data = {
-            'date': '2018-10-10',
-            'remark': 'Today was holiday',
-        }
-        for user in invalid_users:
-            postdata = {**data}
-            if user is not None:
-                postdata['user'] = user
-
-            self.authenticate()
-            response = self.client.post(API_URL, postdata)
-            self.assert_400(response)
-
-            respdata = response.json()
-            assert 'errors' in respdata
-            errors = respdata['errors']
-            assert 'user' in errors
-            assert 'date' not in errors
-            assert 'remark' not in errors
-
     def test_no_remark(self):
         data = {
             'date': '2018-10-10',
@@ -91,7 +68,6 @@ class TestDateRemarkCreate(TestCase):
     def test_valid_data(self):
         data = {
             'date': '2018-10-10',
-            'user': self.user.pk,
             'remark': 'Today is holiday'
         }
         self.authenticate()
@@ -100,6 +76,30 @@ class TestDateRemarkCreate(TestCase):
 
         # check if date remark is created
         assert DateRemark.objects.all().count() == 1
+        remarkobj = DateRemark.objects.last()
+        remarkobj.date == data['date']
+        remarkobj.user == self.user
+
+    def test_duplicate_remark(self):
+        """Test uniqueness of user and date"""
+        data = {
+            'date': '2018-10-10',
+            'remark': 'Today is holiday'
+        }
+        # Create a remark
+        DateRemark.objects.create(
+            date=data['date'],
+            user=self.user,
+            remark='a'
+        )
+
+        # Try to create new
+        self.authenticate()
+        response = self.client.post(API_URL, data)
+        self.assert_400(response)
+
+        respdata = response.json()
+        assert 'errors' in respdata
 
 
 class TestDateRemarkGet(TestCase):
