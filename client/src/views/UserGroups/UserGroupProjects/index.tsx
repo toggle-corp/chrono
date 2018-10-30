@@ -48,7 +48,7 @@ export class UserGroupProjects extends PureComponent<Props, States> {
     projectDeleteRequest: RestRequest;
     headers: Header<Project>[];
 
-    static keyExtractor = (project: Project)  => project.id;
+    static keySelector = (project: Project)  => project.id;
 
     constructor(props: Props) {
         super(props);
@@ -173,7 +173,7 @@ export class UserGroupProjects extends PureComponent<Props, States> {
                 <Table
                     data={projects}
                     headers={this.headers}
-                    keyExtractor={UserGroupProjects.keyExtractor}
+                    keySelector={UserGroupProjects.keySelector}
                 />
                 <Confirm
                     show={showDeleteModal}

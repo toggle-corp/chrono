@@ -59,7 +59,7 @@ interface States{
     loadingTags: boolean;
 }
 
-const keyExtractor = (t: Task | Tag) => t.id;
+const keySelector = (t: Task | Tag) => t.id;
 
 export class Project extends React.PureComponent<Props, States> {
     projectRequest: RestRequest;
@@ -192,7 +192,7 @@ export class Project extends React.PureComponent<Props, States> {
                     <Table
                         data={tasks}
                         headers={taskHeaders}
-                        keyExtractor={keyExtractor}
+                        keySelector={keySelector}
                     />
                 </div>
                 <div>
@@ -206,7 +206,7 @@ export class Project extends React.PureComponent<Props, States> {
                     <Table
                         data={tags}
                         headers={tagHeaders}
-                        keyExtractor={keyExtractor}
+                        keySelector={keySelector}
                     />
                 </div>
             </div>

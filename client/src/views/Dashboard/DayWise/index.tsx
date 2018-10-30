@@ -54,7 +54,7 @@ interface States{
     };
 }
 
-const keyExtractor = (slotStat: FormatedData) => slotStat.date.toISOString();
+const keySelector = (slotStat: FormatedData) => slotStat.date.toISOString();
 
 const getTotalTime = (data: DayWiseSlotStat[]) => (
     data.reduce(
@@ -185,7 +185,7 @@ export class Dashboard extends React.PureComponent<Props, States> {
                         <Table
                             data={data}
                             headers={headers}
-                            keyExtractor={keyExtractor}
+                            keySelector={keySelector}
                         />
                         : 'Select Date'
                 }
