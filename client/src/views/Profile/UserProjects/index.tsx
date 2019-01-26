@@ -124,7 +124,7 @@ export class UserProjects extends React.PureComponent<Props, States> {
         this.setState({ showDeleteModal: false });
     }
 
-    keyExtractor = (project: UserProject) => project.id;
+    keySelector = (project: UserProject) => project.id;
 
     render() {
         const {
@@ -141,7 +141,7 @@ export class UserProjects extends React.PureComponent<Props, States> {
                 <Table
                     data={projects}
                     headers={this.headers}
-                    keyExtractor={this.keyExtractor}
+                    keySelector={this.keySelector}
                 />
                 <Confirm
                     show={showDeleteModal}

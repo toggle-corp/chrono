@@ -49,7 +49,7 @@ export class UserGroupMembers extends PureComponent<Props, States> {
     memberDeleteRequest: RestRequest;
     headers: Header<Member>[];
 
-    static keyExtractor = (member: Member) => member.id;
+    static keySelector = (member: Member) => member.id;
 
     constructor(props: Props) {
         super(props);
@@ -169,7 +169,7 @@ export class UserGroupMembers extends PureComponent<Props, States> {
                 <Table
                     data={members}
                     headers={this.headers}
-                    keyExtractor={UserGroupMembers.keyExtractor}
+                    keySelector={UserGroupMembers.keySelector}
                 />
                 <Confirm
                     show={showDeleteModal}

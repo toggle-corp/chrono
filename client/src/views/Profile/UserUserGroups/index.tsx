@@ -125,7 +125,7 @@ export class UserUserGroups extends React.PureComponent<Props, States> {
         this.setState({ showDeleteModal: false });
     }
 
-    keyExtractor = (userGroup: UserUserGroup) => userGroup.id;
+    keySelector = (userGroup: UserUserGroup) => userGroup.id;
 
     render() {
         const {
@@ -142,7 +142,7 @@ export class UserUserGroups extends React.PureComponent<Props, States> {
                 <Table
                     data={userGroups}
                     headers={this.headers}
-                    keyExtractor={this.keyExtractor}
+                    keySelector={this.keySelector}
                 />
                 <Confirm
                     show={showDeleteModal}

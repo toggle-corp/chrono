@@ -31,7 +31,7 @@ type Props = OwnProps & PropsFromState & PropsFromDispatch;
 
 interface States{}
 
-const keyExtractor = (slotStat: OverviewSlotStat) => slotStat.id;
+const keySelector = (slotStat: OverviewSlotStat) => slotStat.id;
 
 const getTotalTime = (data: OverviewSlotStat[]) => (
     data.reduce(
@@ -66,7 +66,7 @@ export class Overview extends React.PureComponent<Props, States> {
                 <Table
                     data={slotStats}
                     headers={headers}
-                    keyExtractor={keyExtractor}
+                    keySelector={keySelector}
                 />
                 <div className={styles.summary}>
                     Total Time: {getHumanReadableTime(getTotalTime(slotStats))}

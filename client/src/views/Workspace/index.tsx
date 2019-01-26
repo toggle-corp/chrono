@@ -95,7 +95,7 @@ export class Workspace extends React.PureComponent<Props, States> {
     tagsRequest: RestRequest;
     slotsRequest: RestRequest;
 
-    static keyExtractor = (listData: ListData) => String(listData.day);
+    static keySelector = (listData: ListData) => String(listData.day);
 
     static calculateListData = (activeDate: Ymd) => {
         const { year, month } = activeDate;
@@ -477,7 +477,7 @@ export class Workspace extends React.PureComponent<Props, States> {
                         className={styles.listView}
                         data={listData}
                         modifier={this.renderDay}
-                        keyExtractor={Workspace.keyExtractor}
+                        keySelector={Workspace.keySelector}
                     />
                 </div>
                 <SlotEditor

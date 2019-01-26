@@ -27,9 +27,9 @@ const setProjects = (
 ) => {
     const { projects } = action;
     const settings = {
-        projects: { $auto: {
+        projects: {
             $set: projects,
-        } },
+        },
     };
     return update(state, settings);
 };

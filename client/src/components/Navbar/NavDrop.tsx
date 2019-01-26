@@ -131,7 +131,7 @@ class NavDrop extends React.PureComponent<Props, State> {
                 <DropdownGroup>
                     <List
                         data={links}
-                        keyExtractor={NavDrop.getDropItemKey}
+                        keySelector={NavDrop.getDropItemKey}
                         modifier={this.renderDropItem}
                     />
                 </DropdownGroup>

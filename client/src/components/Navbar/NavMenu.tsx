@@ -155,7 +155,7 @@ class NavMenu extends React.PureComponent<Props, State> {
         this.renderNavItem(key, item, `${styles.overflowMenuItem} ${styles.dropdownItem}`)
     )
 
-    keyExtractor = (d: CloakSettingsWithKey): string => d.key;
+    keySelector = (d: CloakSettingsWithKey): string => d.key;
 
     handleWindowResize = () => {
         const overflowMenuLinks = this.computeSize(this.state.navLinks);
@@ -178,7 +178,7 @@ class NavMenu extends React.PureComponent<Props, State> {
                 <List
                     data={navLinks}
                     modifier={this.renderNavbarItem}
-                    keyExtractor={this.keyExtractor}
+                    keySelector={this.keySelector}
                 />
 
                 <DropdownMenu
@@ -190,7 +190,7 @@ class NavMenu extends React.PureComponent<Props, State> {
                     <List
                         data={overflowMenuLinks}
                         modifier={this.renderOverflowMenuItem}
-                        keyExtractor={this.keyExtractor}
+                        keySelector={this.keySelector}
                     />
                 </DropdownMenu>
             </div>
