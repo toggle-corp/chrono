@@ -3,7 +3,12 @@ import * as Redux from 'redux';
 import { BrowserRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 
-import { RestRequest, FgRestBuilder } from '#rsu/rest';
+import {
+    createConnectedRequestCoordinator,
+    createRequestClient,
+    NewProps,
+    ClientAttributes,
+} from './request';
 import { RootState, Token } from './redux/interface';
 import {
     authenticatedSelector,
@@ -11,11 +16,6 @@ import {
     setAccessTokenAction,
 } from './redux';
 import { startTasksAction } from './redux/middlewares/taskManager';
-import {
-    createParamsForTokenRefresh,
-    urlForTokenRefresh,
-} from './rest';
-import schema from './schema';
 import Multiplexer from './Multiplexer';
 
 interface OwnProps {}
@@ -30,58 +30,71 @@ interface PropsFromState {
     authenticated: boolean;
     token: Token;
 }
-type Props = OwnProps & PropsFromState & PropsFromDispatch;
+type ReduxProps = OwnProps & PropsFromState & PropsFromDispatch;
+
+type Params = {
+    refresh: string | undefined,
+    setPending(value: boolean): void;
+};
+
+type Props = NewProps<ReduxProps, Params>;
+
+const requests: { [key: string]: ClientAttributes<ReduxProps, Params> } = {
+    refreshRequest: {
+        url: '/token/refresh/',
+        method: 'POST',
+        onMount: ({ props }) => props.authenticated,
+        body: ({ params }) => ({
+            refresh: params ? params.refresh : undefined,
+        }),
+        extras: {
+            schemaName: 'tokenRefreshResponse',
+        },
+        onSuccess: ({ props, response, params }) => {
+            props.startTasks();
+            const { access } = response as { access: string };
+            props.setAccessToken(access);
+
+            if (params) {
+                params.setPending(false);
+            }
+        },
+    },
+};
 
 // NOTE: Refreshes user if user is already logged in
 export class App extends React.PureComponent<Props, State> {
-    refreshRequest: RestRequest;
-
     constructor(props: Props) {
         super(props);
 
-        // pending must be true only if user is already authenticated
-        this.state = { pending: this.props.authenticated };
-    }
+        const {
+            authenticated,
+            token: { refresh },
+            requests: { refreshRequest },
+        } = this.props;
 
-    componentDidMount() {
-        if (this.props.authenticated) {
-            this.refreshRequest = this.createRequestForRefresh();
-            this.refreshRequest.start();
+        // NOTE: pending must be true only if user is already authenticated
+        this.state = {
+            pending: authenticated,
+        };
+
+        if (refreshRequest) {
+            refreshRequest.setDefaultParams({
+                refresh,
+                setPending: this.setPending,
+            });
         }
     }
 
-    componentWillUnmount() {
-        if (this.refreshRequest) {
-            this.refreshRequest.stop();
-        }
-    }
-
-    createRequestForRefresh = () => {
-        // NOTE: at this point refresh must be defined
-        const { refresh = '' } = this.props.token;
-        const refreshRequest = new FgRestBuilder()
-            .url(urlForTokenRefresh)
-            .params(() => createParamsForTokenRefresh({ refresh }))
-            .success((response: { access: string }) => {
-                try {
-                    schema.validate(response, 'tokenRefreshResponse');
-
-                    this.props.startTasks();
-
-                    const { access } = response;
-                    this.props.setAccessToken(access);
-
-                    this.setState({ pending: false });
-                } catch (er) {
-                    console.error(er);
-                }
-            })
-            .build();
-        return refreshRequest;
+    setPending = (val: boolean) => {
+        this.setState({ pending: val });
     }
 
     render() {
-        if (this.props.authenticated && this.state.pending) {
+        const { authenticated } = this.props;
+        const { pending } = this.state;
+
+        if (authenticated && pending) {
             return (
                 <div className="full-screen-message">
                     We have found your previous session...
@@ -109,4 +122,8 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<RootState>) => ({
 
 export default connect<PropsFromState, PropsFromDispatch, OwnProps>(
     mapStateToProps, mapDispatchToProps,
-)(App);
+)(
+    createConnectedRequestCoordinator<ReduxProps>()(
+        createRequestClient(requests)(App),
+    ),
+);

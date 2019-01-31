@@ -8,7 +8,6 @@ import LoadingAnimation from '#rscv/LoadingAnimation';
 import NonFieldErrors from '#rsci/NonFieldErrors';
 import TextInput from '#rsci/TextInput';
 import PrimaryButton from '#rsca/Button/PrimaryButton';
-import { RestRequest } from '#rsu/rest';
 
 import Faram, {
     FaramErrors,
@@ -21,6 +20,13 @@ import {
     requiredCondition,
 } from '#rscg/Faram/validations';
 
+import {
+    createConnectedRequestCoordinator,
+    createRequestClient,
+    NewProps,
+    ClientAttributes,
+    methods,
+} from '../../request';
 import { startTasksAction } from '../../redux/middlewares/taskManager';
 import {
     authenticateAction,
@@ -29,8 +35,19 @@ import {
 import { RootState, Token } from '../../redux/interface';
 import { pathNames } from '../../constants';
 
-import CreateTokenRequest from './requests/CreateTokenRequest';
 import * as styles from './styles.scss';
+
+interface AuthParams {
+    email: string;
+    password: string;
+}
+
+interface States {
+    faramErrors: FaramErrors;
+    faramValues: FaramValues;
+    // pending: boolean;
+    pristine: boolean;
+}
 
 interface OwnProps {}
 interface PropsFromState { }
@@ -39,22 +56,50 @@ interface PropsFromDispatch {
     login(params: Token): void;
     startTasks(): void;
 }
-type Props = OwnProps & PropsFromState & PropsFromDispatch;
+type ReduxProps = OwnProps & PropsFromState & PropsFromDispatch;
 
-interface States {
-    faramErrors: FaramErrors;
-    faramValues: FaramValues;
-    pending: boolean;
-    pristine: boolean;
-}
+type Params = {
+    value: AuthParams,
+    setError(error: FaramErrors): void,
+};
 
-interface AuthParams {
-    email: string;
-    password: string;
-}
+type Props = NewProps<ReduxProps, Params>;
+
+const requests: { [key: string]: ClientAttributes<ReduxProps, Params> } = {
+    loginRequest: {
+        url: '/token/',
+        method: methods.POST,
+        body: ({ params }) => {
+            if (params) {
+                const {
+                    value: {
+                        password,
+                        email,
+                    },
+                } = params;
+                return { password, username: email };
+            }
+            return undefined;
+        },
+        onSuccess: ({ props, params, response }) => {
+            const { refresh, access } = response as { access: string, refresh: string };
+            props.login({ refresh, access });
+            props.startTasks();
+            props.authenticate();
+        },
+        onFailure: ({ error, params }) => {
+            const { faramErrors } = error as { faramErrors: FaramErrors };
+            params && params.setError(faramErrors);
+        },
+        onFatal: ({ params }) => {
+            params && params.setError({
+                $internal: ['Some error occured.'],
+            });
+        },
+    },
+};
 
 export class Login extends React.PureComponent<Props, States> {
-    userLoginRequest: RestRequest;
     schema: FaramSchema;
 
     constructor(props: Props) {
@@ -63,7 +108,7 @@ export class Login extends React.PureComponent<Props, States> {
         this.state = {
             faramErrors: {},
             faramValues: {},
-            pending: false,
+            // pending: false,
             pristine: true,
         };
 
@@ -79,12 +124,6 @@ export class Login extends React.PureComponent<Props, States> {
                 ],
             },
         };
-    }
-
-    componentWillUnmount() {
-        if (this.userLoginRequest) {
-            this.userLoginRequest.stop();
-        }
     }
 
     handleFaramChange = (
@@ -105,26 +144,24 @@ export class Login extends React.PureComponent<Props, States> {
     }
 
     handleFaramSuccess = (value: AuthParams) => {
-        if (this.userLoginRequest) {
-            this.userLoginRequest.stop();
-        }
-
+        /*
         const request = new CreateTokenRequest({
             login: this.props.login,
             authenticate: this.props.authenticate,
             setState: v => this.setState(v),
             startTasks: this.props.startTasks,
         });
-        this.userLoginRequest = request.create(value);
-        this.userLoginRequest.start();
+        */
+        const { loginRequest } = this.props.requests;
+        loginRequest.do({ value, setError: this.handleFaramFailure });
     }
 
     render() {
         const {
             faramValues,
             faramErrors,
-            pending,
         } = this.state;
+        const { loginRequest: { pending } } = this.props.requests;
 
         return (
             <div className={styles.login}>
@@ -189,4 +226,8 @@ const mapDispatchToProps = (dispatch: Redux.Dispatch<RootState>) => ({
 
 export default connect<PropsFromState, PropsFromDispatch, OwnProps>(
     undefined, mapDispatchToProps,
-)(Login);
+)(
+    createConnectedRequestCoordinator<ReduxProps>()(
+        createRequestClient(requests)(Login),
+    ),
+);

@@ -163,10 +163,10 @@
   resolved "https://registry.yarnpkg.com/@togglecorp/ravl/-/ravl-1.1.0.tgz#13b6fd4a58990a5a42da663cf8b4a822a93095d2"
   integrity sha512-wfIQATHxX0FBm09NkxvnG54tZONUJHXVwfbOoiKO44TQLBjLETFduInn0xb191fWRkV9psCiURBSVw/0IL2ScQ==
 
-"@togglecorp/react-rest-request@2.0.0":
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/@togglecorp/react-rest-request/-/react-rest-request-2.0.0.tgz#5ca463adcd640a2c5692bd3893be8249e5ac8c04"
-  integrity sha512-0FBr/wu4w2zlO7NMICFi/JbGrWSvlBuFb7RcNTxegKnKHUR6ZpMOdKL6jpVpZYGY0IJhiiFRvVvwpqYHduc1jw==
+"@togglecorp/react-rest-request@^2.0.4":
+  version "2.0.4"
+  resolved "https://registry.yarnpkg.com/@togglecorp/react-rest-request/-/react-rest-request-2.0.4.tgz#659f9a415d1eecf3d6bdd3e636556586e8cbfbb7"
+  integrity sha512-N93gternrWBoa43jb9lV/qukaHJA2zq1F7pJM75uYhz+kAt6ahj44Lc7QWXj2eF3QlBRYJ8uIw/HfUvQqYC17Q==
   dependencies:
     hoist-non-react-statics "^3.2.1"
     prop-types "^15.6.2"
@@ -184,6 +184,13 @@
   version "4.7.2"
   resolved "https://registry.yarnpkg.com/@types/history/-/history-4.7.2.tgz#0e670ea254d559241b6eeb3894f8754991e73220"
   integrity sha512-ui3WwXmjTaY73fOQ3/m3nnajU/Orhi6cEu5rzX+BrAAJxa3eITXZ5ch9suPqtM03OWhAHhPSyBGCN4UKoxO20Q==
+
+"@types/hoist-non-react-statics@^3.0.1":
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/@types/hoist-non-react-statics/-/hoist-non-react-statics-3.0.1.tgz#dde7c53101912dae8f45a1807f9857a59ddf3919"
+  integrity sha512-3wTz66vV+WatOAjMST+hKCmo01KYPFgnsu+QeLcn0FuwPCoymX6aj1a4RvFCdVsfh2m0hfTPhE/zTv4M28ho1Q==
+  dependencies:
+    "@types/react" "*"
 
 "@types/jest@^23.3.12":
   version "23.3.13"
@@ -3544,7 +3551,7 @@ hoist-non-react-statics@^3.1.0:
   dependencies:
     react-is "^16.3.2"
 
-hoist-non-react-statics@^3.2.1:
+hoist-non-react-statics@^3.2.1, hoist-non-react-statics@^3.3.0:
   version "3.3.0"
   resolved "https://registry.yarnpkg.com/hoist-non-react-statics/-/hoist-non-react-statics-3.3.0.tgz#b09178f0122184fb95acf525daaecb4d8f45958b"
   integrity sha512-0XsbTXxgiaCDYDIWFcwkmerZPSwywfUqYmwT4jzewKTQSWoE6FCMoUVOeBJWK3E/CrWbxRG3m5GzY4lnIwGRBA==
@@ -8790,7 +8797,7 @@ typed-css-modules@0.3.3:
     mkdirp "^0.5.1"
     yargs "^8.0.2"
 
-typescript-language-server@^0.3.0:
+typescript-language-server@^0.3.7:
   version "0.3.7"
   resolved "https://registry.yarnpkg.com/typescript-language-server/-/typescript-language-server-0.3.7.tgz#ca4c28c1b9b4b9e6f9a60514ba059865ea5e48ef"
   integrity sha512-26VcyfcMGjojsQv0/uDG8ZxUOhCbH6wNZR1buajQv5hZYxNSqiCm+9InMPjozatECpyfphqVc0rc58q3B+dMfw==
@@ -8803,7 +8810,7 @@ typescript-language-server@^0.3.0:
     vscode-languageserver "^4.4.0"
     vscode-uri "^1.0.5"
 
-typescript@^3.0.3:
+typescript@^3.2.4:
   version "3.2.4"
   resolved "https://registry.yarnpkg.com/typescript/-/typescript-3.2.4.tgz#c585cb952912263d915b462726ce244ba510ef3d"
   integrity sha512-0RNDbSdEokBeEAkgNbxJ+BLwSManFy9TeXz8uW+48j/xhEXv1ePME60olyzw2XzUqUBNAYFeJadIqAgNqIACwg==
