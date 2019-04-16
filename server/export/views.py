@@ -29,6 +29,7 @@ class ExportViewSet(views.APIView):
             'date',
             'total_time',
             'total_time_in_seconds',
+            'remarks',
         ]
 
         def extract_export_fields(obj):
