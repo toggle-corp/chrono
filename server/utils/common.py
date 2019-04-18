@@ -121,7 +121,7 @@ def json_to_csv_data(
                     sm = reduce(func, [row[i] for row in rows])
                 else:
                     sm = ''
-            except Exception as e:  # means there are strings as well
+            except Exception:  # means there are strings as well
                 sm = ''
             colssum.append(sm)
         colssum[0] = 'TOTAL'

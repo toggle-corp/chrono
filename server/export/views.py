@@ -8,6 +8,8 @@ from export.models import Export
 from utils.common import json_to_csv_data, generate_filename
 from task.views import TimeSlotStatsViewSet
 
+from .utils import sum_string_times
+
 from collections import OrderedDict
 
 import logging
@@ -38,12 +40,10 @@ class ExportViewSet(views.APIView):
         data = resp.data['results']
         datadict = [extract_export_fields(x) for x in data]
 
-        # total functions
+        # total functions, used as accumulator functions in reduce
         col_total_functions = {
             # summing 1:0:10 and 10:12:00
-            'total_time': lambda a, x: ':'.join([
-                str(int(x)+int(y)) for x, y in zip(a.split(':'), x.split(':'))
-            ]),
+            'total_time': sum_string_times,
         }
         # csvdata is [cols, *rows]
         csvdata = json_to_csv_data(
