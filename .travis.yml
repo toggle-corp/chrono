@@ -10,12 +10,9 @@ before_install:
 
     - mkdir -p client/src/vendor
 
-    - git clone https://github.com/toggle-corp/react-store.git client/src/vendor/react-store
+    - git clone --branch=chrono https://github.com/toggle-corp/react-store.git client/src/vendor/react-store
     - git --git-dir=client/src/vendor/react-store/.git --no-pager show --pretty=fuller --quiet
     - cp client/src/vendor/react-store/stylesheets/_user-imports-sample.scss client/src/vendor/react-store/stylesheets/_user-imports.scss
-
-    - git clone https://github.com/toggle-corp/ravl.git client/src/vendor/ravl
-    - git --git-dir=client/src/vendor/ravl/.git --no-pager show --pretty=fuller --quiet
 
     - env > .env
     - docker pull devtc/chrono:server-latest; docker build --cache-from devtc/chrono:server-latest --tag devtc/chrono:server-latest ./server/

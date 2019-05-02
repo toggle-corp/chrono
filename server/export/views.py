@@ -25,10 +25,14 @@ class ExportViewSet(views.APIView):
             return resp
 
         export_fields = [
-            'user_display_name',
             'user_group_display_name',
+            'user_display_name',
             'project_display_name',
+            'task_display_name',
+            'task_description',
             'date',
+            'start_time',
+            'end_time',
             'total_time',
             'total_time_in_seconds',
             'remarks',
