@@ -39,8 +39,8 @@ export interface DashboardLoadings {
 export interface OverviewParams {
     user: number;
     userGroup: number;
-    project: number;
-    task: number;
+    project: number[];
+    task: number[];
     tag: number[];
     date?: FaramDate;
 }

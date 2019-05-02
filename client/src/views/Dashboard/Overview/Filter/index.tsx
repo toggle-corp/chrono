@@ -32,7 +32,7 @@ import {
     SetOverviewFiltersAction,
 } from '../../../../redux/interface';
 
-import Upt from '../../../Workspace/SlotEditor/Upt';
+import UGProjectsTasks from '../Filter/UGProjectsTasks';
 
 import * as styles from './styles.scss';
 
@@ -179,9 +179,9 @@ export class Filter extends React.PureComponent<Props, State>{
                     keySelector={userKeySelector}
                     labelSelector={userLabelSelector}
                 />
-                <Upt
+                <UGProjectsTasks
                     userGroupId={faramValues.userGroup}
-                    projectId={faramValues.project}
+                    projectIds={faramValues.project}
                     pending={loading}
                 />
                 <DateFilter
