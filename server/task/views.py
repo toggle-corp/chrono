@@ -14,13 +14,14 @@ from chrono.permissions import ModifyPermission
 from project.models import Project
 from user_group.models import UserGroup
 from user.models import User
-from .models import (Task, TimeSlot)
+from .models import (Task, TimeSlot, Remark)
 from .serializers import (
     TaskSerializer,
     TimeSlotSerializer,
     TimeSlotStatsSerializer,
     TimeSlotStatsProjectWiseSerializer,
     TimeSlotStatsDayWiseSerializer,
+    RemarkSerializer,
 )
 
 import datetime
@@ -82,6 +83,15 @@ class TimeSlotFilterSet(django_filters.FilterSet):
                 },
             },
         }
+
+
+class RemarkFilterSet(django_filters.FilterSet):
+    date_lt = django_filters.DateFilter(name='date', lookup_expr='lte')
+    date_gt = django_filters.DateFilter(name='date', lookup_expr='gte')
+
+    class Meta:
+        model = Remark
+        exclude = []
 
 
 class TaskViewSet(viewsets.ModelViewSet):
@@ -206,3 +216,15 @@ class TimeSlotStatsDayWiseViewSet(views.APIView):
         return response.Response(
             TimeSlotStatsDayWiseSerializer(data, many=True).data
         )
+
+
+class RemarkViewSet(viewsets.ModelViewSet):
+    queryset = Remark.objects.order_by('-date')
+    serializer_class = RemarkSerializer
+    permission_classes = [permissions.IsAuthenticated, ModifyPermission]
+    filter_backends = (django_filters.rest_framework.DjangoFilterBackend,
+                       filters.SearchFilter, filters.OrderingFilter)
+    filter_class = RemarkFilterSet
+
+    class Meta:
+        model = Remark

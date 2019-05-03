@@ -132,3 +132,43 @@ class TimeSlot(models.Model):
         diff = enddatetime - startdatetime
         secs = round(diff.total_seconds(), 0)
         return round(secs / 3600.0, 2)
+
+
+class Remark(UserResource):
+    """
+    Record Remark for a particular day.
+    For Example: it could be a holiday, sick leave, office event.
+    """
+    PUBLIC_HOLIDAY = 'public_holiday'
+    OFFICE_HOLIDAY = 'office_holiday'
+    SICK_LEAVE = 'sick_leave'
+    OFFICE_EVENT = 'office_event'
+    MISCELLANEOUS = 'miscellaneous'
+
+    REMARK_CHOICES = (
+        (PUBLIC_HOLIDAY, 'Public Holiday'),
+        (OFFICE_HOLIDAY, 'Office Holiday'),
+        (SICK_LEAVE, 'Sick Leave'),
+        (OFFICE_EVENT, 'Office Event'),
+        (MISCELLANEOUS, 'Miscellaneous'),
+    )
+
+    description = models.TextField(blank=True)
+    type = models.CharField(max_length=64, choices=REMARK_CHOICES)
+    date = models.DateField()
+
+    @staticmethod
+    def get_for(user):
+        """
+        Get Remark for user
+        """
+        return Remark.objects.filter(
+            created_by=user
+        ).distinct()
+
+    def __str__(self):
+        return '{} - {} - {}'.format(
+            self.type,
+            self.date.isoformat(),
+            self.created_by
+        )

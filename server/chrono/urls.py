@@ -33,6 +33,7 @@ from task.views import (
     TimeSlotViewSet,
     TimeSlotStatsProjectWiseViewSet,
     TimeSlotStatsDayWiseViewSet,
+    RemarkViewSet
 )
 
 from export.views import ExportViewSet
@@ -59,6 +60,10 @@ router.register(r'tasks', TaskViewSet,
 
 router.register(r'time-slots', TimeSlotViewSet,
                 base_name='time-slot')
+
+router.register(r'remarks', RemarkViewSet,
+                base_name='remarks')
+
 
 router.register(r'tags', TagViewSet, base_name='tag')
 
