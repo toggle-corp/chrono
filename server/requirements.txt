@@ -6,7 +6,7 @@ djangorestframework==3.7.7
 drf-dynamic-fields==0.2.0
 psycopg2==2.7.3
 pyjwt==1.5.3
-requests==2.18.4
+requests==2.20.0
 django-filter==1.0.4
 pytest==3.4.1
 django-storages==1.5.2
