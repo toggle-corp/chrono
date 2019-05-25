@@ -155,7 +155,7 @@ export class UGProjectsTasks extends React.PureComponent<Props, State> {
             <Fragment>
                 <SelectInput
                     faramElementName="userGroup"
-                    className={styles.usergroup}
+                    className={styles.input}
                     label="User Group"
                     options={userGroups}
                     placeholder="Select a user group"
@@ -166,7 +166,7 @@ export class UGProjectsTasks extends React.PureComponent<Props, State> {
                 <MultiSelectInput
                     faramElementName="project"
                     label="Project"
-                    className={styles.project}
+                    className={styles.input}
                     options={projects}
                     placeholder="Select a project"
                     keySelector={UGProjectsTasks.keySelector}
@@ -176,7 +176,7 @@ export class UGProjectsTasks extends React.PureComponent<Props, State> {
                 { !hideTasks &&
                     <Fragment>
                         <MultiSelectInput
-                            className={styles.task}
+                            className={styles.input}
                             faramElementName="task"
                             label="Task"
                             options={tasks}
@@ -188,7 +188,7 @@ export class UGProjectsTasks extends React.PureComponent<Props, State> {
                     </Fragment>
                 }
                 <MultiSelectInput
-                    className={styles.tag}
+                    className={styles.input}
                     faramElementName="tags"
                     label="Tags"
                     options={tags}
