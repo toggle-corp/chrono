@@ -133,43 +133,46 @@ export class Filter extends React.PureComponent<Props, State>{
                 disabled={loading}
             >
                 {loading && <LoadingAnimation />}
-                <NonFieldErrors faramElement />
-                <MultiSelectInput
-                    faramElementName="project"
-                    className={styles.formElement}
-                    label="Project"
-                    options={projects}
-                    placeholder="Select a project"
-                    keySelector={projectKeySelector}
-                    labelSelector={projectLabelSelector}
+                <NonFieldErrors
+                    className={styles.nonFieldError}
+                    faramElement
                 />
-                <DateFilter
-                    className={styles.formElement}
-                    faramElementName="date"
-                    label="Date"
-                    showHintAndError={false}
-                    showLabel
-                />
-                <PrimaryButton
-                    type="submit"
-                    disabled={pristine || loading}
-                >
-                    Apply
-                </PrimaryButton>
-                <WarningButton
-                    onClick={this.handleFaramClear}
-                    disabled={isFilterEmpty || loading}
-                >
-                    Clear
-                </WarningButton>
-                {/*
-                <WarningButton
-                    onClick={this.handleFaramDiscard}
-                    disabled={pristine || loading}
-                >
-                    Discard
-                </WarningButton>
-                */}
+                <div className={styles.form} >
+                    <div className={styles.inputs} >
+                        <MultiSelectInput
+                            faramElementName="project"
+                            className={styles.formElement}
+                            label="Project"
+                            options={projects}
+                            placeholder="Select a project"
+                            keySelector={projectKeySelector}
+                            labelSelector={projectLabelSelector}
+                        />
+                        <DateFilter
+                            className={`${styles.formElement} ${styles.date}`}
+                            faramElementName="date"
+                            label="Date"
+                            showHintAndError={false}
+                            showLabel
+                        />
+                    </div>
+                    <div className={styles.buttons} >
+                        <PrimaryButton
+                            className={styles.button}
+                            type="submit"
+                            disabled={pristine || loading}
+                        >
+                            Apply
+                        </PrimaryButton>
+                        <WarningButton
+                            className={styles.button}
+                            onClick={this.handleFaramClear}
+                            disabled={isFilterEmpty || loading}
+                        >
+                            Clear
+                        </WarningButton>
+                    </div>
+                </div>
             </Faram>
         );
     }

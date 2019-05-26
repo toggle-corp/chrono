@@ -1,5 +1,26 @@
 @import '../../../stylesheets/base';
 
-.summary {
+.project-wise {
     display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    justify-content: space-between;
+    overflow-y: auto;
+
+    .top-container {
+        display: flex;
+        flex-direction: column;
+        overflow-y: auto;
+
+        .table-container {
+            flex-grow: 1;
+            overflow-y: auto;
+        }
+    }
+
+    .summary {
+        display: flex;
+        border-top: $width-separator-thin solid $color-separator;
+        padding: $spacing-medium;
+    }
 }

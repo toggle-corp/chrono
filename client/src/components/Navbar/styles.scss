@@ -64,8 +64,8 @@ $color-text-on-primary: get-text-color($color-primary);
     .menu-item {
         @include transition-medium;
         display: inline-flex;
-        flex-shrink: 0;
         align-items: center;
+        flex-shrink: 0;
         justify-content: center;
         border-top: $width-separator-thick solid transparent;
         border-bottom: $width-separator-thick solid transparent;
@@ -73,11 +73,13 @@ $color-text-on-primary: get-text-color($color-primary);
         font-weight: $font-weight-bold;
 
         &:hover {
+            background-color: rgba(0, 0, 0, 0.09);
             color: $color-accent;
         }
 
         &.active {
             border-bottom-color: $color-accent;
+            background-color: rgba(211, 161, 22, 0.09);
             color: $color-accent;
             // color: $color-text-on-navbar;
         }
@@ -118,6 +120,7 @@ $color-text-on-primary: get-text-color($color-primary);
     cursor: pointer;
     padding: $spacing-medium-alt $spacing-large;
     width: 100%;
+    min-width: 156px;
     text-align: left;
     text-transform: uppercase;
     color: $color-text;

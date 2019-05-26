@@ -2,9 +2,40 @@
 
 .filter {
     display: flex;
-    align-items: center;
+    flex-direction: column;
+    padding: $spacing-small $spacing-medium;
+    padding-top: 0;
+    overflow-y: auto;
 
-    .form-element {
-        padding: 0 $spacing-small;
+    .non-field-error {
+        padding: 0;
+        font-size: $font-size-extra-small;
+    }
+
+    .form {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        .inputs {
+            display: flex;
+            align-items: center;
+
+            .form-element {
+                padding: 0 $spacing-extra-small;
+            }
+
+            .date {
+                margin-bottom: $spacing-form-empty;
+            }
+        }
+
+        .buttons {
+            display: flex;
+
+            .button {
+                margin: 0 $spacing-extra-small;
+            }
+        }
     }
 }

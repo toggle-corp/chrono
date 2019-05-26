@@ -6,6 +6,7 @@ $color-text-on-primary: get-text-color($color-primary);
     @extend %main-content;
     display: flex;
     flex-direction: column;
+    overflow-y: auto;
 
     .datebar {
         @include background-color($color-foreground);
@@ -32,6 +33,7 @@ $color-text-on-primary: get-text-color($color-primary);
         flex-direction: column;
         flex-grow: 1;
         border-bottom: $width-separator-thin solid $color-separator-alt;
+        overflow-y: auto;
 
         .list-view {
             overflow-y: auto;

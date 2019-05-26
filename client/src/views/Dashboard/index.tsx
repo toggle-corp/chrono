@@ -35,12 +35,15 @@ export class Dashboard extends React.PureComponent<Props, States> {
     static views = {
         overview: {
             component: Overview,
+            wrapContainer: true,
         },
         projectWise: {
             component: ProjectWise,
+            wrapContainer: true,
         },
         dayWise: {
             component: DayWise,
+            wrapContainer: true,
         },
     };
 
@@ -64,14 +67,11 @@ export class Dashboard extends React.PureComponent<Props, States> {
                     defaultHash={this.props.activeView}
                     onClick={this.handleViewClick}
                 />
-                <div
-                    className={styles.content}
-                >
-                    <MultiViewContainer
-                        views={Dashboard.views}
-                        useHash
-                    />
-                </div>
+                <MultiViewContainer
+                    containerClassName={styles.container}
+                    views={Dashboard.views}
+                    useHash
+                />
                 <RequestManager />
             </div>
         );

@@ -169,46 +169,58 @@ export class Filter extends React.PureComponent<Props, State>{
                 disabled={loading}
             >
                 {loading && <LoadingAnimation />}
-                <NonFieldErrors faramElement />
-                <MultiSelectInput
-                    faramElementName="user"
-                    className={styles.formElement}
-                    label="User"
-                    options={users}
-                    placeholder="Select a user"
-                    keySelector={userKeySelector}
-                    labelSelector={userLabelSelector}
+                <NonFieldErrors
+                    className={styles.nonFieldError}
+                    faramElement
                 />
-                <UGProjectsTasks
-                    userGroupId={faramValues.userGroup}
-                    projectIds={faramValues.project}
-                    pending={loading}
-                />
-                <DateFilter
-                    className={styles.formElement}
-                    faramElementName="date"
-                    label="Date"
-                    showHintAndError={false}
-                    showLabel
-                />
-                <PrimaryButton
-                    type="submit"
-                    disabled={pristine || loading}
-                >
-                    Apply
-                </PrimaryButton>
-                <WarningButton
-                    onClick={this.handleFaramClear}
-                    disabled={isFilterEmpty || loading}
-                >
-                    Clear
-                </WarningButton>
-                <SuccessButton
-                    onClick={this.handleExportClick}
-                    disabled={exportLoading}
-                >
-                    Export
-                </SuccessButton>
+                <div className={styles.form} >
+                    <div className={styles.inputs} >
+                        <MultiSelectInput
+                            faramElementName="user"
+                            className={styles.formElement}
+                            label="User"
+                            options={users}
+                            placeholder="Select a user"
+                            keySelector={userKeySelector}
+                            labelSelector={userLabelSelector}
+                        />
+                        <UGProjectsTasks
+                            userGroupId={faramValues.userGroup}
+                            projectIds={faramValues.project}
+                            pending={loading}
+                        />
+                        <DateFilter
+                            className={`${styles.formElement} ${styles.date}`}
+                            faramElementName="date"
+                            label="Date"
+                            showHintAndError={false}
+                            showLabel
+                        />
+                    </div>
+                    <div className={styles.buttons}>
+                        <PrimaryButton
+                            className={styles.button}
+                            type="submit"
+                            disabled={pristine || loading}
+                        >
+                            Apply
+                        </PrimaryButton>
+                        <WarningButton
+                            className={styles.button}
+                            onClick={this.handleFaramClear}
+                            disabled={isFilterEmpty || loading}
+                        >
+                            Clear
+                        </WarningButton>
+                        <SuccessButton
+                            className={styles.button}
+                            onClick={this.handleExportClick}
+                            disabled={exportLoading}
+                        >
+                            Export
+                        </SuccessButton>
+                    </div>
+                </div>
             </Faram>
         );
     }

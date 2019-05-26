@@ -60,14 +60,18 @@ export class Overview extends React.PureComponent<Props, States> {
         );
 
         return (
-            <div>
+            <div className={styles.overview} >
                 {loading && <LoadingAnimation message="Loading Data" />}
-                <Filter />
-                <Table
-                    data={slotStats}
-                    headers={headers}
-                    keyExtractor={keyExtractor}
-                />
+                <div className={styles.topContainer}>
+                    <Filter />
+                    <div className={styles.tableContainer} >
+                        <Table
+                            data={slotStats}
+                            headers={headers}
+                            keyExtractor={keyExtractor}
+                        />
+                    </div>
+                </div>
                 <div className={styles.summary}>
                     Total Time: {getHumanReadableTime(getTotalTime(slotStats))}
                 </div>

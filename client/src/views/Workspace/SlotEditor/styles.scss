@@ -1,6 +1,6 @@
 @import '../../../stylesheets/base';
 
-$slot-editor-height: 130px;
+$slot-editor-height: 120px;
 
 .message-box {
     @include background-color($color-foreground);
@@ -16,13 +16,19 @@ $slot-editor-height: 130px;
     .day-editor-form {
         display: flex;
         flex-direction: column;
-        padding: $spacing-small 0;
+        padding: $spacing-large;
 
         .title {
             display: flex;
             justify-content: space-between;
             margin-bottom: $spacing-small;
-            padding: 0 $spacing-small;
+
+            .date {
+                padding: $spacing-extra-small 0;
+                font-family: $font-family-monospace;
+                font-size: $font-size-medium-alt;
+                font-weight: $font-weight-bold;
+            }
 
             .action-buttons {
                 display: flex;
@@ -42,35 +48,23 @@ $slot-editor-height: 130px;
                 display: flex;
                 align-items: center;
                 flex-grow: 1;
+                flex-wrap: wrap;
+
+                .remarks {
+                    flex-grow: 1;
+                }
 
                 .startTime,
                 .endTime,
                 .usergroup,
                 .project,
                 .remarks,
+                .tag,
                 .task {
-                    margin-left: $spacing-large;
+                    &:not(:first-child) {
+                        margin-left: $spacing-large;
+                    }
                 }
-                .tag {
-                    margin-left: $spacing-large;
-                }
-
-                .remarks {
-                    flex-grow: 1;
-                }
-            }
-        }
-
-        .bottom {
-            @include background-color($color-foreground);
-            display: flex;
-            flex-shrink: 0;
-            border-top: $width-separator-thin solid $color-separator-alt;
-            padding: $spacing-small;
-
-            .date {
-                padding: $spacing-extra-small $spacing-small;
-                font-family: $font-family-monospace;
             }
         }
     }

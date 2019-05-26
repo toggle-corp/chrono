@@ -258,6 +258,12 @@ export class SlotEditor extends React.PureComponent<Props, States> {
                 >
                     {pending && <LoadingAnimation />}
                     <div className={styles.title}>
+                        <div className={styles.date}>
+                            <FormattedDate
+                                value={`${year}-${month}-${day || 1}`}
+                                mode="EEE, dd MMM yyyy"
+                            />
+                        </div>
                         <NonFieldErrors faramElement />
                         <div className={styles.actionButtons}>
                             <PrimaryButton
@@ -281,7 +287,6 @@ export class SlotEditor extends React.PureComponent<Props, States> {
                                 Cancel
                             </WarningButton>
                         </div>
-
                     </div>
                     <div className={styles.mainForm}>
                         <div className={styles.infowrapper} >
@@ -327,14 +332,6 @@ export class SlotEditor extends React.PureComponent<Props, States> {
                                 faramElementName="remarks"
                                 label="Remarks"
                                 placeholder="Some remarks here"
-                            />
-                        </div>
-                    </div>
-                    <div className={styles.bottom}>
-                        <div className={styles.date}>
-                            <FormattedDate
-                                value={`${year}-${month}-${day || 1}`}
-                                mode="EEE, dd"
                             />
                         </div>
                     </div>
