@@ -37,7 +37,7 @@ import UGProjectsTasks from '../Filter/UGProjectsTasks';
 import * as styles from './styles.scss';
 
 interface OwnProps {
-    classNames?: string;
+    className?: string;
     loading?: boolean;
 }
 
@@ -145,6 +145,7 @@ export class Filter extends React.PureComponent<Props, State>{
             users,
             loading,
             faram,
+            className,
         } = this.props;
 
         const {
@@ -159,7 +160,7 @@ export class Filter extends React.PureComponent<Props, State>{
 
         return (
             <Faram
-                className={styles.filter}
+                className={`${styles.filter} ${className}`}
                 onChange={this.handleFaramChange}
                 onValidationFailure={this.handleFaramFailure}
                 onValidationSuccess={this.handleFaramSuccess}

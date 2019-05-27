@@ -12,6 +12,10 @@
         flex-direction: column;
         overflow-y: auto;
 
+        .filter {
+            flex-shrink: 0;
+        }
+
         .table-container {
             flex-grow: 1;
             overflow-y: auto;
