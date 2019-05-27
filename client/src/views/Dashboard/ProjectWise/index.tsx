@@ -67,7 +67,7 @@ export class Dashboard extends React.PureComponent<Props, States> {
             <div className={styles.projectWise} >
                 {loading && <LoadingAnimation message="Loading Data" />}
                 <div className={styles.topContainer}>
-                    <Filter />
+                    <Filter className={styles.filter} />
                     <div className={styles.tableContainer} >
                         <Table
                             data={slotStats}

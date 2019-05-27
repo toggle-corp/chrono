@@ -61,6 +61,7 @@ export class Dashboard extends React.PureComponent<Props, States> {
         return (
             <div className={styles.dashboard}>
                 <FixedTabs
+                    className={styles.tabs}
                     tabs={Dashboard.tabs}
                     useHash
                     replaceHistory

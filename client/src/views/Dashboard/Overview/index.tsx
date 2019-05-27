@@ -63,7 +63,7 @@ export class Overview extends React.PureComponent<Props, States> {
             <div className={styles.overview} >
                 {loading && <LoadingAnimation message="Loading Data" />}
                 <div className={styles.topContainer}>
-                    <Filter />
+                    <Filter className={styles.filter} />
                     <div className={styles.tableContainer} >
                         <Table
                             data={slotStats}
