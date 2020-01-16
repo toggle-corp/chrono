@@ -9,7 +9,7 @@ import {
     SetTimeSlotsAction,
 } from '../../../redux/interface';
 import {
-    urlForSlots,
+    createUrlForSlotsByYear,
     commonParamsForGet,
 } from '../../../rest';
 import schema from '../../../schema';
@@ -28,9 +28,14 @@ export default class GetSlotsRequest implements Request<{}> {
         this.props = props;
     }
 
-    create = (): RestRequest => {
+    create = (activeYear: number): RestRequest => {
+        const newUrl = createUrlForSlotsByYear({
+            date_gt: `${activeYear}-01-01`,
+            date_lt: `${activeYear}-12-31`,
+        });
+
         const request = new FgRestBuilder()
-            .url(urlForSlots)
+            .url(newUrl)
             .params(commonParamsForGet)
             .preLoad(() => { this.props.setState({ pendingSlots: true }); })
             .postLoad(() => { this.props.setState({ pendingSlots: false }); })
@@ -44,6 +49,5 @@ export default class GetSlotsRequest implements Request<{}> {
             })
             .build();
         return request;
-
     }
 }
