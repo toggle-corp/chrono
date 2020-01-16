@@ -136,18 +136,33 @@ export class Workspace extends React.PureComponent<Props, States> {
     }
 
     componentWillReceiveProps(nextProps: Props) {
+        const {
+            activeDate: {
+                year: prevYear,
+            },
+        } = this.props;
+        const {
+            activeDate: {
+                year: newYear,
+            },
+        } = nextProps;
+
         if (this.props.activeDate !== nextProps.activeDate) {
             const listData = Workspace.calculateListData(nextProps.activeDate);
             this.setState({ listData });
         }
+        if (prevYear !== newYear) {
+            this.startRequestForSlots(newYear);
+        }
     }
 
     componentWillMount() {
+        const { activeDate: { year } } = this.props;
         this.startRequestForUserGroup();
         this.startRequestForProjects();
         this.startRequestForTasks();
         this.startRequestForTags();
-        this.startRequestForSlots();
+        this.startRequestForSlots(year);
     }
 
     componentWillUnmount() {
@@ -168,7 +183,7 @@ export class Workspace extends React.PureComponent<Props, States> {
         }
     }
 
-    startRequestForSlots = () => {
+    startRequestForSlots = (year: number) => {
         if (this.slotsRequest) {
             this.slotsRequest.stop();
         }
@@ -176,7 +191,8 @@ export class Workspace extends React.PureComponent<Props, States> {
             setState: params => this.setState(params),
             setTimeSlots: this.props.setTimeSlots,
         });
-        this.slotsRequest = request.create();
+
+        this.slotsRequest = request.create(year);
         this.slotsRequest.start();
     }
 
@@ -395,6 +411,7 @@ export class Workspace extends React.PureComponent<Props, States> {
             pendingSlots,
             today,
         } = this.state;
+
         const {
             activeDate,
         } = this.props;
@@ -440,6 +457,7 @@ export class Workspace extends React.PureComponent<Props, States> {
                                 { key: 2017, label: '2017' },
                                 { key: 2018, label: '2018' },
                                 { key: 2019, label: '2019' },
+                                { key: 2020, label: '2020' },
                             ]}
                             value={activeDate.year}
                             placeholder="Select year"

@@ -9,9 +9,13 @@ import {
     SlotStatsUrlParams,
     PostSlotParams,
     PutSlotParams,
+    SlotsByYearParams,
 } from './interface';
 
 export const urlForSlots: string = `${wsEndpoint}/time-slots/`;
+
+export const createUrlForSlotsByYear = (params: SlotsByYearParams): string =>
+    `${urlForSlots}?${p(params)}`;
 
 export const createUrlForSlotStats = (params: SlotStatsUrlParams): string =>
     `${wsEndpoint}/time-slots-stats/?${p(params)}`;

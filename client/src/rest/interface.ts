@@ -98,3 +98,8 @@ export type SlotStatsUrlParams = {
     date_gt?: string;
     date_lt?: string;
 };
+
+export type SlotsByYearParams = {
+    date_gt?: string;
+    date_lt?: string;
+};
