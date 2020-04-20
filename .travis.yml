@@ -1,11 +1,13 @@
-sudo: required
+os: linux
+dist: xenial
+language: generic
 
 services:
     - docker
 
 before_install:
     - sudo pip install --upgrade awscli
-    - sudo pip install --upgrade awsebcli
+    - sudo pip install --upgrade awsebcli --ignore-installed PyYAML
     - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
 
     - mkdir -p client/src/vendor
