@@ -1,3 +1,4 @@
+from django.db.models import Sum, F, DurationField, Q, OuterRef, Subquery
 from django.db import models
 from rest_framework import generics
 from rest_framework import (
@@ -21,6 +22,7 @@ from .serializers import (
     TimeSlotStatsSerializer,
     TimeSlotStatsProjectWiseSerializer,
     TimeSlotStatsDayWiseSerializer,
+    TimeSlotStatsTaskSerializer,
 )
 
 import datetime
@@ -147,10 +149,13 @@ class TimeSlotStatsProjectWiseViewSet(generics.ListAPIView):
             output_field=models.DurationField(),
             filter=models.Q(timeslot__in=filtered_slots)
         )
+        
+            
 
         qs = qs.annotate(
             total_tasks=total_tasks,
             total_time=total_time,
+            
         ).filter(total_tasks__gt=0)
 
         return qs
@@ -206,3 +211,19 @@ class TimeSlotStatsDayWiseViewSet(views.APIView):
         return response.Response(
             TimeSlotStatsDayWiseSerializer(data, many=True).data
         )
+
+
+class TimeSlotStatsTaskViewSet(generics.ListAPIView):
+    
+    serializer_class = TimeSlotStatsTaskSerializer 
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+
+        return Task.objects.annotate(
+            time_for_task=models.Sum(
+                models.F('timeslot__end_time') - models.F('timeslot__start_time'),
+                output_field=models.DurationField(),
+            )
+        )
+        

@@ -1,6 +1,5 @@
 from drf_dynamic_fields import DynamicFieldsMixin
 from rest_framework import serializers
-
 from .models import (Task, TimeSlot)
 from user.models import User
 from chrono.serializers import RemoveNullFieldsMixin
@@ -105,7 +104,7 @@ class SecondsField(serializers.Field):
 
 
 class TimeSlotStatsProjectWiseSerializer(RemoveNullFieldsMixin,
-                                         serializers.ModelSerializer):
+                          serializers.ModelSerializer):
     user_display_name = serializers.CharField(
         source='profile.get_display_name'
     )
@@ -138,3 +137,21 @@ class TimeSlotStatsDayWiseSerializer(RemoveNullFieldsMixin,
                                      serializers.Serializer):
     date = serializers.DateField()
     users = UserStatsSerializer(many=True)
+
+
+class TimeSlotStatsTaskSerializer(RemoveNullFieldsMixin,
+                                     serializers.ModelSerializer):
+    
+   
+    time_for_task = serializers.DurationField()
+    total_time_in_seconds = SecondsField(source='time_for_task')
+    project_title = serializers.CharField(source='project.title')
+    project = serializers.IntegerField(source='project.id')
+
+    class Meta:
+        model = Task
+        fields = (
+            'id','time_for_task','total_time_in_seconds',
+            'project', 'project_title','title',
+        )
+   

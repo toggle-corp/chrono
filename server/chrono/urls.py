@@ -33,6 +33,8 @@ from task.views import (
     TimeSlotViewSet,
     TimeSlotStatsProjectWiseViewSet,
     TimeSlotStatsDayWiseViewSet,
+    TimeSlotStatsTaskViewSet,
+    
 )
 
 from export.views import ExportViewSet
@@ -119,6 +121,10 @@ urlpatterns = [
     url(get_api_path(r'time-slots-stats/day-wise/$'),
         TimeSlotStatsDayWiseViewSet.as_view(),
         name='time-slot-stat-day-wise'),
+    url(get_api_path(r'time-slots-stats/task-wise/$'),
+        TimeSlotStatsTaskViewSet.as_view(),
+        name='time-slot-stat-task-wise'),
+    
 
     # Export Urls
     url(get_api_path(r'export/$'),
