@@ -18,6 +18,7 @@ from user_group.models import UserGroup
 from user.models import User
 from .models import (Task, TimeSlot)
 from .serializers import (
+    TotalTimeSerializer,
     TaskSerializer,
     TimeSlotSerializer,
     TimeSlotStatsSerializer,
@@ -132,7 +133,7 @@ class TimeSlotViewSet(viewsets.ModelViewSet):
 
 
 class TimeSlotStatsViewSet(generics.ListAPIView):
-    queryset = TimeSlot.objects.prefetch_related('user', 'user__profile').annotate(
+    queryset = TimeSlot.objects.prefetch_related('tags', 'user', 'user__profile').annotate(
         user_display_name=USER_DISPLAY_ANNOTATE,
         user_group_display_name=F('task__project__user_group__title'),
         project_display_name=F('task__project__title'),
@@ -146,6 +147,17 @@ class TimeSlotStatsViewSet(generics.ListAPIView):
                        filters.SearchFilter, filters.OrderingFilter)
     filter_class = TimeSlotFilterSet
     search_fields = ('title', 'description')
+
+    def get(self, request, version=None):
+        """
+        Override list to include aggregated values
+        """
+        response = super().get(request, version)
+        total_time = self.filter_queryset(self.get_queryset()).aggregate(
+            total_time=TIME_SLOT_TOTAL_TIME_ANNOTATE
+        )
+        response.data['extra'] = TotalTimeSerializer(total_time).data
+        return response
 
 
 class TimeSlotStatsProjectWiseViewSet(generics.ListAPIView):
@@ -164,6 +176,17 @@ class TimeSlotStatsProjectWiseViewSet(generics.ListAPIView):
             total_tasks=Count('task', distinct=True),
             total_time=TIME_SLOT_TOTAL_TIME_ANNOTATE,
         ).order_by('project_title', 'user_display_name')
+
+    def get(self, request, version=None):
+        """
+        Override list to include aggregated values
+        """
+        response = super().get(request, version)
+        total_time = self.filter_queryset(self.get_queryset()).aggregate(
+            total_time=TIME_SLOT_TOTAL_TIME_ANNOTATE
+        )
+        response.data['extra'] = TotalTimeSerializer(total_time).data
+        return response
 
 
 class TimeSlotStatsDayWiseViewSet(views.APIView):

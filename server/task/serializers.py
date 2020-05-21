@@ -1,9 +1,28 @@
 from drf_dynamic_fields import DynamicFieldsMixin
 from rest_framework import serializers
-from .models import (Task, TimeSlot)
 from user.models import User
+from project.models import Tag
+
 from chrono.serializers import RemoveNullFieldsMixin
 from user_resource.serializers import UserResourceSerializer
+
+from .models import (Task, TimeSlot)
+
+
+class MiniTagSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Tag
+        fields = ('id', 'title', 'description')
+
+
+class SecondsField(serializers.Field):
+    def to_representation(self, dt):
+        return int(dt.total_seconds())
+
+
+class TotalTimeSerializer(serializers.Serializer):
+    total_time = serializers.DurationField()
+    total_time_in_seconds = SecondsField(source='total_time')
 
 
 class TaskSerializer(DynamicFieldsMixin,
@@ -80,20 +99,16 @@ class TimeSlotStatsSerializer(TimeSlotSerializer):
     project_display_name = serializers.CharField()
     user_display_name = serializers.CharField()
     # task
+    tags = MiniTagSerializer(many=True)
     task_display_name = serializers.CharField()
     task_description = serializers.CharField()
     # Time
     total_time = serializers.DurationField()
-    total_time_in_seconds = serializers.IntegerField()
+    total_time_in_seconds = SecondsField(source='total_time')
 
     class Meta:
         model = TimeSlot
         exclude = ()
-
-
-class SecondsField(serializers.Field):
-    def to_representation(self, dt):
-        return int(dt.total_seconds())
 
 
 class TimeSlotStatsProjectWiseSerializer(RemoveNullFieldsMixin, serializers.Serializer):
