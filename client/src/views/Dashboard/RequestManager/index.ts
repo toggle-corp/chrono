@@ -2,6 +2,7 @@ import React from 'react';
 import Redux from 'redux';
 import { connect } from 'react-redux';
 
+import { isObjectEmpty } from '#rsu/common';
 import { RestRequest } from '#rsu/rest';
 
 import {
@@ -37,10 +38,7 @@ import GetOverviewSlotStatsRequest from './requests/GetOverviewSlotStatsRequest'
 import GetProjectWiseSlotStatsRequest from './requests/GetProjectWiseSlotStatsRequest';
 import GetDayWiseSlotStatsRequest from './requests/GetDayWiseSlotStatsRequest';
 
-import GetUserGroupsRequest from './requests/GetUserGroupsRequest';
-import GetProjectsRequest from './requests/GetProjectsRequest';
-import GetTasksRequest from './requests/GetTasksRequest';
-import GetUsersRequest from './requests/GetUsersRequest';
+import GetSlotFilterOptionsRequest from './requests/GetSlotFilterOptions';
 
 interface OwnProps {}
 interface PropsFromState {
@@ -66,10 +64,7 @@ interface States {}
 
 export class RequestManager extends React.PureComponent<Props, States> {
     slotStatsRequest: RestRequest;
-    userGroupsRequest: RestRequest;
-    usersRequest: RestRequest;
-    projectsRequest: RestRequest;
-    tasksRequest: RestRequest;
+    slotFilterOptionsRequest: RestRequest;
     slotsRequest: RestRequest;
 
     componentDidMount() {
@@ -80,10 +75,7 @@ export class RequestManager extends React.PureComponent<Props, States> {
             dayWiseFilter,
         } = this.props;
 
-        this.startRequestForUserGroups();
-        this.startRequestForUsers();
-        this.startRequestForProjects();
-        this.startRequestForTasks();
+        this.startRequestForSlotFilterOptions();
         this.startRequestForOverviewSlotStats(overviewFilter, activeView);
         this.startRequestForProjectWiseSlotStats(projectWiseFilter, activeView);
         this.startRequestForDayWiseSlotStats(dayWiseFilter, activeView);
@@ -113,22 +105,13 @@ export class RequestManager extends React.PureComponent<Props, States> {
         if (this.slotStatsRequest) {
             this.slotStatsRequest.stop();
         }
-        if (this.userGroupsRequest) {
-            this.userGroupsRequest.stop();
-        }
-        if (this.usersRequest) {
-            this.usersRequest.stop();
-        }
-        if (this.projectsRequest) {
-            this.projectsRequest.stop();
-        }
-        if (this.tasksRequest) {
-            this.tasksRequest.stop();
+        if (this.slotFilterOptionsRequest) {
+            this.slotFilterOptionsRequest.stop();
         }
     }
 
     startRequestForOverviewSlotStats = (params: OverviewParams, activeView: string) => {
-        if (activeView !== 'overview') {
+        if (activeView !== 'overview' || isObjectEmpty(params.date)) {
             return;
         }
         if (this.slotStatsRequest) {
@@ -143,7 +126,7 @@ export class RequestManager extends React.PureComponent<Props, States> {
     }
 
     startRequestForProjectWiseSlotStats = (params: ProjectWiseParams, activeView: string) => {
-        if (activeView !== 'projectWise') {
+        if (activeView !== 'projectWise' || isObjectEmpty(params.date)) {
             return;
         }
         if (this.slotStatsRequest) {
@@ -158,7 +141,7 @@ export class RequestManager extends React.PureComponent<Props, States> {
     }
 
     startRequestForDayWiseSlotStats = (params: DayWiseParams, activeView: string) => {
-        if (activeView !== 'dayWise') {
+        if (activeView !== 'dayWise' || isObjectEmpty(params.date)) {
             return;
         }
         if (this.slotStatsRequest) {
@@ -172,52 +155,19 @@ export class RequestManager extends React.PureComponent<Props, States> {
         this.slotStatsRequest.start();
     }
 
-    startRequestForProjects = () => {
-        if (this.projectsRequest) {
-            this.projectsRequest.stop();
+    startRequestForSlotFilterOptions = () => {
+        if (this.slotFilterOptionsRequest) {
+            this.slotFilterOptionsRequest.stop();
         }
-        const request = new GetProjectsRequest({
-            setUserProjects: this.props.setUserProjects,
+        const request = new GetSlotFilterOptionsRequest({
             setLoadings: this.props.setLoadings,
-        });
-        this.projectsRequest = request.create();
-        this.projectsRequest.start();
-    }
-
-    startRequestForTasks = () => {
-        if (this.tasksRequest) {
-            this.tasksRequest.stop();
-        }
-        const request = new GetTasksRequest({
-            setUserTasks: this.props.setUserTasks,
-            setLoadings: this.props.setLoadings,
-        });
-        this.tasksRequest = request.create();
-        this.tasksRequest.start();
-    }
-
-    startRequestForUserGroups = () => {
-        if (this.userGroupsRequest) {
-            this.userGroupsRequest.stop();
-        }
-        const request = new GetUserGroupsRequest({
-            setUserGroups: this.props.setUserGroups,
-            setLoadings: this.props.setLoadings,
-        });
-        this.userGroupsRequest = request.create();
-        this.userGroupsRequest.start();
-    }
-
-    startRequestForUsers = () => {
-        if (this.usersRequest) {
-            this.usersRequest.stop();
-        }
-        const request = new GetUsersRequest({
             setUsers: this.props.setUsers,
-            setLoadings: this.props.setLoadings,
+            setUserGroups: this.props.setUserGroups,
+            setUserProjects: this.props.setUserProjects,
+            setUserTasks: this.props.setUserTasks,
         });
-        this.usersRequest = request.create();
-        this.usersRequest.start();
+        this.slotFilterOptionsRequest = request.create();
+        this.slotFilterOptionsRequest.start();
     }
 
     render() {

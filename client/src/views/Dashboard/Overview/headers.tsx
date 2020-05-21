@@ -58,15 +58,18 @@ const headers: Header<OverviewSlotStat>[] = [
         sortable: true,
         comparator: (a, b) => compareString(a.taskDisplayName, b.taskDisplayName),
         modifier: row => (
-            <span>{row.taskDisplayName}</span>
+            <span title={row.taskDescription}>{row.taskDisplayName}</span>
         ),
     },
     {
-        key: 'taskDescription',
-        label: 'Description',
+        key: 'tags',
+        label: 'Tags',
         order: 5,
         sortable: true,
         comparator: (a, b) => compareString(a.taskDescription, b.taskDescription),
+        modifier: row => (
+            <span>{row.tags.map(tag => tag.title).join(', ')}</span>
+        ),
     },
     {
         key: 'date',

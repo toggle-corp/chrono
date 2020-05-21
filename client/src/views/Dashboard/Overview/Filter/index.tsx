@@ -12,6 +12,7 @@ import Faram, {
     FaramErrors,
     FaramSchema,
 } from '#rscg/Faram';
+import { requiredCondition } from '#rscg/Faram/validations';
 import { RestRequest } from '#rsu/rest';
 import NonFieldErrors from '#rsci/NonFieldErrors';
 import { isObjectEmpty } from '#rsu/common';
@@ -77,7 +78,7 @@ export class Filter extends React.PureComponent<Props, State>{
                 userGroup: [],
                 project: [],
                 task: [],
-                date: [],
+                date: [requiredCondition],
                 tags: [],
             },
         };

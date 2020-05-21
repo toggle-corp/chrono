@@ -33,6 +33,7 @@ from task.views import (
     TimeSlotViewSet,
     TimeSlotStatsProjectWiseViewSet,
     TimeSlotStatsDayWiseViewSet,
+    TimeSlotStatsTaskViewSet,
 )
 
 from export.views import ExportViewSet
@@ -64,7 +65,7 @@ router.register(r'tags', TagViewSet, base_name='tag')
 
 # Versioning : (v1|v2|v3)
 
-API_PREFIX = r'^api/(?P<version>(v1))/'
+API_PREFIX = r'^api/(?P<version>(v1|v2))/'
 
 
 def get_api_path(path):
@@ -119,6 +120,9 @@ urlpatterns = [
     url(get_api_path(r'time-slots-stats/day-wise/$'),
         TimeSlotStatsDayWiseViewSet.as_view(),
         name='time-slot-stat-day-wise'),
+    url(get_api_path(r'time-slots-stats/task-wise/$'),
+        TimeSlotStatsTaskViewSet.as_view(),
+        name='time-slot-stat-task-wise'),
 
     # Export Urls
     url(get_api_path(r'export/$'),

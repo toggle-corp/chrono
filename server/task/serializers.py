@@ -1,10 +1,28 @@
 from drf_dynamic_fields import DynamicFieldsMixin
 from rest_framework import serializers
-
-from .models import (Task, TimeSlot)
 from user.models import User
+from project.models import Tag
+
 from chrono.serializers import RemoveNullFieldsMixin
 from user_resource.serializers import UserResourceSerializer
+
+from .models import (Task, TimeSlot)
+
+
+class MiniTagSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Tag
+        fields = ('id', 'title', 'description')
+
+
+class SecondsField(serializers.Field):
+    def to_representation(self, dt):
+        return int(dt.total_seconds())
+
+
+class TotalTimeSerializer(serializers.Serializer):
+    total_time = serializers.DurationField()
+    total_time_in_seconds = SecondsField(source='total_time')
 
 
 class TaskSerializer(DynamicFieldsMixin,
@@ -77,55 +95,33 @@ class TimeSlotSerializer(DynamicFieldsMixin,
 
 
 class TimeSlotStatsSerializer(TimeSlotSerializer):
-    # user group
-    user_group_display_name = serializers.CharField(
-        source='task.project.user_group.title'
-    )
-    # project
-    project_display_name = serializers.CharField(source='task.project.title')
-    # user
-    user_display_name = serializers.CharField(
-        source='user.profile.get_display_name'
-    )
+    user_group_display_name = serializers.CharField()
+    project_display_name = serializers.CharField()
+    user_display_name = serializers.CharField()
     # task
-    task_display_name = serializers.CharField(source='task.title')
-    task_description = serializers.CharField(source='task.description')
+    tags = MiniTagSerializer(many=True)
+    task_display_name = serializers.CharField()
+    task_description = serializers.CharField()
     # Time
     total_time = serializers.DurationField()
-    total_time_in_seconds = serializers.IntegerField()
+    total_time_in_seconds = SecondsField(source='total_time')
 
     class Meta:
         model = TimeSlot
         exclude = ()
 
 
-class SecondsField(serializers.Field):
-    def to_representation(self, dt):
-        return int(dt.total_seconds())
-
-
-class TimeSlotStatsProjectWiseSerializer(RemoveNullFieldsMixin,
-                                         serializers.ModelSerializer):
-    user_display_name = serializers.CharField(
-        source='profile.get_display_name'
-    )
-    project_title = serializers.CharField(source='project.title')
-    project = serializers.IntegerField(source='project.id')
+class TimeSlotStatsProjectWiseSerializer(RemoveNullFieldsMixin, serializers.Serializer):
+    id = serializers.CharField(source='key')
+    user_display_name = serializers.CharField()
+    project_title = serializers.CharField()
+    project = serializers.IntegerField()
     total_tasks = serializers.IntegerField()
     total_time = serializers.DurationField()
     total_time_in_seconds = SecondsField(source='total_time')
 
-    class Meta:
-        model = User
-        fields = (
-            'id', 'total_tasks', 'user_display_name',
-            'total_time', 'total_time_in_seconds',
-            'project', 'project_title',
-        )
 
-
-class UserStatsSerializer(RemoveNullFieldsMixin,
-                          serializers.ModelSerializer):
+class DeprecatedUserStatsSerializer(RemoveNullFieldsMixin, serializers.ModelSerializer):
     total_time = serializers.DurationField()
     total_time_in_seconds = SecondsField(source='total_time')
 
@@ -134,7 +130,35 @@ class UserStatsSerializer(RemoveNullFieldsMixin,
         fields = ('id', 'total_time', 'total_time_in_seconds')
 
 
-class TimeSlotStatsDayWiseSerializer(RemoveNullFieldsMixin,
-                                     serializers.Serializer):
+class DeprecatedTimeSlotStatsDayWiseSerializer(RemoveNullFieldsMixin, serializers.Serializer):
     date = serializers.DateField()
-    users = UserStatsSerializer(many=True)
+    users = DeprecatedUserStatsSerializer(many=True)
+
+
+class TimeSlotStatsUserWiseSerializer(RemoveNullFieldsMixin, serializers.Serializer):
+    user = serializers.IntegerField()
+    user_display_name = serializers.CharField()
+    total_time = serializers.DurationField()
+    total_time_in_seconds = SecondsField(source='total_time')
+
+
+class TimeSlotStatsDayWiseSerializer(RemoveNullFieldsMixin, serializers.Serializer):
+    date = serializers.DateField()
+    total_time = serializers.DurationField()
+    total_time_in_seconds = SecondsField(source='total_time')
+
+
+class TimeSlotStatsUserDayWiseSerializer(RemoveNullFieldsMixin, serializers.Serializer):
+    date = serializers.DateField()
+    user = serializers.IntegerField()
+    total_time = serializers.DurationField()
+    total_time_in_seconds = SecondsField(source='total_time')
+
+
+class TimeSlotStatsTaskSerializer(RemoveNullFieldsMixin, serializers.Serializer):
+    project = serializers.IntegerField()
+    project_display_name = serializers.CharField()
+    task = serializers.IntegerField()
+    task_display_name = serializers.CharField()
+    total_time = serializers.DurationField()
+    total_time_in_seconds = SecondsField(source='total_time')

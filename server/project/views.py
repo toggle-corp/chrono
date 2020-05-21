@@ -33,7 +33,7 @@ class ProjectViewSet(viewsets.ModelViewSet):
     filter_fields = ['user_group']
 
     def get_queryset(self):
-        return Project.get_for(self.request.user)
+        return Project.get_for(self.request.user).prefetch_related('created_by', 'modified_by')
 
     @detail_route(methods=['get'])
     def export(self, request, pk=None, version=None):

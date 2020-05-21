@@ -13,6 +13,7 @@ import {
 } from './interface';
 
 export const urlForSlots: string = `${wsEndpoint}/time-slots/`;
+export const urlForSlotFilterOptions: string = `${wsEndpoint}/time-slots/filter-options/`;
 
 export const createUrlForSlotsByYear = (params: SlotsByYearParams): string =>
     `${urlForSlots}?${p(params)}`;

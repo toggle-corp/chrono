@@ -41,8 +41,14 @@ export interface OverviewParams {
     userGroup: number;
     project: number[];
     task: number[];
-    tag: number[];
+    tags: number[];
     date?: FaramDate;
+}
+
+interface Tag {
+    id: number;
+    title: string;
+    description: string;
 }
 
 export interface OverviewSlotStat {
@@ -61,6 +67,7 @@ export interface OverviewSlotStat {
     totalTimeInSeconds: number;
     remarks: string;
     task: number;
+    tags: Tag[];
     user: number;
 }
 
