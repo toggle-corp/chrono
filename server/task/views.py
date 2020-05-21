@@ -17,9 +17,12 @@ from chrono.permissions import ModifyPermission
 from project.models import Project
 from project.serializers import ProjectSerializer
 from user_group.models import UserGroup
-from user_group.serializers import UserGroupSerializer
 from user.models import User
-from .models import (Task, TimeSlot)
+from .models import (
+    Task,
+    Tag,
+    TimeSlot,
+)
 from .serializers import (
     TotalTimeSerializer,
     TaskSerializer,
@@ -90,6 +93,13 @@ class TimeSlotFilterSet(django_filters.FilterSet):
         widget=django_filters.widgets.CSVWidget,
     )
 
+    tags = django_filters.ModelMultipleChoiceFilter(
+        name='tags',
+        queryset=Tag.objects.all(),
+        lookup_expr='in',
+        widget=django_filters.widgets.CSVWidget,
+    )
+
     class Meta:
         model = TimeSlot
         exclude = []
@@ -123,14 +133,7 @@ class TimeSlotViewSet(viewsets.ModelViewSet):
     search_fields = ('title', 'description')
 
     def get_queryset(self):
-        user_qs = TimeSlot.get_for(self.request.user)
-        tag_values = self.request.query_params.get('tag') or []
-        if not tag_values:
-            return user_qs
-        tagids = [x.strip() for x in tag_values.split(',') if x.strip()]
-        for id in tagids:
-            user_qs = user_qs.filter(tags__id=id)
-        return user_qs
+        return TimeSlot.get_for(self.request.user)
 
     @list_route(methods=['get'], url_path='filter-options')
     def filter_options(self, request, pk=None, version=None):
