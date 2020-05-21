@@ -151,13 +151,13 @@ const initialState: SiloDomainData = {
     dashboard: {
         activeView: 'overview',
         loadings: {
-            overviewLoading: true,
+            overviewLoading: false,
             projectsLoading: true,
             tasksLoading: true,
             userGroupsLoading: true,
             usersLoading: true,
-            projectWiseLoading: true,
-            dayWiseLoading: true,
+            projectWiseLoading: false,
+            dayWiseLoading: false,
         },
         overview: {
             data: [],

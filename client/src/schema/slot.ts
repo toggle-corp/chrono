@@ -43,7 +43,7 @@ const slotSchemas: Schema[] = [
         // extends: 'dbentity',
         fields: {
             // NOTE: id is userId
-            id: { type: 'uint', required: true },
+            id: { type: 'string', required: true },
             userDisplayName: { type: 'string' },
             project: { type: 'uint', required: true },
             projectTitle: { type: 'string' },

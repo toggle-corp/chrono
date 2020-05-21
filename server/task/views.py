@@ -2,6 +2,7 @@ from django.db import models
 from django.db.models import F, Count, Sum, Q
 from django.db.models.functions import Concat
 from rest_framework import generics
+from rest_framework.decorators import list_route
 from rest_framework import (
     filters,
     permissions,
@@ -14,7 +15,9 @@ import django_filters
 from chrono.permissions import ModifyPermission
 
 from project.models import Project
+from project.serializers import ProjectSerializer
 from user_group.models import UserGroup
+from user_group.serializers import UserGroupSerializer
 from user.models import User
 from .models import (Task, TimeSlot)
 from .serializers import (
@@ -108,7 +111,7 @@ class TaskViewSet(viewsets.ModelViewSet):
     filter_fields = ['project', 'title']
 
     def get_queryset(self):
-        return Task.get_for(self.request.user)
+        return Task.get_for(self.request.user).prefetch_related('created_by', 'modified_by')
 
 
 class TimeSlotViewSet(viewsets.ModelViewSet):
@@ -128,6 +131,31 @@ class TimeSlotViewSet(viewsets.ModelViewSet):
         for id in tagids:
             user_qs = user_qs.filter(tags__id=id)
         return user_qs
+
+    @list_route(methods=['get'], url_path='filter-options')
+    def filter_options(self, request, pk=None, version=None):
+        prefetch_related = ('created_by', 'modified_by')
+        return response.Response({
+            'tasks': TaskSerializer(
+                Task.get_for(self.request.user).prefetch_related(*prefetch_related),
+                many=True,
+            ).data,
+            'projects': ProjectSerializer(
+                Project.get_for(self.request.user).prefetch_related(*prefetch_related),
+                many=True,
+            ).data,
+            'user_groups': list(UserGroup.get_for(self.request.user).values('id', 'title', 'description')),
+            'users': list(
+                User.objects.values(
+                    'id',
+                    'email',
+                    display_name=Concat(
+                        'first_name', models.Value(' '), 'last_name',
+                        output_field=models.CharField()
+                    )
+                )
+            ),
+        })
 
     # TODO: Auto set user from request.user
 
