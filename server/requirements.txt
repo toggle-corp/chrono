@@ -2,7 +2,7 @@ django-cors-headers==2.1.0
 boto3==1.4.4
 django==2.0.2
 djangorestframework-camel-case==0.2.0
-djangorestframework==3.7.7
+djangorestframework==3.11.2
 drf-dynamic-fields==0.2.0
 psycopg2==2.7.3
 pyjwt==1.5.3
