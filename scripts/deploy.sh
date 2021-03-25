@@ -27,8 +27,8 @@ aws configure set metadata_service_num_attempts 3
 
 printf "\n\n::::::::: Uploading Image to Docker Hub [Server] :::::::::::\n"
 set -xe;
-docker-compose -f production.yml build
-docker-compose -f production.yml push
+# docker-compose -f production.yml build
+# docker-compose -f production.yml push
 set +xe;
 
 printf "\n\n::::::::: Deploying React to S3 [Client] :::::::::::\n"

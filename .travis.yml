@@ -28,7 +28,7 @@ before_install:
       DOCKER_PASSWORD=$DOCKER_PASSWORD
       DOCKER_USERNAME=$DOCKER_USERNAME
       " > .env
-    - docker pull devtc/chrono:server-latest; docker build --cache-from devtc/chrono:server-latest --tag devtc/chrono:server-latest ./server/
+    # docker pull devtc/chrono:server-latest; docker build --cache-from devtc/chrono:server-latest --tag devtc/chrono:server-latest ./server/
     - docker pull devtc/chrono:client-latest; docker build --cache-from devtc/chrono:client-latest --tag devtc/chrono:client-latest ./client/
 
 before_script:
@@ -38,6 +38,6 @@ script:
     - echo 'script'
 
 after_success:
-    - docker push devtc/chrono:server-latest
+    # docker push devtc/chrono:server-latest
     - docker push devtc/chrono:client-latest
     - ./scripts/deploy.sh
