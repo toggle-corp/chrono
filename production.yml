@@ -15,7 +15,7 @@ services:
         context: ./server/
         cache_from:
           - devtc/chrono:server-latest
-          - devtc/chrono:server-prod-0.3
+          - devtc/chrono:server-prod-0.2
       env_file:
           - .env
       volumes:

@@ -27,8 +27,7 @@ format_exporters = {
 
 class ProjectViewSet(viewsets.ModelViewSet):
     serializer_class = ProjectSerializer
-    # permission_classes = [permissions.IsAuthenticated,
-    #                       ModifyPermission]
+    permission_classes = [permissions.IsAuthenticated, ModifyPermission]
     filter_classes = [DjangoFilterBackend]
     filter_fields = ['user_group']
 

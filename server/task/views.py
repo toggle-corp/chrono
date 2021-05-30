@@ -62,39 +62,39 @@ class TimeSlotFilterSet(django_filters.FilterSet):
     Task filter set
     """
 
-    date_lt = django_filters.DateFilter(name='date', lookup_expr='lte')
-    date_gt = django_filters.DateFilter(name='date', lookup_expr='gte')
+    date_lt = django_filters.DateFilter(field_name='date', lookup_expr='lte')
+    date_gt = django_filters.DateFilter(field_name='date', lookup_expr='gte')
 
     user = django_filters.ModelMultipleChoiceFilter(
-        name='user',
+        field_name='user',
         queryset=User.objects.all(),
         lookup_expr='in',
         widget=django_filters.widgets.CSVWidget,
     )
 
     task = django_filters.ModelMultipleChoiceFilter(
-        name='task',
+        field_name='task',
         queryset=Task.objects.all(),
         lookup_expr='in',
         widget=django_filters.widgets.CSVWidget,
     )
 
     project = django_filters.ModelMultipleChoiceFilter(
-        name='task__project',
+        field_name='task__project',
         queryset=Project.objects.all(),
         lookup_expr='in',
         widget=django_filters.widgets.CSVWidget,
     )
 
     user_group = django_filters.ModelMultipleChoiceFilter(
-        name='task__project__user_group',
+        field_name='task__project__user_group',
         queryset=UserGroup.objects.all(),
         lookup_expr='in',
         widget=django_filters.widgets.CSVWidget,
     )
 
     tags = django_filters.ModelMultipleChoiceFilter(
-        name='tags',
+        field_name='tags',
         queryset=Tag.objects.all(),
         lookup_expr='in',
         widget=django_filters.widgets.CSVWidget,

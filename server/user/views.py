@@ -49,7 +49,7 @@ class UserViewSet(viewsets.ModelViewSet):
 
     queryset = User.objects.all().order_by('-date_joined')
     serializer_class = UserSerializer
-    permission_classes = [UserPermission]
+    permission_classes = [permissions.IsAuthenticated, UserPermission]
 
     filter_backends = (filters.SearchFilter, filters.OrderingFilter)
     search_fields = ('username', 'first_name', 'last_name', 'email')

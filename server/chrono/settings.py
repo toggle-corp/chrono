@@ -3,6 +3,7 @@ Django settings for chrono project.
 """
 
 import os
+from urllib.parse import urlparse
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -184,7 +185,7 @@ else:
     MEDIA_ROOT = '/media'
 
 HTTP_PROTOCOL = os.environ.get('HTTP_PROTOCOL', 'http')
-CHRONO_FRONTEND_HOST = os.environ.get('CHRONO_FRONTEND_HOST', 'localhost:3000')
+CHRONO_FRONTEND_HOST = os.environ.get('CHRONO_FRONTEND_HOST', 'http://localhost:3000')
 CHRONO_SITE_NAME = os.environ.get('CHRONO_SITE_NAME', 'Chrono')
 
 # CORS CONFIGS
@@ -213,5 +214,10 @@ CORS_ALLOW_HEADERS = (
     'x-requested-with',
 )
 
+SESSION_COOKIE_NAME = 'chrono-sessionid'
+CSRF_COOKIE_NAME = 'chrono-csrftoken'
+if HTTP_PROTOCOL == 'https':
+    SESSION_COOKIE_NAME = f'__Secure-{SESSION_COOKIE_NAME}'
+    CSRF_COOKIE_NAME = f'__Secure-{CSRF_COOKIE_NAME}'
 
-SESSION_COOKIE_DOMAIN = CSRF_COOKIE_DOMAIN = CHRONO_FRONTEND_HOST
+SESSION_COOKIE_DOMAIN = CSRF_COOKIE_DOMAIN = urlparse(CHRONO_FRONTEND_HOST).hostname

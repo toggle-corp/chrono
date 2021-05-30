@@ -1,13 +1,16 @@
-FROM node:12.18.2-alpine
+FROM node:12-buster-slim
 
 LABEL maintainer="dev@togglecorp.com"
 
-RUN apk update\
-    && apk add --no-cache gawk git rsync bash findutils
+RUN apt update -y \
+    && apt install -y  \
+        git \
+        # node-sass
+        python build-essential
 
 WORKDIR /code
 
 COPY ./package.json /code/package.json
-RUN yarn install --network-concurrency 1
+RUN yarn install --network-concurrency 3
 
 COPY . /code/
