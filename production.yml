@@ -10,12 +10,12 @@ services:
           - ./postgres-data:/var/lib/postgresql/data
 
     server:
-      image: devtc/chrono:server-prod-0.2
+      image: devtc/chrono:server-prod-0.3
       build:
         context: ./server/
         cache_from:
           - devtc/chrono:server-latest
-          # - devtc/chrono:server-prod-0.1
+          - devtc/chrono:server-prod-0.3
       env_file:
           - .env
       volumes:

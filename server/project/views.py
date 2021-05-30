@@ -1,5 +1,5 @@
 from rest_framework import viewsets, permissions, response, status
-from rest_framework.decorators import detail_route
+from rest_framework.decorators import action
 from django_filters.rest_framework import DjangoFilterBackend
 from django.utils import timezone
 from django.http import HttpResponse
@@ -35,7 +35,7 @@ class ProjectViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         return Project.get_for(self.request.user).prefetch_related('created_by', 'modified_by')
 
-    @detail_route(methods=['get'])
+    @action(detail=True, methods=['get'])
     def export(self, request, pk=None, version=None):
         serializer = ProjectExportSerializer(data=request.query_params)
         if not serializer.is_valid():

@@ -41,27 +41,22 @@ from export.views import ExportViewSet
 router = routers.DefaultRouter()
 
 # User routers
-router.register(r'users', UserViewSet,
-                base_name='user')
+router.register(r'users', UserViewSet, basename='user')
 
 # User group registers
-router.register(r'user-groups', UserGroupViewSet,
-                base_name='user_group')
+router.register(r'user-groups', UserGroupViewSet, basename='user_group')
 router.register(r'group-memberships', GroupMembershipViewSet,
-                base_name='group_membership')
+                basename='group_membership')
 
 # Project, Phase routers
-router.register(r'projects', ProjectViewSet,
-                base_name='project')
+router.register(r'projects', ProjectViewSet, basename='project')
 
 # Task, Time Slot routers
-router.register(r'tasks', TaskViewSet,
-                base_name='task')
+router.register(r'tasks', TaskViewSet, basename='task')
 
-router.register(r'time-slots', TimeSlotViewSet,
-                base_name='time-slot')
+router.register(r'time-slots', TimeSlotViewSet, basename='time-slot')
 
-router.register(r'tags', TagViewSet, base_name='tag')
+router.register(r'tags', TagViewSet, basename='tag')
 
 # Versioning : (v1|v2|v3)
 
@@ -86,29 +81,30 @@ urlpatterns = [
     url(get_api_path(r'password/reset/$'),
         PasswordResetView.as_view()),
 
-    url(r'^password/reset/done/$',
-        auth_views.password_reset_done,
-        name="password_rest_done"),
+    # TODO
+    # url(r'^password/reset/done/$',
+    #     auth_views.password_reset_done,
+    #     name="password_rest_done"),
 
-    url(r'^password/reset/(?P<uidb64>[0-9A-Za-z]+)-(?P<token>.+)/$',
-        auth_views.password_reset_confirm,
-        {
-            'post_reset_redirect': '{}://{}/login/'.format(
-                settings.HTTP_PROTOCOL, settings.CHRONO_FRONTEND_HOST)
-        },
-        name="password_reset_confirm"),
+    # url(r'^password/reset/(?P<uidb64>[0-9A-Za-z]+)-(?P<token>.+)/$',
+    #     auth_views.password_reset_confirm,
+    #     {
+    #         'post_reset_redirect': '{}://{}/login/'.format(
+    #             settings.HTTP_PROTOCOL, settings.CHRONO_FRONTEND_HOST)
+    #     },
+    #     name="password_reset_confirm"),
 
-    url(r'^password/done/$',
-        auth_views.password_reset_complete,
-        name="password_reset_complete"),
+    # url(r'^password/done/$',
+    #     auth_views.password_reset_complete,
+    #     name="password_reset_complete"),
 
-    url(r'^password/change/$',
-        auth_views.password_change,
-        name="password_change"),
+    # url(r'^password/change/$',
+    #     auth_views.password_change,
+    #     name="password_change"),
 
-    url(r'^password/change/done/$',
-        auth_views.password_change,
-        name="password_change_done"),
+    # url(r'^password/change/done/$',
+    #     auth_views.password_change,
+    #     name="password_change_done"),
 
     # Slot Stats API
     url(get_api_path(r'time-slots-stats/$'),

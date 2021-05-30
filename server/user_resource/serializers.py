@@ -1,4 +1,4 @@
-from chrono.serializers import NestedUpdateMixin, NestedCreateMixin
+from drf_writable_nested.serializers import NestedUpdateMixin, NestedCreateMixin
 from rest_framework import serializers
 
 

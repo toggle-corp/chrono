@@ -2,7 +2,7 @@ from django.db import models
 from django.db.models import F, Count, Sum, Q
 from django.db.models.functions import Concat
 from rest_framework import generics
-from rest_framework.decorators import list_route
+from rest_framework.decorators import action
 from rest_framework import (
     filters,
     permissions,
@@ -135,7 +135,7 @@ class TimeSlotViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         return TimeSlot.get_for(self.request.user)
 
-    @list_route(methods=['get'], url_path='filter-options')
+    @action(detail=False, methods=['get'], url_path='filter-options')
     def filter_options(self, request, pk=None, version=None):
         prefetch_related = ('created_by', 'modified_by')
         return response.Response({

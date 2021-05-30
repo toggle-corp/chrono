@@ -1,12 +1,16 @@
 from django.contrib.auth.models import User
+from django.contrib.auth import login, logout
+from rest_framework.decorators import action
 from rest_framework import (
-    status,
-    viewsets,
-    permissions,
-    filters,
+    authentication,
     exceptions,
+    filters,
+    permissions,
     response,
+    serializers,
+    status,
     views,
+    viewsets,
 )
 
 from .serializers import (
@@ -56,6 +60,33 @@ class UserViewSet(viewsets.ModelViewSet):
             return self.request.user
         else:
             return super().get_object()
+
+    @action(
+        detail=False,
+        url_path='login',
+        serializer_class=serializers.Serializer,
+        authentication_classes=(
+            authentication.SessionAuthentication,
+            authentication.BasicAuthentication,
+        ),
+        methods=['post'],
+    )
+    def login(self, request):
+        login(request, request.user)
+        return response.Response(
+            UserSerializer(request.user).data,
+            status=status.HTTP_200_OK,
+        )
+
+    @action(
+        detail=False,
+        url_path='logout',
+        serializer_class=serializers.Serializer,
+        methods=['post'],
+    )
+    def logout(self, request):
+        logout(request)
+        return response.Response(status=status.HTTP_200_OK)
 
 
 class PasswordResetView(views.APIView):

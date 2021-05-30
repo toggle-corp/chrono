@@ -8,8 +8,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY') or \
-        'qyywo&%0=ipb)7+m7d1jc2-^@v@9if18!^rggb)*_cfla3&4i@'
+SECRET_KEY = (
+    os.environ.get('DJANGO_SECRET_KEY') or 'qyywo&%0=ipb)7+m7d1jc2-^@v@9if18!^rggb)*_cfla3&4i@'
+)
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('DJANGO_DEBUG', 'True').lower() == 'true'
@@ -85,6 +86,7 @@ DATABASES = {
     }
 }
 
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Password validation
 
@@ -210,3 +212,6 @@ CORS_ALLOW_HEADERS = (
     'x-csrftoken',
     'x-requested-with',
 )
+
+
+SESSION_COOKIE_DOMAIN = CSRF_COOKIE_DOMAIN = CHRONO_FRONTEND_HOST
