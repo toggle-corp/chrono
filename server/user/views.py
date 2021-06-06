@@ -50,6 +50,10 @@ class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all().order_by('-date_joined')
     serializer_class = UserSerializer
     permission_classes = [permissions.IsAuthenticated, UserPermission]
+    authentication_classes = [
+        authentication.SessionAuthentication,
+        authentication.BasicAuthentication,
+    ]
 
     filter_backends = (filters.SearchFilter, filters.OrderingFilter)
     search_fields = ('username', 'first_name', 'last_name', 'email')
@@ -65,13 +69,9 @@ class UserViewSet(viewsets.ModelViewSet):
         detail=False,
         url_path='login',
         serializer_class=serializers.Serializer,
-        authentication_classes=(
-            authentication.SessionAuthentication,
-            authentication.BasicAuthentication,
-        ),
         methods=['post'],
     )
-    def login(self, request):
+    def login(self, request, *args, **kwargs):
         login(request, request.user)
         return response.Response(
             UserSerializer(request.user).data,
@@ -84,7 +84,7 @@ class UserViewSet(viewsets.ModelViewSet):
         serializer_class=serializers.Serializer,
         methods=['post'],
     )
-    def logout(self, request):
+    def logout(self, request, *args, **kwargs):
         logout(request)
         return response.Response(status=status.HTTP_200_OK)
 
