@@ -68,35 +68,30 @@ class TimeSlotFilterSet(django_filters.FilterSet):
     user = django_filters.ModelMultipleChoiceFilter(
         field_name='user',
         queryset=User.objects.all(),
-        lookup_expr='in',
         widget=django_filters.widgets.CSVWidget,
     )
 
     task = django_filters.ModelMultipleChoiceFilter(
         field_name='task',
         queryset=Task.objects.all(),
-        lookup_expr='in',
         widget=django_filters.widgets.CSVWidget,
     )
 
     project = django_filters.ModelMultipleChoiceFilter(
         field_name='task__project',
         queryset=Project.objects.all(),
-        lookup_expr='in',
         widget=django_filters.widgets.CSVWidget,
     )
 
     user_group = django_filters.ModelMultipleChoiceFilter(
         field_name='task__project__user_group',
         queryset=UserGroup.objects.all(),
-        lookup_expr='in',
         widget=django_filters.widgets.CSVWidget,
     )
 
     tags = django_filters.ModelMultipleChoiceFilter(
         field_name='tags',
         queryset=Tag.objects.all(),
-        lookup_expr='in',
         widget=django_filters.widgets.CSVWidget,
     )
 
@@ -176,7 +171,7 @@ class TimeSlotStatsViewSet(generics.ListAPIView):
     permission_classes = [permissions.IsAuthenticated, ModifyPermission]
     filter_backends = (django_filters.rest_framework.DjangoFilterBackend,
                        filters.SearchFilter, filters.OrderingFilter)
-    filter_class = TimeSlotFilterSet
+    filterset_class = TimeSlotFilterSet
     search_fields = ('title', 'description')
 
     def get(self, request, version=None):

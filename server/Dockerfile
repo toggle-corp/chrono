@@ -1,21 +1,18 @@
-FROM python:3.7-slim-buster
+FROM python:3.9-slim-buster
 
 LABEL maintainer="dev@togglecorp.com"
 
 ENV PYTHONUNBUFFERED=1
 
-# For i18n_patterns translation need to install gettext
 RUN apt-get update \
-    && apt-get install -y \
-        gettext vim git gcc
-
+    && apt-get install -y gettext vim git gcc
 
 WORKDIR /code
 
-COPY ./requirements.txt /code/requirements.txt
+COPY ./Pipfile ./Pipfile.lock /code/
 
-RUN pip install --upgrade pip \
-    && pip install -r requirements.txt
+RUN pip install --upgrade pip pipenv --no-cache-dir \
+    && pipenv install --system --deploy
 
 COPY . /code/
 
