@@ -10,6 +10,7 @@ from django.core.mail import EmailMultiAlternatives
 
 from chrono.serializers import RemoveNullFieldsMixin
 from user.models import Profile
+from django.contrib.auth import authenticate
 
 
 class UserSerializer(DynamicFieldsMixin, RemoveNullFieldsMixin,
@@ -122,3 +123,17 @@ class PasswordResetSerializer(serializers.Serializer):
             )
 
             return validated_data
+
+
+class LoginSerializer(serializers.Serializer):
+    username = serializers.CharField(required=True, write_only=True)
+    password = serializers.CharField(required=True, write_only=True)
+
+    def validate(self, attrs):
+        username = attrs.get('username', '')
+        password = attrs.get('password', '')
+        user = authenticate(username=username, password=password)
+        if not user:
+            raise serializers.ValidationError('Invalid Credentials')
+        attrs.update(dict(user=user))
+        return attrs
