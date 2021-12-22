@@ -1,10 +1,11 @@
 """chrono URL Configuration
 """
+import json
 from django.contrib import admin
 from django.conf.urls import (include, static, url)
 from django.conf import settings
 from django.urls import path
-from django.contrib.auth import views as auth_views
+# from django.contrib.auth import views as auth_views
 from django.views.decorators.clickjacking import xframe_options_exempt
 from django.views.static import serve
 
@@ -37,6 +38,9 @@ from task.views import (
 )
 
 from export.views import ExportViewSet
+from django.views.decorators.csrf import csrf_exempt
+from graphene_file_upload.django import FileUploadGraphQLView
+from utils.graphene.context import GQLContext
 
 router = routers.DefaultRouter()
 
@@ -66,6 +70,29 @@ API_PREFIX = r'^api/(?P<version>(v1|v2))/'
 def get_api_path(path):
     return '{}{}'.format(API_PREFIX, path)
 
+
+class CustomGraphQLView(FileUploadGraphQLView):
+    """Handles multipart/form-data content type in django views"""
+    def get_context(self, request):
+        return GQLContext(request)
+
+    def parse_body(self, request):
+        """
+        Allow for variable batch
+        https://github.com/graphql-python/graphene-django/issues/967#issuecomment-640480919
+        :param request:
+        :return:
+        """
+        try:
+            body = request.body.decode("utf-8")
+            request_json = json.loads(body)
+            self.batch = isinstance(request_json, list)
+        except:  # noqa: E722
+            self.batch = False
+        return super().parse_body(request)
+
+
+CustomGraphQLView.graphiql_template = "graphene_graphiql_explorer/graphiql.html"
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -127,6 +154,8 @@ urlpatterns = [
 
     # Viewsets
     url(get_api_path(''), include(router.urls)),
+    path('graphiql/', csrf_exempt(CustomGraphQLView.as_view(graphiql=True))),
+    path('graphql/', csrf_exempt(CustomGraphQLView.as_view())),
 ] + static.static(
     settings.MEDIA_URL, view=xframe_options_exempt(serve),
     document_root=settings.MEDIA_ROOT)

@@ -26,7 +26,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-
+    'graphene_django',
+    'graphene_graphiql_explorer',
     'django_filters',
     'corsheaders',
     'djangorestframework_camel_case',
@@ -166,7 +167,7 @@ if os.environ.get('DJANGO_USE_S3', 'False').lower() == 'true':
     AWS_QUERYSTRING_AUTH = True
     AWS_S3_CUSTOM_DOMAIN = None
 
-    # Static configuration
+    # Static cfonfiguration
     STATICFILES_LOCATION = 'server-static'
     STATIC_URL = "https://%s/%s/" % (AWS_S3_CUSTOM_DOMAIN,
                                      STATICFILES_LOCATION)
@@ -221,3 +222,31 @@ if HTTP_PROTOCOL == 'https':
     CSRF_COOKIE_NAME = f'__Secure-{CSRF_COOKIE_NAME}'
 
 SESSION_COOKIE_DOMAIN = CSRF_COOKIE_DOMAIN = urlparse(CHRONO_FRONTEND_HOST).hostname
+
+# https://docs.graphene-python.org/projects/django/en/latest/settings/
+GRAPHENE = {
+    'ATOMIC_MUTATIONS': True,
+    'SCHEMA': 'chrono.schema.schema',
+    'SCHEMA_OUTPUT': 'schema.json',
+    'SCHEMA_INDENT': 2,
+    'MIDDLEWARE': [
+        'chrono.auth.WhiteListMiddleware',
+    ],
+}
+
+GRAPHENE_DJANGO_EXTRAS = {
+    'DEFAULT_PAGINATION_CLASS': 'graphene_django_extras.paginations.PageGraphqlPagination',
+    'DEFAULT_PAGE_SIZE': 20,
+    'MAX_PAGE_SIZE': 50
+}
+
+GRAPHENE_NODES_WHITELIST = (
+    'login',
+    'logout',
+    'me',
+    # __ double underscore nodes
+    '__schema',
+    '__type',
+    '__typename',
+)
+MAX_LOGIN_ATTEMPTS = 3
