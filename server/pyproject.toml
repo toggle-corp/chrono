@@ -1,0 +1,32 @@
+[tool.poetry]
+name = "chrono"
+version = "0.1.0"
+description = "Time tracking application"
+authors = ["Dev <dev@togglecorp.io>"]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+boto3 = "==1.17.84"
+django-cors-headers = "==3.7.0"
+django-filter = "==2.4.0"
+django-storages = "==1.11.1"
+djangorestframework-camel-case = "==1.2.0"
+djangorestframework = "==3.12.4"
+drf-dynamic-fields = "==0.3.1"
+drf-writable-nested = "==0.6.3"
+psycopg2-binary = "==2.8.6"
+pytest = "*"
+requests = "*"
+Django = "==3.2.3"
+PyJWT = "==2.1.0"
+uWSGI = "*"
+graphene-django = "2.13.0"
+graphene-django-extras = "0.4.9"
+graphene-file-upload = "1.2.2"
+graphene-graphiql-explorer = "0.0.1"
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
