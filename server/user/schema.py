@@ -5,19 +5,13 @@ from user.filters import UserFilter
 from utils.graphene.types import CustomDjangoListObjectType
 from utils.graphene.fields import DjangoPaginatedListObjectField
 from utils.pagination import PageGraphqlPaginationWithoutCount
+from graphene_django_extras import DjangoObjectField
 
 
 class UserType(DjangoObjectType):
     class Meta:
         model = User
-        exclude_fields = (
-            'is_staff',
-            'is_superuser',
-            'is_active',
-            'groups',
-            'user_permissions',
-            'password',
-        )
+        exclude_fields = ('password',)
 
     @staticmethod
     def get_queryset(queryset, info):
@@ -28,10 +22,12 @@ class UserListType(CustomDjangoListObjectType):
     class Meta:
         model = User
         filterset_class = UserFilter
+        exclude_fields = ('password',)
 
 
 class Query(graphene.ObjectType):
     me = graphene.Field(UserType)
+    user = DjangoObjectField(UserType)
     users = DjangoPaginatedListObjectField(
         UserListType,
         pagination=PageGraphqlPaginationWithoutCount(

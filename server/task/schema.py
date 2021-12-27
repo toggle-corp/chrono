@@ -1,11 +1,27 @@
 import graphene
 from graphene_django_extras import DjangoObjectType
 from task.models import Task, TimeSlot
-from task.filters import TaskFilter, TimeSlotFilter
+from task.filters import TaskFilter
 from utils.graphene.types import CustomDjangoListObjectType
 from utils.graphene.fields import DjangoPaginatedListObjectField
 from utils.pagination import PageGraphqlPaginationWithoutCount
 from graphene_django_extras import DjangoObjectField
+from user.schema import UserType
+from .enums import TimeSlotGroupByEnum
+from graphene_django.filter.utils import get_filtering_args_from_filterset
+from .filters import TimeSlotFilter
+from .views import TIME_SLOT_TOTAL_TIME_ANNOTATE
+from user.models import User
+from django.shortcuts import get_object_or_404
+from project.schema import ProjectType, TagType
+from project.models import Project, Tag
+
+
+TimeSlotFilterType = type(
+    'RegionProjectFilterData',
+    (graphene.InputObjectType,),
+    get_filtering_args_from_filterset(TimeSlotFilter, 'task.schema.ProjectListType')
+)
 
 
 class TaskType(DjangoObjectType):
@@ -31,6 +47,8 @@ class TimeSlotType(DjangoObjectType):
     def get_queryset(queryset, info):
         return queryset
 
+    user = graphene.Field(UserType)
+
 
 class TimeSlotListType(CustomDjangoListObjectType):
     class Meta:
@@ -38,18 +56,56 @@ class TimeSlotListType(CustomDjangoListObjectType):
         filterset_class = TimeSlotFilter
 
 
+class TimeSlotGroupByType(graphene.ObjectType):
+    total_time = graphene.Int()
+    user = graphene.Field(UserType, required=False)
+    project = graphene.Field(ProjectType, required=False)
+    tag = graphene.Field(TagType, required=False)
+
+    @staticmethod
+    def resolve_total_time(root, info, **kwargs):
+        return int(root["total_time"].total_seconds())
+
+    @staticmethod
+    def resolve_user(root, info, **kwargs):
+        user_id = root.get('user', None)
+        return get_object_or_404(User, pk=user_id)
+
+    @staticmethod
+    def resolve_project(root, info, **kwargs):
+        project_id = root.get('task__project', None)
+        return get_object_or_404(Project, pk=project_id)
+
+    @staticmethod
+    def resolve_tag(root, info, **kwargs):
+        print(root)
+        tag_id = root.get('task__tags', None)
+        return get_object_or_404(Tag, pk=tag_id)
+
+
+class TimeSlotGroupByListType(graphene.ObjectType):
+    results = graphene.List(graphene.NonNull(TimeSlotGroupByType))
+
+
 class Query(graphene.ObjectType):
-    task = DjangoObjectField(TaskType)
     timeslot = DjangoObjectField(TimeSlotType)
-    tasks = DjangoPaginatedListObjectField(
-        TaskListType,
-        pagination=PageGraphqlPaginationWithoutCount(
-            page_size_query_param='pageSize'
-        )
-    )
     timeslots = DjangoPaginatedListObjectField(
         TimeSlotListType,
         pagination=PageGraphqlPaginationWithoutCount(
             page_size_query_param='pageSize'
         )
     )
+    timeslots_group_by = graphene.Field(
+        TimeSlotGroupByListType,
+        filters=graphene.Argument(TimeSlotFilterType),
+        group_by=graphene.List(graphene.NonNull(TimeSlotGroupByEnum))
+    )
+
+    @staticmethod
+    def resolve_timeslots_group_by(root, info, filters, group_by):
+        qs = TimeSlotFilter(data=filters).qs
+        return {
+            'results': qs.order_by().values(*group_by).annotate(
+                total_time=TIME_SLOT_TOTAL_TIME_ANNOTATE
+            ).values(*group_by, "total_time")
+        }

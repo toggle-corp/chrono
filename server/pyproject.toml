@@ -24,6 +24,7 @@ graphene-django = "2.13.0"
 graphene-django-extras = "0.4.9"
 graphene-file-upload = "1.2.2"
 graphene-graphiql-explorer = "0.0.1"
+django-enumfield = "^2.0.2"
 
 [tool.poetry.dev-dependencies]
 

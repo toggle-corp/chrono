@@ -53,6 +53,12 @@ class TimeSlot(models.Model):
     """
     Timeslot model
     """
+
+    class GroupBy(models.TextChoices):
+        USER = 'user', 'User'
+        PROJECT = 'task__project', 'Project'
+        TAG = 'task__tags', 'Tag'
+
     date = models.DateField()
     start_time = models.TimeField()
     # Null end time indicates a task that is actively going on

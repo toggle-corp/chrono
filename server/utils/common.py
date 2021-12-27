@@ -75,6 +75,11 @@ def underscore_to_title(x):
     return ' '.join([y.title() for y in x.split('_')])
 
 
+def to_camelcase(snake_str):
+    components = snake_str.split('_')
+    return components[0] + "".join(x.title() for x in components[1:])
+
+
 def json_to_csv_data(
         jsondata,
         rowheading="",

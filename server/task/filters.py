@@ -1,74 +1,106 @@
+from django.db import models
 import django_filters
 from task.models import Task, TimeSlot
-from utils.filters import AllowInitialFilterSetMixin
-from utils.filters import IDListFilter
+from utils.filters import NameFilterMixin
+from utils.filters import (
+    IDListFilter,
+    DateGteFilter,
+    DateLteFilter,
+)
 
 
-class TaskFilter(AllowInitialFilterSetMixin, django_filters.FilterSet):
-    project_in = IDListFilter(method='filter_project_in')
-    tags_in = IDListFilter(method='filter_tags_in')
+class TaskFilter(NameFilterMixin, django_filters.FilterSet):
+    search = django_filters.CharFilter(method='search_filter')
+    projects = IDListFilter(method='projects_filter')
+    tags = IDListFilter(method='tags_filter')
+    created_by = django_filters.CharFilter(method='created_by_filter')
+    modified_by = django_filters.CharFilter(method='modified_by_filter')
 
     class Meta:
         model = Task
-        fields = {
-            'title': ['icontains'],
-            'description': ['icontains'],
-        }
+        fields = {}
 
-    def filter_project_in(self, qs, name, value):
+    def search_filter(self, qs, name, value):
+        if not value:
+            return qs
+        return qs.filter(
+            models.Q(title__icontains=value) |
+            models.Q(description__icontains=value)
+        ).distinct()
+
+    def projects_filter(self, qs, name, value):
         if not value:
             return qs
         return qs.filter(
             project__in=value
         )
 
-    def filter_tags_in(self, qs, name, value):
+    def tags_filter(self, qs, name, value):
         if not value:
             return qs
         return qs.filter(
             tags__in=value
         )
 
+    def created_by_filter(self, qs, name, value):
+        if not value:
+            return qs
+        return qs.filter(
+            created_by__in=value
+        )
+
+    def modified_by_filter(self, qs, name, value):
+        if not value:
+            return qs
+        return qs.filter(
+            modified_by__in=value
+        )
+
     @property
     def qs(self):
-        return super().qs.select_related('project').prefetch_related('tags')
+        return super().qs.select_related('project', 'created_by', 'modified_by').prefetch_related('tags')
 
 
-class TimeSlotFilter(AllowInitialFilterSetMixin, django_filters.FilterSet):
-    task_in = IDListFilter(method='filter_task_in')
-    user_in = IDListFilter(method='filter_user_in')
-    tags_in = IDListFilter(method='filter_tags_in')
+class TimeSlotFilter(NameFilterMixin, django_filters.FilterSet):
+    tasks = IDListFilter(method='tasks_filter')
+    users = IDListFilter(method='users_filter')
+    tags = IDListFilter(method='tags_filter')
+    projects = IDListFilter(method='projects_filter')
+    date_gte = DateGteFilter(field_name='date')
+    date_lte = DateLteFilter(field_name='date')
 
     class Meta:
         model = TimeSlot
-        fields = {
-            'date': ['gt', 'lt', 'gte', 'lte'],
-            'start_time': ['gt', 'lt', 'gte', 'lte'],
-            'end_time': ['gt', 'lt', 'gte', 'lte'],
-            'remarks': ['icontains']
-        }
+        fields = {}
 
-    def filter_task_in(self, qs, name, value):
+    def tasks_filter(self, qs, name, value):
         if not value:
             return qs
         return qs.filter(
             task__in=value
         )
 
-    def filter_user_in(self, qs, name, value):
+    def users_filter(self, qs, name, value):
         if not value:
             return qs
         return qs.filter(
             user__in=value
         )
 
-    def filter_tags_in(self, qs, name, value):
+    def tags_filter(self, qs, name, value):
         if not value:
             return qs
         return qs.filter(
             tags__in=value
         )
 
+    def projects_filter(self, qs, name, value):
+        if not value:
+            return qs
+        return qs.filter(
+            task__project__in=value
+        )
+
     @property
     def qs(self):
-        return super().qs.select_related('user').prefetch_related('tags')
+        return super().qs.select_related('user').prefetch_related('tags', 'tags__project')

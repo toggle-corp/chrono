@@ -4,6 +4,7 @@ from django.db.models.functions import Lower, StrIndex
 import django_filters
 import graphene
 from graphene_django.forms.converter import convert_form_field
+from functools import partial
 
 
 def _generate_list_filter_class(inner_type):
@@ -45,6 +46,8 @@ def _generate_list_filter_class(inner_type):
 
 StringListFilter = _generate_list_filter_class(graphene.String)
 IDListFilter = _generate_list_filter_class(graphene.ID)
+DateGteFilter = partial(django_filters.DateFilter, lookup_expr='gte')
+DateLteFilter = partial(django_filters.DateFilter, lookup_expr='lte')
 
 
 class AllowInitialFilterSetMixin:
