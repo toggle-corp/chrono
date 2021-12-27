@@ -11,10 +11,9 @@ from .enums import TimeSlotGroupByEnum
 from graphene_django.filter.utils import get_filtering_args_from_filterset
 from .filters import TimeSlotFilter
 from .views import TIME_SLOT_TOTAL_TIME_ANNOTATE
-from user.models import User
-from django.shortcuts import get_object_or_404
-from project.schema import ProjectType, TagType
-from project.models import Project, Tag
+from django.db import models
+from django.db.models.functions import Concat
+from django.contrib.postgres.aggregates import StringAgg
 
 
 TimeSlotFilterType = type(
@@ -58,29 +57,18 @@ class TimeSlotListType(CustomDjangoListObjectType):
 
 class TimeSlotGroupByType(graphene.ObjectType):
     total_time = graphene.Int()
-    user = graphene.Field(UserType, required=False)
-    project = graphene.Field(ProjectType, required=False)
-    tag = graphene.Field(TagType, required=False)
+    # Ids
+    project_id = graphene.ID(required=False)
+    user_id = graphene.ID(required=False)
+    tag_id = graphene.ID(required=False)
+    # Descriptions
+    user_display_name = graphene.ID(required=False)
+    project_title = graphene.ID(required=False)
+    tag_name = graphene.ID(required=False)
 
     @staticmethod
     def resolve_total_time(root, info, **kwargs):
         return int(root["total_time"].total_seconds())
-
-    @staticmethod
-    def resolve_user(root, info, **kwargs):
-        user_id = root.get('user', None)
-        return get_object_or_404(User, pk=user_id)
-
-    @staticmethod
-    def resolve_project(root, info, **kwargs):
-        project_id = root.get('task__project', None)
-        return get_object_or_404(Project, pk=project_id)
-
-    @staticmethod
-    def resolve_tag(root, info, **kwargs):
-        print(root)
-        tag_id = root.get('task__tags', None)
-        return get_object_or_404(Tag, pk=tag_id)
 
 
 class TimeSlotGroupByListType(graphene.ObjectType):
@@ -103,9 +91,30 @@ class Query(graphene.ObjectType):
 
     @staticmethod
     def resolve_timeslots_group_by(root, info, filters, group_by):
+        if filters == {}:
+            return {"errors": ["At least one filter is required"]}
         qs = TimeSlotFilter(data=filters).qs
+        annotate_statements = {}
+        if TimeSlot.GroupBy.USER.value in group_by:
+            annotate_statements = {
+                "user_display_name": Concat('user__first_name', models.Value(' '), 'user__last_name'),
+                "user_id": models.F('user__id'),
+            }
+        if TimeSlot.GroupBy.TAG in group_by:
+            annotate_statements = {
+                "tag_name": StringAgg("task__tags__title", delimiter="", distinct=True, output_field=models.CharField()),
+                "tag_id": models.F('task__tags__id'),
+            }
+        if TimeSlot.GroupBy.PROJECT in group_by:
+            annotate_statements = {
+                "project_title": models.F("task__project__title"),
+                "project_id": models.F("task__project__id")
+            }
         return {
             'results': qs.order_by().values(*group_by).annotate(
-                total_time=TIME_SLOT_TOTAL_TIME_ANNOTATE
-            ).values(*group_by, "total_time")
+                total_time=TIME_SLOT_TOTAL_TIME_ANNOTATE,
+                **annotate_statements
+            ).values(
+                *group_by, "total_time", *annotate_statements.keys()
+            )
         }

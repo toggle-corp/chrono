@@ -57,7 +57,7 @@ class TimeSlot(models.Model):
     class GroupBy(models.TextChoices):
         USER = 'user', 'User'
         PROJECT = 'task__project', 'Project'
-        TAG = 'task__tags', 'Tag'
+        TAG = 'tags', 'Tag'
 
     date = models.DateField()
     start_time = models.TimeField()
