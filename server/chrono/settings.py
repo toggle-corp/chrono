@@ -18,6 +18,17 @@ DEBUG = os.environ.get('DJANGO_DEBUG', 'True').lower() == 'true'
 
 ALLOWED_HOSTS = [os.environ.get('DJANGO_ALLOWED_HOST', '*')]
 
+APPS_DIR = os.path.join(BASE_DIR, 'apps')
+
+LOCAL_APPS = [
+    # 'jwt_auth',
+    'user',
+    'user_group',
+    'user_resource',
+    'project',
+    'task',
+    'export',
+]
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -33,14 +44,13 @@ INSTALLED_APPS = [
     'djangorestframework_camel_case',
     'drf_dynamic_fields',
     'rest_framework',
-    'jwt_auth',
-    'user',
     'storages',
-    'user_group',
-    'user_resource',
-    'project',
-    'task',
-    'export',
+] + [
+    '{}.{}.apps.{}Config'.format(
+        APPS_DIR.split('/')[-1],
+        app,
+        ''.join([word.title() for word in app.split('_')]),
+    ) for app in LOCAL_APPS
 ]
 
 MIDDLEWARE = [
@@ -59,7 +69,7 @@ ROOT_URLCONF = 'chrono.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': ['templates'],
+        'DIRS': [os.path.join(APPS_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -250,3 +260,7 @@ GRAPHENE_NODES_WHITELIST = (
     '__typename',
 )
 MAX_LOGIN_ATTEMPTS = 3
+
+STATICFILES_DIRS = [
+    os.path.join(APPS_DIR, 'static'),
+]

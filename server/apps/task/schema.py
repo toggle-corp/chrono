@@ -91,14 +91,12 @@ class Query(graphene.ObjectType):
 
     @staticmethod
     def resolve_timeslots_group_by(root, info, filters, group_by):
-        if filters == {}:
-            return {"errors": ["At least one filter is required"]}
         qs = TimeSlotFilter(data=filters).qs
         annotate_statements = {}
         if TimeSlot.GroupBy.USER.value in group_by:
             annotate_statements = {
                 "user_display_name": Concat('user__first_name', models.Value(' '), 'user__last_name'),
-                "user_id": models.F('user__id'),
+                "user_id": models.F('user_id'),
             }
         if TimeSlot.GroupBy.TAG in group_by:
             annotate_statements = {
