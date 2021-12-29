@@ -21,7 +21,7 @@ ALLOWED_HOSTS = [os.environ.get('DJANGO_ALLOWED_HOST', '*')]
 APPS_DIR = os.path.join(BASE_DIR, 'apps')
 
 LOCAL_APPS = [
-    # 'jwt_auth',
+    'jwt_auth',
     'user',
     'user_group',
     'user_resource',
@@ -259,7 +259,6 @@ GRAPHENE_NODES_WHITELIST = (
     '__type',
     '__typename',
 )
-MAX_LOGIN_ATTEMPTS = 3
 
 STATICFILES_DIRS = [
     os.path.join(APPS_DIR, 'static'),

@@ -1,11 +1,9 @@
 from django.contrib.auth import login, logout
 import graphene
-from django.conf import settings
 from user.schema import UserType
 from user.serializers import LoginSerializer
 from utils.mutation import generate_input_type_for_serializer
 from utils.error_types import CustomErrorType, mutation_is_not_valid
-from django.contrib.auth.models import User
 
 
 LoginInputType = generate_input_type_for_serializer(
@@ -28,11 +26,9 @@ class Login(graphene.Mutation):
                                      context={'request': info.context.request})
         errors = mutation_is_not_valid(serializer)
         if errors:
-            attempts = User._get_login_attempt(data['email'])
             return Login(
                 errors=errors,
                 ok=False,
-                captcha_required=attempts >= settings.MAX_LOGIN_ATTEMPTS
             )
         if user := serializer.validated_data.get('user'):
             login(info.context.request, user)
