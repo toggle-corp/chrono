@@ -200,9 +200,17 @@ CHRONO_FRONTEND_HOST = os.environ.get('CHRONO_FRONTEND_HOST', 'http://localhost:
 CHRONO_SITE_NAME = os.environ.get('CHRONO_SITE_NAME', 'Chrono')
 
 # CORS CONFIGS
-CORS_ORIGIN_ALLOW_ALL = True
+if DEBUG:
+    CORS_ORIGIN_ALLOW_ALL = True
+else:
+    # Restrict to thedeep.io 1 level subdomains only in Production
+    CORS_ORIGIN_REGEX_WHITELIST = [
+        r"^https://\w+\.togglecorp\.com$",
+    ]
 
-CORS_URLS_REGEX = r'^/api/.*$'
+CORS_URLS_REGEX = r'(^/api/.*$)|(^/media/.*$)|(^/graphql/$)'
+CORS_ALLOW_CREDENTIALS = True
+
 
 CORS_ALLOW_METHODS = (
     'DELETE',
@@ -223,6 +231,7 @@ CORS_ALLOW_HEADERS = (
     'user-agent',
     'x-csrftoken',
     'x-requested-with',
+    'sentry-trace',
 )
 
 SESSION_COOKIE_NAME = 'chrono-sessionid'
