@@ -5,9 +5,9 @@ from django.contrib.auth.models import User
 
 
 class UserFactory(DjangoModelFactory):
-    first_name = factory.Faker('first_name')
-    last_name = factory.Faker('last_name')
-    email = factory.Sequence(lambda n: f'{n}@xyz.com')
+    first_name = fuzzy.FuzzyText(length=15)
+    last_name = fuzzy.FuzzyText(length=15)
+    email = fuzzy.FuzzyText(length=15)
     username = factory.LazyAttribute(lambda user: user.email)
     password_text = fuzzy.FuzzyText(length=15)
     password = factory.PostGeneration(lambda user, *args, **kwargs: user.set_password(user.password_text))
