@@ -5,10 +5,11 @@ services:
         image: postgres:9.6
         environment:
           # IMPORTANT: Remove this on production
-          - POSTGRES_HOST_AUTH_METHOD=trust
+          POSTGRES_PASSWORD: postgres
         volumes:
             - ./postgres-data:/var/lib/postgresql/data
-
+        ports:
+            - '6050:5432'
     server:
         image: devtc/chrono:server-latest
         build:
@@ -26,19 +27,19 @@ services:
         depends_on:
             - db
 
-    client:
-        image: devtc/chrono:client-latest
-        build:
-          context: ./client/
-          cache_from:
-            - devtc/chrono:client-latest
-        env_file:
-            - .env
-        command: ['/code/scripts/run_develop.sh']
-        volumes:
-            - ./client/:/code
-            - ./media:/media
-        ports:
-            - '3001:3001'
-        depends_on:
-            - server
+    # client:
+    #     image: devtc/chrono:client-latest
+    #     build:
+    #       context: ./client/
+    #       cache_from:
+    #         - devtc/chrono:client-latest
+    #     env_file:
+    #         - .env
+    #     command: ['/code/scripts/run_develop.sh']
+    #     volumes:
+    #         - ./client/:/code
+    #         - ./media:/media
+    #     ports:
+    #         - '3001:3001'
+    #     depends_on:
+    #         - server

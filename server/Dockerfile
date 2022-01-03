@@ -1,43 +1,24 @@
-FROM ubuntu:16.04
+FROM python:3.10-slim-buster
 
-MAINTAINER togglecorp info@togglecorp.com
+LABEL maintainer="dev@togglecorp.com"
 
-# Clean apt
-RUN apt-get clean && \
-    rm -rf /var/lib/apt/lists/* && \
-    rm -rf /var/lib/apt/lists/partial/* && \
-    rm -rf /var/cache/apt/*
+ENV PYTHONUNBUFFERED=1
 
-# Update and install common packages with apt
-RUN apt-get update -y ; \
-    apt-get install -y \
-        # Basic Packages
-        git \
-        locales \
-        vim \
-        curl \
-        cron \
-        unzip \
-        python3 \
-        python3-dev \
-        python3-setuptools \
-        python3-pip
-
-# Support utf-8
-RUN locale-gen en_US.UTF-8
-ENV LANG en_US.UTF-8
-
-# Install uwsgi for django
-RUN pip3 install uwsgi
+RUN apt-get update \
+    && apt-get install -y gettext vim git gcc libpq-dev
 
 WORKDIR /code
 
-RUN pip3 install virtualenv
-RUN virtualenv /venv
+COPY pyproject.toml poetry.lock /code/
 
-COPY ./requirements.txt /code/requirements.txt
-RUN . /venv/bin/activate && \
-    pip install -r requirements.txt
+# Upgrade pip and install python packages for code
+RUN pip install --upgrade --no-cache-dir pip poetry \
+    && poetry --version \
+    # Configure to use system instead of virtualenvs
+    && poetry config virtualenvs.create false \
+    && poetry install --no-root \
+    # Remove installer
+    && pip uninstall -y poetry virtualenv-clone virtualenv
 
 COPY . /code/
 

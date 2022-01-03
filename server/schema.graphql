@@ -1,0 +1,110 @@
+schema {
+  query: Query
+  mutation: Mutation
+}
+
+scalar CustomDate
+
+scalar CustomDateTime
+
+scalar CustomTime
+
+scalar Date
+
+scalar GenericScalar
+
+type Login {
+  result: UserType
+  errors: [GenericScalar!]
+  ok: Boolean!
+}
+
+input LoginInputType {
+  username: String!
+  password: String!
+}
+
+type Logout {
+  ok: Boolean
+}
+
+type Mutation {
+  login(data: LoginInputType!): Login
+  logout: Logout
+}
+
+type Query {
+  timeslots(tasks: [ID!], users: [ID!], tags: [ID!], dateGte: Date, dateLte: Date, page: Int = 1, ordering: String, pageSize: Int): TimeSlotListType
+  me: UserType
+  user(id: ID!): UserType
+  users(username: String, isActive: Boolean, email: String, fullName: String, page: Int = 1, ordering: String, pageSize: Int): UserListType
+}
+
+type TaskGenericType {
+  createdAt: CustomDateTime
+  createdBy: UserGenericType
+  description: String
+  id: ID!
+  modifiedAt: CustomDateTime
+  modifiedBy: UserGenericType
+  timeslot(tasks: [ID!], users: [ID!], tags: [ID!], dateGte: Date, dateLte: Date, id: ID): [TimeSlotGenericType]
+  title: String
+}
+
+type TimeSlotGenericType {
+  date: CustomDate
+  endTime: CustomTime
+  id: ID!
+  remarks: String
+  startTime: CustomTime
+  task: TaskGenericType
+  user: UserGenericType
+}
+
+type TimeSlotListType {
+  results: [TimeSlotGenericType!]
+  totalCount: Int
+  page: Int
+  pageSize: Int
+}
+
+type UserGenericType {
+  dateJoined: CustomDateTime
+  email: String
+  firstName: String
+  id: ID!
+  isActive: Boolean
+  isStaff: Boolean
+  isSuperuser: Boolean
+  lastLogin: CustomDateTime
+  lastName: String
+  password: String
+  taskCreated(search: String, projects: [ID!], tags: [ID!], createdBy: String, modifiedBy: String, id: ID): [TaskGenericType]
+  taskModified(search: String, projects: [ID!], tags: [ID!], createdBy: String, modifiedBy: String, id: ID): [TaskGenericType]
+  timeslot(tasks: [ID!], users: [ID!], tags: [ID!], dateGte: Date, dateLte: Date, id: ID): [TimeSlotGenericType]
+  username: String
+}
+
+type UserListType {
+  results: [UserGenericType!]
+  totalCount: Int
+  page: Int
+  pageSize: Int
+}
+
+type UserType {
+  dateJoined: CustomDateTime
+  email: String
+  firstName: String
+  id: ID!
+  isActive: Boolean
+  isStaff: Boolean
+  isSuperuser: Boolean
+  lastLogin: CustomDateTime
+  lastName: String
+  password: String
+  taskCreated(search: String, projects: [ID!], tags: [ID!], createdBy: String, modifiedBy: String, id: ID): [TaskGenericType]
+  taskModified(search: String, projects: [ID!], tags: [ID!], createdBy: String, modifiedBy: String, id: ID): [TaskGenericType]
+  timeslot(tasks: [ID!], users: [ID!], tags: [ID!], dateGte: Date, dateLte: Date, id: ID): [TimeSlotGenericType]
+  username: String
+}

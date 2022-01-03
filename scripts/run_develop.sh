@@ -11,7 +11,6 @@ ROOT_DIR=$(dirname "$BASE_DIR")
 cd $ROOT_DIR
 
 if [ "${PROG_TYPE}" == "server" ]; then
-    . /venv/bin/activate
     cd server
     pip3 install -r requirements.txt
     python manage.py migrate --no-input

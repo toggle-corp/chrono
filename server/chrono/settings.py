@@ -3,19 +3,32 @@ Django settings for chrono project.
 """
 
 import os
+from urllib.parse import urlparse
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY') or \
-        'qyywo&%0=ipb)7+m7d1jc2-^@v@9if18!^rggb)*_cfla3&4i@'
+SECRET_KEY = (
+    os.environ.get('DJANGO_SECRET_KEY') or 'qyywo&%0=ipb)7+m7d1jc2-^@v@9if18!^rggb)*_cfla3&4i@'
+)
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('DJANGO_DEBUG', 'True').lower() == 'true'
 
 ALLOWED_HOSTS = [os.environ.get('DJANGO_ALLOWED_HOST', '*')]
 
+APPS_DIR = os.path.join(BASE_DIR, 'apps')
+
+LOCAL_APPS = [
+    'jwt_auth',
+    'user',
+    'user_group',
+    'user_resource',
+    'project',
+    'task',
+    'export',
+]
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -24,20 +37,20 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-
+    'graphene_django',
+    'graphene_graphiql_explorer',
     'django_filters',
     'corsheaders',
     'djangorestframework_camel_case',
     'drf_dynamic_fields',
     'rest_framework',
-    'jwt_auth',
-    'user',
     'storages',
-    'user_group',
-    'user_resource',
-    'project',
-    'task',
-    'export',
+] + [
+    '{}.{}.apps.{}Config'.format(
+        APPS_DIR.split('/')[-1],
+        app,
+        ''.join([word.title() for word in app.split('_')]),
+    ) for app in LOCAL_APPS
 ]
 
 MIDDLEWARE = [
@@ -56,7 +69,7 @@ ROOT_URLCONF = 'chrono.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': ['templates'],
+        'DIRS': [os.path.join(APPS_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -85,6 +98,7 @@ DATABASES = {
     }
 }
 
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Password validation
 
@@ -163,7 +177,7 @@ if os.environ.get('DJANGO_USE_S3', 'False').lower() == 'true':
     AWS_QUERYSTRING_AUTH = True
     AWS_S3_CUSTOM_DOMAIN = None
 
-    # Static configuration
+    # Static cfonfiguration
     STATICFILES_LOCATION = 'server-static'
     STATIC_URL = "https://%s/%s/" % (AWS_S3_CUSTOM_DOMAIN,
                                      STATICFILES_LOCATION)
@@ -182,13 +196,21 @@ else:
     MEDIA_ROOT = '/media'
 
 HTTP_PROTOCOL = os.environ.get('HTTP_PROTOCOL', 'http')
-CHRONO_FRONTEND_HOST = os.environ.get('CHRONO_FRONTEND_HOST', 'localhost:3000')
+CHRONO_FRONTEND_HOST = os.environ.get('CHRONO_FRONTEND_HOST', 'http://localhost:3000')
 CHRONO_SITE_NAME = os.environ.get('CHRONO_SITE_NAME', 'Chrono')
 
 # CORS CONFIGS
-CORS_ORIGIN_ALLOW_ALL = True
+if DEBUG:
+    CORS_ORIGIN_ALLOW_ALL = True
+else:
+    # Restrict to thedeep.io 1 level subdomains only in Production
+    CORS_ORIGIN_REGEX_WHITELIST = [
+        r"^https://\w+\.togglecorp\.com$",
+    ]
 
-CORS_URLS_REGEX = r'^/api/.*$'
+CORS_URLS_REGEX = r'(^/api/.*$)|(^/media/.*$)|(^/graphql/$)'
+CORS_ALLOW_CREDENTIALS = True
+
 
 CORS_ALLOW_METHODS = (
     'DELETE',
@@ -209,4 +231,44 @@ CORS_ALLOW_HEADERS = (
     'user-agent',
     'x-csrftoken',
     'x-requested-with',
+    'sentry-trace',
 )
+
+SESSION_COOKIE_NAME = 'chrono-sessionid'
+CSRF_COOKIE_NAME = 'chrono-csrftoken'
+if HTTP_PROTOCOL == 'https':
+    SESSION_COOKIE_NAME = f'__Secure-{SESSION_COOKIE_NAME}'
+    CSRF_COOKIE_NAME = f'__Secure-{CSRF_COOKIE_NAME}'
+
+SESSION_COOKIE_DOMAIN = CSRF_COOKIE_DOMAIN = urlparse(CHRONO_FRONTEND_HOST).hostname
+
+# https://docs.graphene-python.org/projects/django/en/latest/settings/
+GRAPHENE = {
+    'ATOMIC_MUTATIONS': True,
+    'SCHEMA': 'chrono.schema.schema',
+    'SCHEMA_OUTPUT': 'schema.json',
+    'SCHEMA_INDENT': 2,
+    'MIDDLEWARE': [
+        'chrono.auth.WhiteListMiddleware',
+    ],
+}
+
+GRAPHENE_DJANGO_EXTRAS = {
+    'DEFAULT_PAGINATION_CLASS': 'graphene_django_extras.paginations.PageGraphqlPagination',
+    'DEFAULT_PAGE_SIZE': 20,
+    'MAX_PAGE_SIZE': 50
+}
+
+GRAPHENE_NODES_WHITELIST = (
+    'login',
+    'logout',
+    'me',
+    # __ double underscore nodes
+    '__schema',
+    '__type',
+    '__typename',
+)
+
+STATICFILES_DIRS = [
+    os.path.join(APPS_DIR, 'static'),
+]
